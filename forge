@@ -7,9 +7,9 @@ set -o pipefail
 # Trap handler for abnormal exit
 function on_error {
   local exit_code=$?
-  echo "" >&2
-  echo "ERROR: forge command failed with exit code $exit_code" >&2
-  echo "Command: $basename $*" >&2
+  println ""
+  println "ERROR: forge command failed with exit code $exit_code"
+  println "Command: $basename $*"
   exit $exit_code
 }
 
@@ -27,7 +27,8 @@ if [ "${BASH_VERSINFO:-0}" -lt 4 ]; then
     fi
   done
   # shellcheck disable=SC2128
-  echo "ERROR: Incompatible Bash detected: ${BASH:-} ${BASH_VERSINFO:-} ${BASH_VERSION:-}"
+  # Note: println not available yet, using echo directly
+  echo "ERROR: Incompatible Bash detected: ${BASH:-} ${BASH_VERSINFO:-} ${BASH_VERSION:-}" >&2
   exit 2
 fi
 
@@ -45,7 +46,7 @@ command_default=""
 
 # show message and exit
 function die {
-  echo "$1"
+  println "$1"
   exit 1
 }
 
@@ -56,9 +57,9 @@ function usage {
   set -o nounset
 
   if [[ -z "$syntax" ]]; then
-    echo "usage: $basename <command> [options]"
+    println "usage: $basename <command> [options]"
   else
-    echo "usage: $basename $syntax"
+    println "usage: $basename $syntax"
   fi
   exit 2
 }
@@ -68,9 +69,14 @@ function self {
   $0 "$@"
 }
 
+# print line to stderr (for info messages)
+function println {
+  echo "$@" >&2
+}
+
 # log debug message to stderr
 function log_debug {
-  echo "[DEBUG] > $@" >&2
+  println "[DEBUG] > $@"
 }
 
 declare -A state
@@ -126,7 +132,7 @@ function main {
     $fn "$@"
   else
     # complain about missing command function
-    echo "Unknown command: $command"
+    println "Unknown command: $command"
     usage
   fi
 }
