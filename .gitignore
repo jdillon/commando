@@ -1,0 +1,22 @@
+# Temporary files
+tmp/*.log
+tmp/*.tmp
+
+# Local development
+local.bash
+*.local.bash
+
+# OS files
+.DS_Store
+._*
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Testing
+test-output/
+sandbox/
