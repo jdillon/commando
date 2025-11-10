@@ -1,6 +1,6 @@
 # Forge - Yet another CLI Framework
 
-**Philosophy**: *"It's for me mostly, so I like awesome."*
+**Philosophy**: *"Make it awesome, it's for me mostly, so I like awesome."*
 
 ---
 
