@@ -4,19 +4,6 @@
 
 ---
 
-## Features
-
-### Core
-
-- ✅ **CWD-aware** - Run from any subdirectory (like git)
-- ✅ **Type-safe** - Full TypeScript with minimal boilerplate
-- ✅ **Auto-discovery** - Export a command, it's available
-- ✅ **Module system** - Shared modules across projects
-- ✅ **State management** - Project and user-scoped state
-- ✅ **Beautiful UI** - Colors, spinners, task lists, boxes
-- ✅ **Structured logging** - Pino (JSON + pretty mode)
-- ✅ **XDG compliant** - Modern directory standards
-
 ## Documentation
 
 - **[docs/](docs/)** - All documentation
