@@ -1,0 +1,121 @@
+#!/usr/bin/env bash
+# Copyright 2025 Jason Dillon
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# IMPORANT: retain compatibility with bash v3 (macOS)
+set -euo pipefail
+
+#
+# Globals
+#
+
+SCRIPT_DIR=""
+FORGE_CLI=""
+# FORGE_HOME is set via environment or defaulted in setup_environment()
+
+#
+# Path resolution
+#
+
+resolve_paths() {
+  # Resolve symlinks to get actual script location
+  local script_path="${BASH_SOURCE[0]}"
+  while [[ -L "${script_path}" ]]; do
+    local script_dir="$(cd "$(dirname "${script_path}")" && pwd)"
+    script_path="$(readlink "${script_path}")"
+    # Handle relative symlinks
+    [[ "${script_path}" != /* ]] && script_path="${script_dir}/${script_path}"
+  done
+
+  # Installed mode only - forge-dev handles dev mode
+  SCRIPT_DIR="$(cd "$(dirname "${script_path}")" && pwd)"
+}
+
+setup_environment() {
+  # Set FORGE_HOME if not already set (e.g., by tests)
+  if [[ -z "${FORGE_HOME:-}" ]]; then
+    FORGE_HOME="${HOME}/.forge"
+  fi
+  export FORGE_HOME
+
+  # Set up paths
+  local node_modules="${FORGE_HOME}/node_modules"
+  FORGE_CLI="${node_modules}/@planet57/forge/lib/cli.ts"
+
+  # Set NODE_PATH for Bun's runtime module resolution
+  # export NODE_PATH="${node_modules}"
+}
+
+validate_installation() {
+  if [[ ! -f "${FORGE_CLI}" ]]; then
+    echo "ERROR: Forge not found at ${FORGE_CLI}" >&2
+    echo "Run install.sh to reinstall forge" >&2
+    exit 1
+  fi
+}
+
+#
+# Forge execution
+#
+
+run_forge() {
+  local is_restarted="$1"
+  shift
+
+  # Set restart flag if this is a restart
+  if [[ "$is_restarted" == "true" ]]; then
+    export FORGE_RESTARTED=1
+  fi
+
+  # Use --preserve-symlinks to prevent Bun from resolving through symlinks
+  # This allows user commands symlinked into node_modules to resolve forge correctly
+  bun run --preserve-symlinks "${FORGE_CLI}" "$@"
+}
+
+handle_restart() {
+  local exit_code="$1"
+  shift
+
+  # Exit code 42 = restart needed (dependencies installed)
+  # "I checked it very thoroughly, and that quite definitely is the answer."
+  if [[ $exit_code -eq 42 ]]; then
+    # Re-run with FORGE_RESTARTED=1 to prevent infinite loops
+    run_forge "true" "$@"
+    return $?
+  fi
+
+  return "$exit_code"
+}
+
+#
+# Main
+#
+
+main() {
+  # Initialize paths and environment
+  resolve_paths
+  setup_environment
+  validate_installation
+
+  # Run forge and handle restart if needed
+  set +e  # Don't exit on non-zero
+  run_forge "false" "$@"
+  local exit_code=$?
+  set -e
+
+  handle_restart "$exit_code" "$@"
+}
+
+# Execute main with all arguments
+main "$@"

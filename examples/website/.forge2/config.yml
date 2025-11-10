@@ -1,0 +1,18 @@
+# Forge v2 Configuration
+#
+# Declarative configuration - just list modules to load.
+# Framework auto-discovers commands from module exports.
+
+# Modules to load - commands auto-discovered from exports
+modules:
+  - ./website   # Named exports: build, sync, invalidate, publish, info
+  - ./examples  # Default export: hello, deploy, status, version, etc.
+
+# Optional: default command when none specified
+# defaultCommand: help
+
+# Future: Could also load from npm/git
+# modules:
+#   - ./website
+#   - @forge/aws
+#   - github:mycompany/forge-terraform

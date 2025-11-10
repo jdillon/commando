@@ -1,10 +1,14 @@
 # Temporary files
-tmp/*.log
-tmp/*.tmp
+tmp/*
 
 # Local development
 local.bash
 *.local.bash
+config.local.ts
+config.local.yml
+config.local.yaml
+config.local.json
+config.local.js
 
 # OS files
 .DS_Store
@@ -17,6 +21,11 @@ local.bash
 .vscode/
 .idea/
 
-# Testing
-test-output/
-sandbox/
+# Build outputs
+build/
+
+# Dependencies
+node_modules/
+
+# Dev environment
+dev-home/
