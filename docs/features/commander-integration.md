@@ -74,7 +74,7 @@ function buildCommanderCommand(
 
 ### 3. Commander Parses
 
-User runs: `forge2 deploy staging --skip-tests`
+User runs: `forge deploy staging --skip-tests`
 
 Commander:
 - Matches `deploy` command
@@ -124,12 +124,12 @@ export const deploy: ForgeCommand = {
 ### Auto-Generated Help
 
 ```bash
-forge2 deploy --help
+forge deploy --help
 ```
 
 Output:
 ```
-Usage: forge2 deploy [options] <environment>
+Usage: forge deploy [options] <environment>
 
 Deploy website
 
@@ -145,7 +145,7 @@ Options:
 ### Validation
 
 ```bash
-forge2 deploy  # Missing required argument
+forge deploy  # Missing required argument
 # Error: missing required argument 'environment'
 ```
 
@@ -167,13 +167,13 @@ defineCommand: (cmd: Command) => {
 Framework adds global flags automatically:
 
 ```bash
-forge2 --version              # Show version
-forge2 --root /path/to/proj   # Override project root
-forge2 -d                     # Debug mode (verbose logging)
-forge2 -q                     # Quiet mode
-forge2 -s                     # Silent mode
-forge2 --no-color             # Disable colors
-forge2 --log-format json      # JSON logs
+forge --version              # Show version
+forge --root /path/to/proj   # Override project root
+forge -d                     # Debug mode (verbose logging)
+forge -q                     # Quiet mode
+forge -s                     # Silent mode
+forge --no-color             # Disable colors
+forge --log-format json      # JSON logs
 ```
 
 These are configured in `lib/cli.ts` before commands load.
@@ -186,7 +186,7 @@ Groups are Commander subcommands:
 
 ```typescript
 // Framework creates:
-const program = new Command('forge2');
+const program = new Command('forge');
 
 const websiteCmd = new Command('website');
 websiteCmd.addCommand(buildCommand('build', ...));
@@ -195,7 +195,7 @@ websiteCmd.addCommand(buildCommand('deploy', ...));
 program.addCommand(websiteCmd);
 ```
 
-**Result**: `forge2 website build`, `forge2 website deploy`
+**Result**: `forge website build`, `forge website deploy`
 
 ---
 

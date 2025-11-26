@@ -19,7 +19,7 @@ Get forge installable with local modules working. No changes to current module l
 **Success Criteria:**
 - ✅ Can install forge via `install.sh`
 - ✅ `forge --version` works
-- ✅ Local modules (`.forge2/*.ts`) still work
+- ✅ Local modules (`.forge/*.ts`) still work
 
 ---
 
@@ -283,7 +283,7 @@ process.exit(await result.exited);
 **Branch**: Working on `module-system`
 **Tests**: 39 passing, 0 skipping, 0 failing
 **Examples**: `examples/website/` working with local modules
-**Module loading**: Currently loads from `.forge2/*.ts` only
+**Module loading**: Currently loads from `.forge/*.ts` only
 
 ## Open Questions
 
@@ -297,7 +297,7 @@ process.exit(await result.exited);
 **Key files**:
 - `cli.ts` - Current entry point (will become bin target)
 - `lib/core.ts` - Framework implementation
-- `examples/website/.forge2/` - Local module example (DO NOT modify in tests)
+- `examples/website/.forge/` - Local module example (DO NOT modify in tests)
 - `tests/fixtures/` - Use for testing
 
 **Installation approach**:

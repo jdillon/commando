@@ -15,7 +15,7 @@
 bun add listr2
 ```
 
-**Current version in forge2**: `^8.0.0`
+**Current version in forge**: `^8.0.0`
 
 ---
 

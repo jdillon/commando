@@ -67,7 +67,7 @@ This is a **unique Bun feature** - Node.js doesn't support tsconfig paths at run
 
 ### 2. For Forge
 
-**User config** (`.forge2/config.yml`):
+**User config** (`.forge/config.yml`):
 ```yaml
 dependencies:
   - git+ssh://git@github.com/jdillon/forge-standard.git
@@ -171,7 +171,7 @@ async function generateTsconfigPaths(dependencies: GitDependency[]) {
     extends: "./tsconfig.base.json"
   };
 
-  await Bun.write('.forge2/tsconfig.json', JSON.stringify(tsconfig, null, 2));
+  await Bun.write('.forge/tsconfig.json', JSON.stringify(tsconfig, null, 2));
 }
 ```
 
@@ -193,7 +193,7 @@ If user already has `tsconfig.json`:
 
 **Option A: Extend** (recommended)
 ```json
-// .forge2/tsconfig.json (generated)
+// .forge/tsconfig.json (generated)
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
@@ -212,7 +212,7 @@ Read existing tsconfig, merge paths, write back.
 Tests need to use the generated tsconfig:
 ```bash
 # Ensure test environment uses correct tsconfig
-cd .forge2 && bun test
+cd .forge && bun test
 ```
 
 Or configure bunfig.toml for test environment.

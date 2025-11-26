@@ -15,7 +15,7 @@
 bun add chalk
 ```
 
-**Current version in forge2**: `^5.3.0`
+**Current version in forge**: `^5.3.0`
 
 ---
 

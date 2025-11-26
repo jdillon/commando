@@ -270,7 +270,7 @@ export const cache = {
         const key = restArgs[0];
         const value = restArgs[1];
         if (!key || !value) {
-          console.error(chalk.red('Usage: forge2 cache set <key> <value>'));
+          console.error(chalk.red('Usage: forge cache set <key> <value>'));
           exit(1);
         }
         console.log(chalk.green(`Set ${key} = ${value}`));
@@ -281,7 +281,7 @@ export const cache = {
       case 'get': {
         const key = restArgs[0];
         if (!key) {
-          console.error(chalk.red('Usage: forge2 cache get <key>'));
+          console.error(chalk.red('Usage: forge cache get <key>'));
           exit(1);
         }
         console.log('value-for-' + key);

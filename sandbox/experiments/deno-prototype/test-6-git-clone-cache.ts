@@ -55,7 +55,7 @@ try {
 
 console.log('--- Test 6.3: How this would work in forge ---\n');
 
-console.log('User config (.forge2/config.yml):');
+console.log('User config (.forge/config.yml):');
 console.log('  dependencies:');
 console.log('    - git+ssh://git@github.com/jdillon/forge-standard.git');
 console.log('');

@@ -223,7 +223,7 @@ async function addToDenoConfig(pkgName: string, path?: string) {
 
 ### Test with file: URLs first
 ```yaml
-# examples/standard/.forge2/config.yml
+# examples/standard/.forge/config.yml
 dependencies:
   - file:../../packages/forge-standard
 ```

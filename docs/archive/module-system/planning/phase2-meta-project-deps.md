@@ -16,7 +16,7 @@ Enable projects to declare dependencies in `config.yml` that get installed to fo
 ### Terminology
 
 - **"forge home"** = `~/.local/share/forge/` - Where forge is installed and manages shared dependencies
-- **"forge project"** = Any directory with `.forge/` or `.forge2/` - Your actual project with local modules
+- **"forge project"** = Any directory with `.forge/` or `.forge/` - Your actual project with local modules
 
 **Implementation Note**: Use XDG helpers for all paths (e.g., `XDG_DATA_HOME`, `XDG_CONFIG_HOME`, `XDG_CACHE_HOME`). Don't hardcode `~/.local/share`, `~/.config`, etc. Documentation uses literal paths for clarity, but code must use XDG spec.  See `lib/xdg.ts`
 
@@ -45,7 +45,7 @@ Enable projects to declare dependencies in `config.yml` that get installed to fo
 **Example Flow:**
 
 ```yaml
-# .forge2/config.yml
+# .forge/config.yml
 dependencies:
   - "@aws-sdk/client-s3@^3.0.0"
 
@@ -54,7 +54,7 @@ modules:
 ```
 
 ```typescript
-// .forge2/helper.ts
+// .forge/helper.ts
 import { S3Client } from '@aws-sdk/client-s3';
 
 export const deploy = {
@@ -72,7 +72,7 @@ export const deploy = {
 
 ### Module Resolution Priority
 
-1. **Local** - `.forge2/modulename.ts` or path in modules list
+1. **Local** - `.forge/modulename.ts` or path in modules list
 2. **Shared** - `~/.local/share/forge/node_modules/package-name`
 
 **Note**: Project `node_modules/` is intentionally NOT in resolution path. Forge modules should not depend on project build tooling. If a forge command needs to interact with project dependencies, do it explicitly via `bun` or `npm` CLI from the command itself, not the framework. Clear separation of concerns.
@@ -84,7 +84,7 @@ Use `require.resolve()` with custom `paths` option (programmatic, no env vars):
 ```typescript
 function resolveModule(name: string, projectRoot: string): string {
   const paths = [
-    path.join(projectRoot, '.forge2'),
+    path.join(projectRoot, '.forge'),
     path.join(os.homedir(), '.local/share/forge/node_modules'),
   ];
 
@@ -203,7 +203,7 @@ function needsRestart(): void // exits with magic code for wrapper to detect
 
 **Configuration:**
 ```yaml
-# .forge2/config.yml
+# .forge/config.yml
 installMode: auto  # or manual, ask
 ```
 
@@ -270,7 +270,7 @@ Suggestions:
 - Extra in package.json → Can ignore (manually installed?)
 
 **Per-project state** (if needed):
-- Store in existing `.forge2/state.json`
+- Store in existing `.forge/state.json`
 - Track last known config hash to detect changes
 
 **No separate cache file needed** - leverage bun's existing state management.
@@ -315,15 +315,15 @@ Suggestions:
 ```
 tests/fixtures/phase2/
 ├── simple-dependency/
-│   ├── .forge2/
+│   ├── .forge/
 │   │   ├── config.yml
 │   │   └── helper.ts
 ├── git-dependency/
-│   ├── .forge2/
+│   ├── .forge/
 │   │   ├── config.yml
 │   │   └── module.ts
 └── multiple-dependencies/
-    ├── .forge2/
+    ├── .forge/
     │   ├── config.yml
     │   └── deploy.ts
 ```
@@ -517,7 +517,7 @@ Once Phase 2 is complete, hand off to Phase 3 with:
 - Created testing strategy
 - **Terminology decision**: Use "forge home" instead of "meta-project"
   - More intuitive and clear for users
-  - Distinguishes from "forge project" (user's project with `.forge2/`)
+  - Distinguishes from "forge project" (user's project with `.forge/`)
   - Follows established tool patterns (`$HOME`, `$GOROOT`, etc.)
 - **Key clarifications**:
   - Module resolution: Local → Shared only (no project node_modules)

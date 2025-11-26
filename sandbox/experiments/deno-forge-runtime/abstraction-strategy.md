@@ -437,7 +437,7 @@ log.debug({ token: process.env.TOKEN }, 'Auth');  // ❌ Security issue
 
 **Output should show:**
 ```
-[DEBUG] Reading config file path=".forge2/config.yml"
+[DEBUG] Reading config file path=".forge/config.yml"
 [DEBUG] Config loaded modules=2
 [DEBUG] Installing dependency dep="cowsay@^1.6.0"
 [DEBUG] npm package - updating deno.jsonc
@@ -449,8 +449,8 @@ log.debug({ token: process.env.TOKEN }, 'Auth');  // ❌ Security issue
 **With `--log-level=trace`:**
 ```
 [TRACE] Reading env var key="FORGE_HOME" hasValue=true
-[DEBUG] Reading config file path=".forge2/config.yml"
-[TRACE] File read path=".forge2/config.yml" size=142
+[DEBUG] Reading config file path=".forge/config.yml"
+[TRACE] File read path=".forge/config.yml" size=142
 [DEBUG] Config loaded modules=2
 [TRACE] Checking if dependency installed dep="cowsay@^1.6.0"
 [DEBUG] Installing dependency dep="cowsay@^1.6.0"

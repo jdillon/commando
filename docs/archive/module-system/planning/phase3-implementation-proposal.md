@@ -41,7 +41,7 @@ Phase 3 adds support for loading modules from git repositories, building on Phas
 ### What Works (Phase 2)
 
 ```yaml
-# examples/deps/.forge2/config.yml
+# examples/deps/.forge/config.yml
 dependencies:
   - cowsay  # npm package
 
@@ -51,7 +51,7 @@ modules:
 
 **Dependencies** are installed to `~/.local/share/forge/node_modules/` and available via NODE_PATH.
 
-**Modules** are loaded from `.forge2/` directory and registered as command groups.
+**Modules** are loaded from `.forge/` directory and registered as command groups.
 
 ### What's Missing (Phase 3 Goals)
 
@@ -107,7 +107,7 @@ bun add git+ssh://git@github.com/jdillon/forge-standard.git
 ### 2. Module Loading from Git Packages
 
 **Current module loader** (`lib/core.ts`):
-- Resolves local paths (`./website` → `.forge2/website.ts`)
+- Resolves local paths (`./website` → `.forge/website.ts`)
 - Discovers exports (named or default)
 - Registers commands via Commander
 
@@ -569,7 +569,7 @@ cd /tmp/forge-git-test
 forge init
 
 # 2. Add git dependency (private repo via SSH)
-cat > .forge2/config.yml <<EOF
+cat > .forge/config.yml <<EOF
 dependencies:
   - git+ssh://git@github.com/jdillon/forge-standard.git
 
@@ -582,7 +582,7 @@ forge --help
 # Should auto-install git dep via SSH and show forge-standard commands
 
 # 4. Test submodule loading
-cat > .forge2/config.yml <<EOF
+cat > .forge/config.yml <<EOF
 dependencies:
   - git+ssh://git@github.com/jdillon/forge-standard.git
 
@@ -699,7 +699,7 @@ Standard library of reusable Forge command modules.
 
 ## Installation
 
-Add to your `.forge2/config.yml`:
+Add to your `.forge/config.yml`:
 
 ```yaml
 dependencies:

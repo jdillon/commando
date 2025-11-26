@@ -6,7 +6,7 @@ Commands are automatically discovered from module exports - no manual registrati
 
 ## How It Works
 
-1. List modules in `.forge2/config.yml`
+1. List modules in `.forge/config.yml`
 2. Export commands from those modules
 3. Framework discovers and registers them automatically
 
@@ -15,7 +15,7 @@ Commands are automatically discovered from module exports - no manual registrati
 ## Config
 
 ```yaml
-# .forge2/config.yml
+# .forge/config.yml
 modules:
   - ./website
   - ./examples

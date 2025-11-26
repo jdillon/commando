@@ -80,9 +80,9 @@ export async function loadLayeredConfig(
     settings: {},
   };
 
-  const explorer = cosmiconfig("forge2", {
+  const explorer = cosmiconfig("forge", {
     searchPlaces: [
-      // Prefer config.* naming since we're already in .forge2/ or forge2/ directories
+      // Prefer config.* naming since we're already in .forge/ directories
       "config.yml",
       "config.yaml",
       "config.json",
@@ -105,22 +105,22 @@ export async function loadLayeredConfig(
     // User config is optional
   }
 
-  // 3. Project config (.forge2/)
+  // 3. Project config (.forge/)
   let projectConfig: LayeredForgeConfig | null = null;
   try {
-    const result = await explorer.search(join(projectRoot, ".forge2"));
+    const result = await explorer.search(join(projectRoot, ".forge"));
     projectConfig = result?.config || null;
   } catch (err) {
     console.warn(`Warning: Failed to load project config:`, err);
   }
 
-  // 4. Local overrides (.forge2/config.local.*)
+  // 4. Local overrides (.forge/config.local.*)
   let localConfig: LayeredForgeConfig | null = null;
   const localExtensions = ["yml", "yaml", "json", "js", "ts"];
   for (const ext of localExtensions) {
     try {
       const localResult = await explorer.load(
-        join(projectRoot, ".forge2", `config.local.${ext}`),
+        join(projectRoot, ".forge", `config.local.${ext}`),
       );
       if (localResult?.config) {
         localConfig = localResult.config;

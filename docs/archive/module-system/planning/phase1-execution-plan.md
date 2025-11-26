@@ -411,7 +411,7 @@ git push origin module-system
 // TEMPORARY: Phase 1 only - local module loading
 // Will be replaced in Phase 3 when git module loading implemented
 // Keeps existing behavior working until then
-test('loads local modules from .forge2/', async () => {
+test('loads local modules from .forge/', async () => {
   // test code
 });
 ```

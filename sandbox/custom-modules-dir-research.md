@@ -18,7 +18,7 @@ If we could tell Bun to use `forge_modules` instead of `node_modules`, it would 
 ├── tests/
 │   └── fixtures/
 │       └── test-project/
-│           └── .forge2/
+│           └── .forge/
 │               └── test.ts  # imports '@planet57/forge'
 └── node_modules/           # Standard location
     └── @planet57/forge/    # When installed for testing
@@ -38,7 +38,7 @@ If we could tell Bun to use `forge_modules` instead of `node_modules`, it would 
 ├── tests/
 │   └── fixtures/
 │       └── test-project/
-│           └── .forge2/
+│           └── .forge/
 │               └── test.ts  # imports '@planet57/forge'
 └── forge_modules/          # Custom directory name
     └── @planet57/forge/    # Installed package

@@ -15,7 +15,7 @@
 bun add boxen
 ```
 
-**Current version in forge2**: `^7.1.1`
+**Current version in forge**: `^7.1.1`
 
 ---
 
@@ -203,7 +203,7 @@ console.log(boxen(
 ```typescript
 console.log(boxen(
   'Update available: ' + chalk.gray('2.0.0') + ' → ' + chalk.green('2.1.0') + '\n' +
-  'Run ' + chalk.cyan('forge2 update') + ' to update',
+  'Run ' + chalk.cyan('forge update') + ' to update',
   {
     padding: 1,
     margin: 1,

@@ -24,7 +24,7 @@ import { getNodeModulesPath } from './forge-home';
 const log = createLogger('module-symlink');
 
 /**
- * Create a symlink to the .forge2 directory in node_modules/.forge-project/
+ * Create a symlink to the .forge directory in node_modules/.forge-project/
  * Returns the path to import through the symlink
  */
 export async function symlinkForgeDir(forgeDir: string): Promise<string> {
@@ -92,19 +92,19 @@ export async function symlinkForgeDir(forgeDir: string): Promise<string> {
 }
 
 /**
- * Convert a module path within .forge2 to go through the symlink
+ * Convert a module path within .forge to go through the symlink
  *
- * Input: /path/to/user/project/.forge2/commands.ts
+ * Input: /path/to/user/project/.forge/commands.ts
  * Output: /forge-home/node_modules/.forge-project/abc123/commands.ts
  *
- * If the path is NOT in .forge2, returns it unchanged.
+ * If the path is NOT in .forge, returns it unchanged.
  *
  * Note: The symlink should already exist (created during project setup in cli.ts)
  */
 export async function rewriteModulePath(fullPath: string, forgeDir: string): Promise<string> {
   log.debug({ fullPath, forgeDir }, 'Checking if path needs rewrite');
 
-  // Only rewrite paths that are actually in the .forge2 directory
+  // Only rewrite paths that are actually in the .forge directory
   if (!fullPath.startsWith(forgeDir)) {
     log.debug({
       fullPath,
@@ -126,7 +126,7 @@ export async function rewriteModulePath(fullPath: string, forgeDir: string): Pro
   const nodeModules = getNodeModulesPath();
   const symlinkPath = join(nodeModules, '.forge-project', bucket, hashSuffix);
 
-  // Replace the .forge2 directory with the symlink path
+  // Replace the .forge directory with the symlink path
   const relativePath = fullPath.substring(forgeDir.length);
   const rewrittenPath = join(symlinkPath, relativePath);
 

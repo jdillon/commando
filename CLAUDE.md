@@ -49,7 +49,7 @@ See `bd onboard` for more information.
 - Bootstrap flow → `lib/cli.ts`
 - Module loading → `lib/core.ts`
 - Command patterns → `docs/command-patterns.md`
-- Examples → `examples/website/.forge2/`
+- Examples → `examples/website/.forge/`
 
 **Testing**:
 

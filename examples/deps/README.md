@@ -5,7 +5,7 @@ This example demonstrates Phase 2 dependency management - installing npm package
 ## What This Does
 
 - Declares `cowsay` as a dependency in `config.yml`
-- Auto-installs to `~/.local/share/forge2/node_modules/` on first run
+- Auto-installs to `~/.local/share/forge/node_modules/` on first run
 - Imports and uses `cowsay` in the `moo` module
 
 ## Usage
@@ -47,7 +47,7 @@ forge moo think "Dependencies are seamless..."
 
 ## How It Works
 
-1. **Config** (`.forge2/config.yml`):
+1. **Config** (`.forge/config.yml`):
    ```yaml
    dependencies:
      - cowsay
@@ -56,7 +56,7 @@ forge moo think "Dependencies are seamless..."
      - ./moo
    ```
 
-2. **Module** (`.forge2/moo.ts`):
+2. **Module** (`.forge/moo.ts`):
    ```typescript
    import cowsay from 'cowsay';
 
@@ -71,7 +71,7 @@ forge moo think "Dependencies are seamless..."
 
 3. **Magic**:
    - Forge detects missing dependency
-   - Runs `bun add cowsay` in `~/.local/share/forge2/`
+   - Runs `bun add cowsay` in `~/.local/share/forge/`
    - Exits with code 42
    - Wrapper restarts with `--forge-restarted` flag
    - Module imports work, command executes
@@ -80,8 +80,8 @@ forge moo think "Dependencies are seamless..."
 
 ```bash
 # Check what's installed in forge home
-ls ~/.local/share/forge2/node_modules/
+ls ~/.local/share/forge/node_modules/
 
 # Check package.json
-cat ~/.local/share/forge2/package.json
+cat ~/.local/share/forge/package.json
 ```

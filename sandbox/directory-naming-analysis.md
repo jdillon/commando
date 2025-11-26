@@ -30,7 +30,7 @@ We work with four key directories:
    - Type: Optional (may not be in a project)
 
 4. **`forgeDir`** - Project's Forge directory
-   - Current: `/Users/jason/mysite/.forge2/`
+   - Current: `/Users/jason/mysite/.forge/`
    - Future: `/Users/jason/mysite/.forge/`
    - Contains: Project config, project modules, project state
    - Type: Optional (may not be in a project)

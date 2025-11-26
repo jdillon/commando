@@ -177,7 +177,7 @@ Pick a small, representative module from Forge:
 
 **Candidates:**
 - `lib/logging/` - Core functionality, no shell
-- `examples/website/.forge2/deploy.ts` - Uses shell, good test case
+- `examples/website/.forge/deploy.ts` - Uses shell, good test case
 
 **Port it to Deno and measure:**
 - Migration effort (time)

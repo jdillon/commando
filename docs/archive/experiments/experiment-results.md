@@ -22,7 +22,7 @@
 
 **Command:**
 ```bash
-NODE_PATH="$FORGE_HOME/node_modules" bun run .forge2/moo2.ts
+NODE_PATH="$FORGE_HOME/node_modules" bun run .forge/moo2.ts
 ```
 
 **Result:** ✅ **SUCCESS**
@@ -43,7 +43,7 @@ NODE_PATH="$FORGE_HOME/node_modules" bun run .forge2/moo2.ts
 
 **Command:**
 ```bash
-NODE_PATH="./node_modules:$FORGE_HOME/node_modules" bun run .forge2/moo2.ts
+NODE_PATH="./node_modules:$FORGE_HOME/node_modules" bun run .forge/moo2.ts
 ```
 
 **Result:** ✅ **SUCCESS**
@@ -59,7 +59,7 @@ NODE_PATH="./node_modules:$FORGE_HOME/node_modules" bun run .forge2/moo2.ts
 
 **Command:**
 ```bash
-BUN_INSTALL_GLOBAL_DIR="$FORGE_HOME" bun run .forge2/moo2.ts
+BUN_INSTALL_GLOBAL_DIR="$FORGE_HOME" bun run .forge/moo2.ts
 ```
 
 **Result:** ❌ **FAILED**
@@ -97,7 +97,7 @@ BUN_INSTALL_GLOBAL_DIR="$FORGE_HOME" bun run .forge2/moo2.ts
 - More visible configuration
 
 **Trade-offs:**
-- Requires creating tsconfig.json in .forge2/
+- Requires creating tsconfig.json in .forge/
 - Absolute paths needed (can't use $HOME)
 - Must be maintained per project
 
@@ -143,14 +143,14 @@ With NODE_PATH:
 
 **Command:**
 ```bash
-ln -sf "$FORGE_HOME/node_modules" .forge2/node_modules
-bun run .forge2/moo2.ts
+ln -sf "$FORGE_HOME/node_modules" .forge/node_modules
+bun run .forge/moo2.ts
 ```
 
 **Result:** ✅ **SUCCESS** (as expected)
 
 **Trade-offs:**
-- Creates .forge2/node_modules symlink
+- Creates .forge/node_modules symlink
 - Needs gitignore entry
 - More filesystem operations
 - Standard approach, but not needed given alternatives
@@ -171,8 +171,8 @@ export FORGE_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/forge"
 export NODE_PATH="$FORGE_HOME/node_modules"
 
 # If project has local node_modules, prepend it
-if [[ -d ".forge2/node_modules" ]]; then
-  export NODE_PATH=".forge2/node_modules:$NODE_PATH"
+if [[ -d ".forge/node_modules" ]]; then
+  export NODE_PATH=".forge/node_modules:$NODE_PATH"
 fi
 
 exec bun run "$@"
@@ -200,7 +200,7 @@ If we prefer explicit configuration over environment variables:
 
 ### Implementation
 
-**Auto-generate `.forge2/tsconfig.json`:**
+**Auto-generate `.forge/tsconfig.json`:**
 
 ```json
 {
@@ -233,7 +233,7 @@ If we prefer explicit configuration over environment variables:
 1. **More complex** - Requires generating/maintaining config file
 2. **Absolute paths** - Must use full path to forge home
 3. **Per-project** - Needs to be created for each project
-4. **Duplication** - Same config in every .forge2/
+4. **Duplication** - Same config in every .forge/
 
 ---
 

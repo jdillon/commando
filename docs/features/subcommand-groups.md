@@ -8,13 +8,13 @@ Commands are organized under groups for clear namespacing.
 
 ```bash
 # Grouped commands
-forge2 website build
-forge2 website deploy
-forge2 examples hello
+forge website build
+forge website deploy
+forge examples hello
 
 # Top-level commands (no group)
-forge2 version
-forge2 help
+forge version
+forge help
 ```
 
 ---
@@ -31,7 +31,7 @@ forge2 help
 
 ### Config
 ```yaml
-# .forge2/config.yml
+# .forge/config.yml
 modules:
   - ./website
   - ./examples
@@ -57,11 +57,11 @@ export const version = { ... };
 
 ### Result
 ```bash
-forge2 website build      # From website.ts
-forge2 website deploy     # From website.ts
-forge2 examples hello     # From examples.ts
-forge2 examples deploy    # From examples.ts (separate namespace!)
-forge2 version            # From utils.ts (top-level)
+forge website build      # From website.ts
+forge website deploy     # From website.ts
+forge examples hello     # From examples.ts
+forge examples deploy    # From examples.ts (separate namespace!)
+forge version            # From utils.ts (top-level)
 ```
 
 ---
@@ -71,13 +71,13 @@ forge2 version            # From utils.ts (top-level)
 Each group has its own help:
 
 ```bash
-forge2 website --help
+forge website --help
 # Shows:
 #   Commands:
 #     build    Build website
 #     deploy   Deploy website
 
-forge2 examples --help
+forge examples --help
 # Shows:
 #   Commands:
 #     hello    Say hello
@@ -92,10 +92,10 @@ Multiple modules can have same command name:
 
 ```typescript
 // website.ts
-export const deploy = { ... };  // forge2 website deploy
+export const deploy = { ... };  // forge website deploy
 
 // examples.ts
-export const deploy = { ... };  // forge2 examples deploy
+export const deploy = { ... };  // forge examples deploy
 ```
 
 No conflicts - they're in different namespaces.
@@ -108,7 +108,7 @@ Under the hood, each group is a Commander subcommand:
 
 ```typescript
 // Framework creates this structure:
-const program = new Command('forge2');
+const program = new Command('forge');
 
 const websiteCmd = new Command('website')
   .description('Website commands');
@@ -135,7 +135,7 @@ export const __module__ = {
 export const build = { ... };
 ```
 
-**Result**: `forge2 website build` (not `forge2 website-deployment build`)
+**Result**: `forge website build` (not `forge website-deployment build`)
 
 ---
 
@@ -152,8 +152,8 @@ export const config = { ... };
 ```
 
 **Result**:
-- `forge2 version` (not `forge2 utils version`)
-- `forge2 config` (not `forge2 utils config`)
+- `forge version` (not `forge utils version`)
+- `forge config` (not `forge utils config`)
 
 ---
 
@@ -161,7 +161,7 @@ export const config = { ... };
 
 ✅ **Clear organization** - Related commands grouped together
 ✅ **Namespace separation** - Avoid name conflicts
-✅ **Discoverable** - `forge2 --help` shows groups, `forge2 <group> --help` shows commands
+✅ **Discoverable** - `forge --help` shows groups, `forge <group> --help` shows commands
 ✅ **Automatic** - Group name from filename, override if needed
 ✅ **Optional** - Can still have top-level commands
 

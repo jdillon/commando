@@ -53,7 +53,7 @@ This approach:
 
 ### User Configuration
 
-`.forge2/config.yml`:
+`.forge/config.yml`:
 ```yaml
 dependencies:
   # Git repos - will be cloned to cache
@@ -255,8 +255,8 @@ If different projects need different versions:
 
 **Option A: Per-project cache** (like node_modules)
 ```
-project-a/.forge2/repos/
-project-b/.forge2/repos/
+project-a/.forge/repos/
+project-b/.forge/repos/
 ```
 
 **Option B: Global cache with version dirs** (like Cargo)

@@ -21,7 +21,7 @@ This document details the implementation approach for Phase 2, focusing on:
 
 ## Key Decisions
 
-- **Forge home location**: `getForgePaths().data` → `~/.local/share/forge2/`
+- **Forge home location**: `getForgePaths().data` → `~/.local/share/forge/`
 - **Magic exit code**: `42` (signals wrapper to restart)
 - **Dependencies go in**: `${forgePaths.data}/node_modules/`
 - **Package management**: `${forgePaths.data}/package.json` and `bun.lockb`
@@ -325,7 +325,7 @@ import { getForgeHomePath } from './forge-home';
  * Resolve module path with priority: local → shared
  *
  * @param modulePath - Module name or path from config (e.g., "./website", "@aws-sdk/client-s3")
- * @param forgeDir - Project's .forge2/ directory
+ * @param forgeDir - Project's .forge/ directory
  * @returns Absolute path to module file
  */
 export async function resolveModule(
@@ -628,14 +628,14 @@ describe('dependency installation', () => {
 ```
 tests/fixtures/phase2/
 ├── simple-npm/
-│   ├── .forge2/
+│   ├── .forge/
 │   │   ├── config.yml      # dependencies: ["lodash@^4.0.0"]
 │   │   └── helper.ts       # import _ from 'lodash'
 ├── git-dep/
-│   └── .forge2/
+│   └── .forge/
 │       └── config.yml      # dependencies: ["github:lodash/lodash"]
 └── auto-mode/
-    └── .forge2/
+    └── .forge/
         └── config.yml      # installMode: auto
 ```
 
@@ -660,8 +660,8 @@ tests/fixtures/phase2/
 **Verification**:
 ```bash
 # Create test project
-mkdir -p /tmp/test-forge/.forge2
-cat > /tmp/test-forge/.forge2/config.yml <<EOF
+mkdir -p /tmp/test-forge/.forge
+cat > /tmp/test-forge/.forge/config.yml <<EOF
 modules: []
 dependencies:
   - "lodash@^4.0.0"
@@ -672,7 +672,7 @@ cd /tmp/test-forge
 forge --help
 
 # Verify
-ls ~/.local/share/forge2/node_modules/lodash
+ls ~/.local/share/forge/node_modules/lodash
 ```
 
 ### Phase 2.2: Module Resolution
@@ -687,7 +687,7 @@ ls ~/.local/share/forge2/node_modules/lodash
 
 **Verification**:
 ```typescript
-// /tmp/test-forge/.forge2/helper.ts
+// /tmp/test-forge/.forge/helper.ts
 import _ from 'lodash';
 
 export const test = {
@@ -719,7 +719,7 @@ forge helper test  # Should print lodash version
 **Verification**:
 ```bash
 # Clean slate
-rm -rf ~/.local/share/forge2
+rm -rf ~/.local/share/forge
 
 # Run with dependencies in config
 cd /tmp/test-forge
@@ -853,7 +853,7 @@ export const moduleCommands = {
 Phase 2 is complete when:
 
 - [ ] Can declare `dependencies:` in config.yml
-- [ ] Dependencies install to `~/.local/share/forge2/node_modules/`
+- [ ] Dependencies install to `~/.local/share/forge/node_modules/`
 - [ ] Local modules can import from installed dependencies
 - [ ] Auto-install works with seamless restart (exit code 42)
 - [ ] Restart guard prevents infinite loops

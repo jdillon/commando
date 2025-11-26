@@ -223,8 +223,8 @@ project/forge/
 5. ✅ Real use case from cirqil.com website
 
 **Approach**:
-- Create `forge2` command (parallel to current forge)
-- Use `.forge2/` directories (avoid conflicts)
+- Create `forge` command (parallel to current forge)
+- Use `.forge/` directories (avoid conflicts)
 - Small enough to rule in/out quickly
 - Based on real cirqil/website use cases
 
@@ -305,16 +305,16 @@ project/forge/
 
 **Structure**:
 ```
-forge2/                    # Prototype repo
+forge/                    # Prototype repo
 ├── README.md              # Installation instructions
 ├── bin/
-│   └── forge2             # Main entry point (TypeScript)
+│   └── forge             # Main entry point (TypeScript)
 ├── lib/
 │   ├── core.ts            # Framework core
 │   └── aws.ts             # Example module
 ├── examples/
 │   └── website/           # Based on cirqil.com
-│       ├── forge2/
+│       ├── forge/
 │       │   ├── config.ts
 │       │   └── commands.ts
 │       └── README.md
@@ -323,11 +323,11 @@ forge2/                    # Prototype repo
 
 **Install test**:
 ```bash
-git clone https://github.com/jdillon/forge2 ~/.forge2
-export PATH="$HOME/.forge2/bin:$PATH"
+git clone https://github.com/jdillon/forge ~/.forge
+export PATH="$HOME/.forge/bin:$PATH"
 
 cd ~/project
-forge2 deploy staging  # Works from anywhere!
+forge deploy staging  # Works from anywhere!
 ```
 
 ---
@@ -346,7 +346,7 @@ forge2 deploy staging  # Works from anywhere!
 - Simple Bun prototype to evaluate feel
 - Git-based install without sudo/fuss
 - Real use case (cirqil.com website)
-- Parallel install (forge2) to test safely
+- Parallel install (forge) to test safely
 
 **Next action**: Build minimal Bun prototype showing:
 1. Git clone install

@@ -6,7 +6,7 @@ The best way to learn: see working examples that are tested and stay current.
 
 ## Working Examples
 
-**[examples/website/.forge2/](../examples/website/.forge2/)** - Full working project
+**[examples/website/.forge/](../examples/website/.forge/)** - Full working project
 
 Files:
 - `website.ts` - Real commands with options, spinners, task lists
@@ -88,14 +88,14 @@ export const build: ForgeCommand = {
 };
 ```
 
-See [examples/website/.forge2/website.ts](../examples/website/.forge2/website.ts) for complete real-world examples.
+See [examples/website/.forge/website.ts](../examples/website/.forge/website.ts) for complete real-world examples.
 
 ---
 
 ## Module Configuration
 
 ```yaml
-# .forge2/config.yml
+# .forge/config.yml
 modules:
   - ./website
   - ./examples

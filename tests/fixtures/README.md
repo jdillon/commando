@@ -7,7 +7,7 @@ This directory contains fixtures (test data and environments) used by the test s
 ```
 fixtures/
   test-project/           # Minimal Forge project for testing
-    .forge2/
+    .forge/
       config.yml          # Test project configuration
       test-commands.ts    # Commands designed for testing
 ```
@@ -29,7 +29,7 @@ import { join } from 'path';
 const fixtureRoot = join(process.cwd(), 'tests/fixtures/test-project');
 
 const result = spawnSync([
-  './bin/forge2',
+  './bin/forge',
   '--root', fixtureRoot,
   'test', 'context'
 ]);

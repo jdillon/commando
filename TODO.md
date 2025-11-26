@@ -20,7 +20,7 @@
 ### ✅ Configuration Management - COMPLETE
 Now using **cosmiconfig** with YAML/JSON/JS support:
 - Layered config: user → project → local (gitignored)
-- Multiple format support (.yml, .json, .js, .forge2rc)
+- Multiple format support (.yml, .json, .js, .forgerc)
 - Deep merge algorithm for settings
 
 **TODO**: Add optional runtime validation with Zod
@@ -63,7 +63,7 @@ Design how modules are published and consumed:
 ### Top-Level Commands
 - Implement `group: false` in module metadata
 - Allow commands outside of groups
-- Example: `forge2 version` (not `forge2 utils version`)
+- Example: `forge version` (not `forge utils version`)
 
 ---
 

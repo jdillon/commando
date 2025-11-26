@@ -416,7 +416,7 @@ User-triggered via `forge cache clean`.
 
 ### Automatic Cleanup (Future)
 ```yaml
-# .forge2/config.yml
+# .forge/config.yml
 cache:
   maxSize: 1GB          # Max total cache size
   maxAge: 90d           # Remove repos not used in 90 days

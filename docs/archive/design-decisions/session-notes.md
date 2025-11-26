@@ -15,15 +15,15 @@
 
 ### ✅ XDG Base Directory Compliance
 All paths follow modern Unix standards:
-- `~/.local/bin/forge2` - Executable
-- `~/.local/share/forge2/` - Application data, modules
-- `~/.config/forge2/` - User config (optional)
-- `~/.cache/forge2/` - Cache (safe to delete)
-- `~/.local/state/forge2/` - Logs, history
+- `~/.local/bin/forge` - Executable
+- `~/.local/share/forge/` - Application data, modules
+- `~/.config/forge/` - User config (optional)
+- `~/.cache/forge/` - Cache (safe to delete)
+- `~/.local/state/forge/` - Logs, history
 
 ### ✅ Commander.js Integration
 - Rich CLI framework with subcommands
-- Auto-generated help (`forge2 --help`)
+- Auto-generated help (`forge --help`)
 - Global flags: `--version`, `--root`, `--verbose`
 - Colored error messages (chalk)
 - Update notifications (update-notifier)
@@ -88,7 +88,7 @@ All guides are detailed, with examples and trade-off analysis.
 - npm ecosystem available
 
 **Trade-off accepted:**
-- Must install Bun (can auto-install to `~/.local/share/forge2/runtime`)
+- Must install Bun (can auto-install to `~/.local/share/forge/runtime`)
 - ~3x more boilerplate than Bash
 - TypeScript learning curve
 
@@ -106,16 +106,16 @@ Follow modern Unix standards like mise, uv, cargo.
 
 Use GitHub/GitLab with git tags:
 ```bash
-forge2 module add github:user/module#v1.2.3
+forge module add github:user/module#v1.2.3
 ```
 
 Can add Verdaccio later if needed for discovery.
 
-### 5. Naming: Use `forge2` Everywhere
+### 5. Naming: Use `forge` Everywhere
 For prototype clarity:
-- Executable: `forge2`
-- Paths: `~/.local/share/forge2/`
-- Project dirs: `.forge2/`
+- Executable: `forge`
+- Paths: `~/.local/share/forge/`
+- Project dirs: `.forge/`
 
 Will rename to `forge` for stable release.
 
@@ -143,28 +143,28 @@ Make the CLI **actually enjoyable** to use:
 ```bash
 # Clone prototype
 cd ~/.local/share
-git clone <repo> forge2
-cd forge2
+git clone <repo> forge
+cd forge
 git checkout module-system
 
 # Install dependencies
 bun install
 
 # Symlink executable
-ln -s ~/.local/share/forge2/forge2 ~/.local/bin/forge2
+ln -s ~/.local/share/forge/forge ~/.local/bin/forge
 
 # Try it!
-cd ~/.local/share/forge2/examples/website
-forge2 --help
-forge2 --version
-forge2 help
-forge2 build
-forge2 info
-forge2 sync --dry-run
+cd ~/.local/share/forge/examples/website
+forge --help
+forge --version
+forge help
+forge build
+forge info
+forge sync --dry-run
 
 # CWD-aware (works from subdirs)
 cd dist
-forge2 info
+forge info
 ```
 
 **Everything works!** ✓
@@ -183,7 +183,7 @@ Add to existing commands:
 - Progress bars (cli-progress)
 - Task lists (listr2)
 
-**File to edit:** `examples/website/.forge2/config.ts`
+**File to edit:** `examples/website/.forge/config.ts`
 
 **Example:**
 ```typescript
@@ -216,28 +216,28 @@ export default {
 };
 ```
 
-### 2. Implement forge2 module Commands
+### 2. Implement forge module Commands
 **Status**: Strategy documented, ready to code
 
 Commands to add:
 ```bash
-forge2 module add github:user/module
-forge2 module remove <name>
-forge2 module list
-forge2 module update [name]
-forge2 module outdated
+forge module add github:user/module
+forge module remove <name>
+forge module list
+forge module update [name]
+forge module outdated
 ```
 
 **Files to create:**
 - `lib/module-manager.ts` - Module installation logic
-- Add module commands to `forge2` entry point
+- Add module commands to `forge` entry point
 
 ### 3. Create Example Module
 **Status**: Strategy documented
 
 Create `forge-module-aws` as example:
 - Hosted on GitHub
-- Install via `forge2 module add github:user/forge-module-aws`
+- Install via `forge module add github:user/forge-module-aws`
 - Demonstrates module pattern
 
 ### 4. Helper Utilities
@@ -256,7 +256,7 @@ Maybe create `lib/helpers.ts` with convenience wrappers.
 
 Add completion generation:
 ```bash
-forge2 completion >> ~/.bashrc
+forge completion >> ~/.bashrc
 ```
 
 ### 6. Documentation Polish
@@ -313,7 +313,7 @@ program.action(async (options, command) => {
 });
 ```
 
-This lets project `.forge2/config.ts` define commands dynamically.
+This lets project `.forge/config.ts` define commands dynamically.
 
 ### Import Aliases
 Using `@forge/core` instead of relative imports via `tsconfig.json`:
@@ -405,7 +405,7 @@ Auto checks once per day, shows box if update available.
 - File naming: `foo-bar.md` over `FOO_BAR.md` (except README/CLAUDE.md)
 - Commander: "ticks all the boxes, let's see how well it works"
 - Private modules: Don't want to publish to npmjs
-- Keep prototype as `forge2` for clarity
+- Keep prototype as `forge` for clarity
 
 ---
 
@@ -416,12 +416,12 @@ Auto checks once per day, shows box if update available.
 **Structure:**
 ```
 forge-bash/
-├── forge2                    # Entry point (Commander)
+├── forge                    # Entry point (Commander)
 ├── lib/
 │   └── core.ts              # Framework
 ├── examples/
 │   └── website/             # Working example
-│       └── .forge2/
+│       └── .forge/
 │           └── config.ts
 ├── docs/                    # Comprehensive docs
 │   ├── session-notes.md     # This file
@@ -459,7 +459,7 @@ forge-bash/
    - boxen success message
    - See how it looks/feels
 
-2. **Implement `forge2 module add`** (~30 min)
+2. **Implement `forge module add`** (~30 min)
    - Wrapper around `bun add`
    - Test with real git URL
 
@@ -488,13 +488,13 @@ forge-bash/
 ## Key Files to Remember
 
 ### Entry Point
-- `forge2` - Main CLI with Commander
+- `forge` - Main CLI with Commander
 
 ### Core Framework
 - `lib/core.ts` - Project discovery, config loading, command dispatch
 
 ### Example Project
-- `examples/website/.forge2/config.ts` - Website deployment commands
+- `examples/website/.forge/config.ts` - Website deployment commands
 
 ### Documentation
 - `docs/session-notes.md` - This file (session context)
@@ -512,20 +512,20 @@ forge-bash/
 
 ```bash
 # Basic usage
-forge2 --help
-forge2 --version
+forge --help
+forge --version
 cd examples/website
-forge2 help
-forge2 build
-forge2 info
+forge help
+forge build
+forge info
 
 # Flags
-forge2 --verbose info
-forge2 --root=/path/to/project info
+forge --verbose info
+forge --root=/path/to/project info
 
 # CWD-aware
 cd examples/website/dist
-forge2 info  # Works from subdirectory!
+forge info  # Works from subdirectory!
 ```
 
 ---

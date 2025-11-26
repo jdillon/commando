@@ -108,7 +108,7 @@ export interface ForgeConfig {
   colorMode: ColorMode;
   isRestarted: boolean;
 
-  // From .forge2/config.yml (if project present)
+  // From .forge/config.yml (if project present)
   modules?: string[];
   dependencies?: string[];
   settings?: Record<string, Record<string, any>>;
@@ -124,6 +124,6 @@ export interface ForgeConfig {
  */
 export interface ProjectConfig {
   projectRoot: FilePath;  // Fully resolved project root directory
-  forgeDir: FilePath;     // Fully resolved .forge2/ directory
+  forgeDir: FilePath;     // Fully resolved .forge/ directory
   userDir: FilePath;      // Fully resolved user's working directory
 }

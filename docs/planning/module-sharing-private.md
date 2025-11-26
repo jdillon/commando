@@ -74,7 +74,7 @@ git push origin main --tags
 
 **4. Install from git:**
 ```bash
-cd ~/.local/share/forge2
+cd ~/.local/share/forge
 bun add github:mycompany/forge-module-aws#v1.2.3
 ```
 
@@ -89,16 +89,16 @@ bun add github:mycompany/forge-module-aws#v1.2.3
 
 ---
 
-## forge2 module add Wrapper
+## forge module add Wrapper
 
-Make it even simpler with `forge2 module add`:
+Make it even simpler with `forge module add`:
 
 ```bash
 # User-friendly command
-forge2 module add github:mycompany/forge-module-aws
+forge module add github:mycompany/forge-module-aws
 
 # Behind the scenes
-cd ~/.local/share/forge2
+cd ~/.local/share/forge
 bun add github:mycompany/forge-module-aws
 ```
 
@@ -286,7 +286,7 @@ Similar to GitHub Packages, but on GitLab.
 ### For Official/Shared Modules:
 **GitHub/GitLab with git tags**
 ```bash
-forge2 module add github:mycompany/forge-module-aws#v1.2.3
+forge module add github:mycompany/forge-module-aws#v1.2.3
 ```
 
 **Pros:**
@@ -297,7 +297,7 @@ forge2 module add github:mycompany/forge-module-aws#v1.2.3
 ### For Active Development:
 **Local workspaces during development**
 ```bash
-# In ~/.local/share/forge2/package.json
+# In ~/.local/share/forge/package.json
 {
   "workspaces": ["modules/aws"]
 }
@@ -315,30 +315,30 @@ bun link @mycompany/forge-module-aws
 
 ---
 
-## forge2 module Command Design
+## forge module Command Design
 
 ### Add Module
 
 ```bash
 # From git
-forge2 module add github:mycompany/forge-module-aws
+forge module add github:mycompany/forge-module-aws
 
 # Specific version
-forge2 module add github:mycompany/forge-module-aws@v1.2.3
+forge module add github:mycompany/forge-module-aws@v1.2.3
 
 # From URL
-forge2 module add https://github.com/mycompany/forge-module-aws.git
+forge module add https://github.com/mycompany/forge-module-aws.git
 
 # Local development
-forge2 module add ./path/to/local/module
+forge module add ./path/to/local/module
 
-# Behind the scenes: cd ~/.local/share/forge2 && bun add <spec>
+# Behind the scenes: cd ~/.local/share/forge && bun add <spec>
 ```
 
 ### List Modules
 
 ```bash
-forge2 module list
+forge module list
 
 # Output:
 # Installed modules:
@@ -350,7 +350,7 @@ forge2 module list
 
 ```bash
 # Check for updates
-forge2 module outdated
+forge module outdated
 
 # Output:
 # Updates available:
@@ -358,20 +358,20 @@ forge2 module outdated
 #   k8s: v2.0.0 (latest)
 
 # Update specific
-forge2 module update aws
+forge module update aws
 
 # Update all
-forge2 module update
+forge module update
 ```
 
 ### Search (Future)
 
 ```bash
 # Search GitHub org
-forge2 module search aws --org mycompany
+forge module search aws --org mycompany
 
 # List from GitHub org
-forge2 module browse --org mycompany
+forge module browse --org mycompany
 ```
 
 ---
@@ -388,18 +388,18 @@ Available forge modules for our team:
 ## Infrastructure
 
 - **forge-module-aws** - AWS deployment helpers
-  - Install: `forge2 module add github:mycompany/forge-module-aws`
+  - Install: `forge module add github:mycompany/forge-module-aws`
   - Latest: v1.2.3
   - Docs: https://github.com/mycompany/forge-module-aws
 
 - **forge-module-k8s** - Kubernetes deployment
-  - Install: `forge2 module add github:mycompany/forge-module-k8s`
+  - Install: `forge module add github:mycompany/forge-module-k8s`
   - Latest: v2.0.0
 
 ## CI/CD
 
 - **forge-module-github-actions** - GitHub Actions helpers
-  - Install: `forge2 module add github:mycompany/forge-module-github-actions`
+  - Install: `forge module add github:mycompany/forge-module-github-actions`
 
 ...
 ```
@@ -448,17 +448,17 @@ git push origin main --tags
 
 ```bash
 # Install forge module globally
-cd ~/.local/share/forge2
+cd ~/.local/share/forge
 bun add github:mycompany/forge-module-aws#v1.0.0
 
 # Or use wrapper
-forge2 module add github:mycompany/forge-module-aws
+forge module add github:mycompany/forge-module-aws
 ```
 
 ### 3. Use in Project
 
 ```typescript
-// project/.forge2/config.ts
+// project/.forge/config.ts
 import type { ForgeConfig } from '@forge/core';
 
 export default {
@@ -484,7 +484,7 @@ git tag v1.1.0
 git push origin --tags
 
 # Update in forge
-forge2 module update @mycompany/forge-module-aws
+forge module update @mycompany/forge-module-aws
 ```
 
 ---
@@ -504,7 +504,7 @@ forge2 module update @mycompany/forge-module-aws
 
 **Start with git URLs:**
 ```bash
-forge2 module add github:mycompany/forge-module-aws#v1.2.3
+forge module add github:mycompany/forge-module-aws#v1.2.3
 ```
 
 **Pros:**
@@ -526,7 +526,7 @@ forge2 module add github:mycompany/forge-module-aws#v1.2.3
 ### Core Changes Needed
 
 1. **Module loading** - Support loading from `node_modules/@mycompany/`
-2. **forge2 module add** - Wrapper around `bun add`
+2. **forge module add** - Wrapper around `bun add`
 3. **Module discovery** - Search git repos or registry
 4. **Version management** - Check git tags or registry
 
@@ -540,7 +540,7 @@ forge2 module add github:mycompany/forge-module-aws#v1.2.3
 
 ## Next Session Continuation Points
 
-1. **Implement `forge2 module` commands**
+1. **Implement `forge module` commands**
    - `add`, `remove`, `list`, `update`, `outdated`
 
 2. **Test with real module**

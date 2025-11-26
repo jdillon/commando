@@ -241,7 +241,7 @@ bun test tests/installation.test.ts
 
 **Goal:** Extend plugin to handle user module dependencies
 
-**Problem:** User modules (e.g., `examples/standard/.forge2/config.yml` loading `@jdillon/forge-standard`) need to resolve packages from FORGE_NODE_MODULES.
+**Problem:** User modules (e.g., `examples/standard/.forge/config.yml` loading `@jdillon/forge-standard`) need to resolve packages from FORGE_NODE_MODULES.
 
 **Step 4.1: Add package module rewriting**
 

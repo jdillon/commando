@@ -59,7 +59,7 @@ or
 **Recommendation:** Drop version from title (just "Forge")
 
 **Other changes in README:**
-- Line 13: `../../forge2 help` → keep as-is? (this is the binary name)
+- Line 13: `../../forge help` → keep as-is? (this is the binary name)
 - References to "v2 prototype" → "production release" or just remove
 
 ---
@@ -97,7 +97,7 @@ or
 - `docs/reference/dependencies.md`
 - `docs/reference/package-management.md`
 - `docs/planning/shell-completion.md`
-- `examples/website/.forge2/website.ts`
+- `examples/website/.forge/website.ts`
 - `examples/basic/README.md`
 - `tests/README.md`
 - `tests/fixtures/README.md`
@@ -106,20 +106,20 @@ or
 
 ---
 
-### 7. .forge2 Directory Naming
+### 7. .forge Directory Naming
 
-**Current:** Project directories use `.forge2/`
+**Current:** Project directories use `.forge/`
 
 **Discussion needed:** Should this become `.forge/` as part of this versioning cleanup?
 
 **From `docs/reference/xdg-paths.md:122`:**
-> # In final version, will be .forge/ instead of .forge2/
+> # In final version, will be .forge/ instead of .forge/
 
 **Options:**
-1. **Keep `.forge2/`** - Not directly version-related, more of a prototype marker
+1. **Keep `.forge/`** - Not directly version-related, more of a prototype marker
 2. **Change to `.forge/`** - Clean up for 1.0.0 release
 
-**Recommendation:** Keep `.forge2/` for now (separate from version update). See issue #30 which already tracks this + FORGE_HOME collision guard.
+**Recommendation:** Keep `.forge/` for now (separate from version update). See issue #30 which already tracks this + FORGE_HOME collision guard.
 
 ---
 
@@ -189,22 +189,22 @@ grep -r "v2" lib/ --color=always
 
 ## Questions
 
-1. **README binary name:** Keep `forge2` command examples or change to `forge`?
-   - Current: `../../forge2 help`
+1. **README binary name:** Keep `forge` command examples or change to `forge`?
+   - Current: `../../forge help`
    - Option: `../../forge help` (if binary renamed)
 
 2. **CHANGELOG.md:** Add entry for version bump?
    - Document that this is the 1.0.0 release
    - Note bash version was 0.1
 
-3. **.forge2 directory:** Handle now or defer to issue #30?
+3. **.forge directory:** Handle now or defer to issue #30?
    - Defer recommended (separate concern)
 
 ---
 
 ## Risks
 
-- ⚠️ **Binary name mismatch:** If examples say `forge` but binary is `forge2`
+- ⚠️ **Binary name mismatch:** If examples say `forge` but binary is `forge`
 - ⚠️ **Version assumptions in tests:** May need to update test expectations
 - ⚠️ **Install scripts:** Check bin/install.sh for version references
 

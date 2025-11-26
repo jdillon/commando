@@ -26,7 +26,7 @@
 
 **Critical (blocks others from using):**
 
-1. **examples/standard/.forge2/config.yml:9**
+1. **examples/standard/.forge/config.yml:9**
    ```yaml
    - file:/Users/jason/ws/jdillon/forge-standard
    ```
@@ -98,7 +98,7 @@ dev-home/                # ✅ Dev environment
 ## 📋 Action Items
 
 ### High Priority
-- [ ] Fix `examples/standard/.forge2/config.yml` - remove or update hardcoded path
+- [ ] Fix `examples/standard/.forge/config.yml` - remove or update hardcoded path
 - [ ] Fix `examples/standard/README.md` - update documentation paths
 - [ ] Verify `forge-standard` package exists or remove example
 

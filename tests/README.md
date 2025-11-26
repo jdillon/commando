@@ -91,7 +91,7 @@ describe('My Feature', () => {
 import { spawnSync } from 'bun';
 
 test('should show help', () => {
-  const result = spawnSync(['./bin/forge2', '--help']);
+  const result = spawnSync(['./bin/forge', '--help']);
 
   // Debug output (visible on failure)
   console.log('Exit code:', result.exitCode);
@@ -112,7 +112,7 @@ import { join } from 'path';
 
 const fixtureRoot = join(process.cwd(), 'tests/fixtures/test-project');
 
-const result = spawnSync(['./bin/forge2', '--root', fixtureRoot, 'test', 'context']);
+const result = spawnSync(['./bin/forge', '--root', fixtureRoot, 'test', 'context']);
 ```
 
 ## Running Tests

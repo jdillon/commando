@@ -307,7 +307,7 @@ Rethink the architecture:
 - Homebrew installs TypeScript files directly to `/opt/homebrew/lib/forge/`
 - bin/forge wrapper sets up NODE_PATH to find them
 - No separate ~/.forge/node_modules/@planet57/forge
-- User modules still in project .forge2/ dirs
+- User modules still in project .forge/ dirs
 
 This would make Forge feel like a "real" Homebrew package instead of a meta-installer.
 

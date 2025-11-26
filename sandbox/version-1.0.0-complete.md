@@ -71,7 +71,7 @@ The bash implementation (version 0.1) has been saved in the `forge-bash` branch.
 
 **Examples:**
 - `examples/basic/README.md`
-- `examples/website/.forge2/website.ts`
+- `examples/website/.forge/website.ts`
 
 ### 5. Git Diff Summary
 
@@ -120,13 +120,13 @@ This error existed before version update - unrelated to changes.
 - **Sandbox docs** - Historical research notes (document what was evaluated)
 - **dev-home/** - Gitignored development files
 - **.claude/** - Session stashes
-- **.forge2 directory naming** - Deferred to issue #30
+- **.forge directory naming** - Deferred to issue #30
 
 ---
 
 ## Next Steps (Optional)
 
-1. **Address .forge2 naming** - See issue #30
+1. **Address .forge naming** - See issue #30
    - Change to `.forge/` for 1.0 release?
    - Add FORGE_HOME collision guard
 

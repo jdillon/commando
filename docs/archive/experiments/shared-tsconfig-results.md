@@ -54,7 +54,7 @@ This allows using a **shared tsconfig.json** in forge home instead of per-projec
 ### Command
 
 ```bash
-bun run --tsconfig-override="$FORGE_HOME/tsconfig.json" .forge2/moo2.ts
+bun run --tsconfig-override="$FORGE_HOME/tsconfig.json" .forge/moo2.ts
 ```
 
 ### Result
@@ -78,7 +78,7 @@ The warning is harmless - imports work correctly. This appears to be a Bun inter
 **Implementation:**
 ```bash
 export NODE_PATH="$FORGE_HOME/node_modules"
-bun run .forge2/moo2.ts
+bun run .forge/moo2.ts
 ```
 
 **Pros:**
@@ -101,7 +101,7 @@ cat > ~/.local/share/forge/tsconfig.json << EOF
 EOF
 
 # Every run: Pass flag
-bun run --tsconfig-override="$FORGE_HOME/tsconfig.json" .forge2/moo2.ts
+bun run --tsconfig-override="$FORGE_HOME/tsconfig.json" .forge/moo2.ts
 ```
 
 **Pros:**
@@ -180,7 +180,7 @@ Consider if you specifically need:
 
 ### Not Recommended: Per-project tsconfig.json
 
-We specifically wanted to avoid adding files to `.forge2/` directory.
+We specifically wanted to avoid adding files to `.forge/` directory.
 
 ### Last Resort: Symlinks
 

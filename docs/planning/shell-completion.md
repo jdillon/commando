@@ -46,27 +46,27 @@ Generate and install shell completion for bash, zsh, and fish, enabling users to
 
 ```
 ┌─────────────────┐
-│  forge2 CLI     │
+│  forge CLI     │
 └────────┬────────┘
          │
-         ├─→ forge2 completion install [shell]
+         ├─→ forge completion install [shell]
          │   ├─→ Detect shell (bash/zsh/fish)
          │   ├─→ Generate completion script
          │   └─→ Install to appropriate location
          │
-         ├─→ forge2 completion uninstall
+         ├─→ forge completion uninstall
          │   └─→ Remove completion script
          │
-         └─→ forge2 completion generate [shell]
+         └─→ forge completion generate [shell]
              └─→ Output script to stdout (for manual install)
 ```
 
 ### Command Discovery
 
 **What to complete**:
-1. **Top-level commands**: `forge2 <TAB>` → show all group names
-2. **Subcommands**: `forge2 website <TAB>` → show website commands
-3. **Flags**: `forge2 website deploy --<TAB>` → show available flags
+1. **Top-level commands**: `forge <TAB>` → show all group names
+2. **Subcommands**: `forge website <TAB>` → show website commands
+3. **Flags**: `forge website deploy --<TAB>` → show available flags
 4. **Values**: Some flags may have predefined values (env names, etc.)
 
 **How to discover**:
@@ -78,36 +78,36 @@ Generate and install shell completion for bash, zsh, and fish, enabling users to
 
 #### Bash
 ```bash
-# ~/.bashrc or ~/.bash_completion.d/forge2
-_forge2_completion() {
+# ~/.bashrc or ~/.bash_completion.d/forge
+_forge_completion() {
     local cur="${COMP_WORDS[COMP_CWORD]}"
     local prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    # Call forge2 with special env var to get completions
+    # Call forge with special env var to get completions
     COMP_LINE="$COMP_LINE" COMP_POINT="$COMP_POINT" \
-        forge2 __complete "$cur" "$prev"
+        forge __complete "$cur" "$prev"
 }
-complete -F _forge2_completion forge2
+complete -F _forge_completion forge
 ```
 
 #### Zsh
 ```zsh
-# ~/.zshrc or ~/.zsh/completions/_forge2
-#compdef forge2
+# ~/.zshrc or ~/.zsh/completions/_forge
+#compdef forge
 
-_forge2() {
+_forge() {
     local line state
     # Similar completion logic
 }
 
-_forge2 "$@"
+_forge "$@"
 ```
 
 #### Fish
 ```fish
-# ~/.config/fish/completions/forge2.fish
-complete -c forge2 -f
-complete -c forge2 -a '(forge2 __complete (commandline -cp))'
+# ~/.config/fish/completions/forge.fish
+complete -c forge -f
+complete -c forge -a '(forge __complete (commandline -cp))'
 ```
 
 ### Implementation Strategy
@@ -119,7 +119,7 @@ complete -c forge2 -a '(forge2 __complete (commandline -cp))'
 - Limited customization
 
 **Option 2: Custom completion (flexible)**
-- Implement `forge2 __complete` command
+- Implement `forge __complete` command
 - Full control over completion logic
 - Can provide context-aware suggestions
 - More implementation work
@@ -134,15 +134,15 @@ complete -c forge2 -a '(forge2 __complete (commandline -cp))'
 
 1. **Create completion command**: `lib/commands/completion.ts`
    ```typescript
-   forge2 completion install [bash|zsh|fish]
-   forge2 completion uninstall
-   forge2 completion generate [shell]
+   forge completion install [bash|zsh|fish]
+   forge completion uninstall
+   forge completion generate [shell]
    ```
 
 2. **Integrate omelette**: Set up omelette with command structure
    ```typescript
    const omelette = require('omelette');
-   const completion = omelette('forge2 <group> <command> <flags>');
+   const completion = omelette('forge <group> <command> <flags>');
 
    completion.on('group', ({ reply }) => {
        reply(getModuleGroups()); // ['website', 'aws', etc.]
@@ -165,7 +165,7 @@ complete -c forge2 -a '(forge2 __complete (commandline -cp))'
    ```
    bash:   ~/.bashrc (source completion script)
    zsh:    ~/.zshrc (source completion script)
-   fish:   ~/.config/fish/completions/forge2.fish
+   fish:   ~/.config/fish/completions/forge.fish
    ```
 
 2. **Installation logic**:
@@ -189,13 +189,13 @@ complete -c forge2 -a '(forge2 __complete (commandline -cp))'
 ## Open Questions
 
 1. **Auto-install on first run?**
-   - Prompt user to install completion after first `forge2` command?
-   - Or require explicit `forge2 completion install`?
+   - Prompt user to install completion after first `forge` command?
+   - Or require explicit `forge completion install`?
 
 2. **Update strategy**:
    - How to update completions when new modules added?
    - Regenerate on every module install?
-   - Or require manual `forge2 completion update`?
+   - Or require manual `forge completion update`?
 
 3. **Cross-platform support**:
    - Focus on macOS/Linux first?
@@ -203,7 +203,7 @@ complete -c forge2 -a '(forge2 __complete (commandline -cp))'
 
 4. **Dynamic vs static completion**:
    - Generate static completion file (fast, but stale)?
-   - Or dynamic completion calling forge2 each time (accurate, but slower)?
+   - Or dynamic completion calling forge each time (accurate, but slower)?
 
 ---
 
