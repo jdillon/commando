@@ -441,7 +441,7 @@ log.debug({ token: process.env.TOKEN }, 'Auth');  // ❌ Security issue
 [DEBUG] Config loaded modules=2
 [DEBUG] Installing dependency dep="cowsay@^1.6.0"
 [DEBUG] npm package - updating deno.jsonc
-[DEBUG] Writing JSON file path="/Users/jason/.local/share/forge/deno.jsonc"
+[DEBUG] Writing JSON file path="~/.local/share/forge/deno.jsonc"
 [DEBUG] Loading module module="hello"
 [DEBUG] Executing command command="hello"
 ```

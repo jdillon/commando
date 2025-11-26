@@ -12,7 +12,7 @@ If we could tell Bun to use `forge_modules` instead of `node_modules`, it would 
 
 ### The Problem (Current Behavior)
 ```
-/Users/jason/ws/jdillon/forge/
+~/ws/forge/
 ├── package.json            # name: "@planet57/forge"
 ├── lib/
 ├── tests/
@@ -32,7 +32,7 @@ If we could tell Bun to use `forge_modules` instead of `node_modules`, it would 
 
 ### If We Could Use Custom Directory (Hypothetical)
 ```
-/Users/jason/ws/jdillon/forge/
+~/ws/forge/
 ├── package.json            # name: "@planet57/forge"
 ├── lib/
 ├── tests/

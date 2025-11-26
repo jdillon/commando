@@ -64,8 +64,8 @@ Track cached repositories in `~/.local/share/forge/cache-state.json`:
       "path": "~/.local/share/forge/repos/github.com/jdillon/forge-standard",
       "diskUsage": 1234567,
       "projects": [
-        "/Users/jason/projects/my-app",
-        "/Users/jason/projects/other-app"
+        "~/projects/my-app",
+        "~/projects/other-app"
       ]
     }
   },

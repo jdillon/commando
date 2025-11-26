@@ -250,7 +250,7 @@ Forge Version Information:
   Built:      2025-11-09T15:30:00Z
   Dirty:      no
 
-Install location: /Users/jason/.forge
+Install location: ~/.forge
 ```
 
 ---

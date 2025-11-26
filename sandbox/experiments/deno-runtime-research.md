@@ -90,8 +90,8 @@ deno run --node-modules-dir=manual main.ts
 ```json
 {
   "imports": {
-    "forge-core/": "file:///Users/jason/.local/share/forge/core/",
-    "@planet57/forge-standard": "file:///Users/jason/.local/share/forge/repos/forge-standard/mod.ts",
+    "forge-core/": "file://~/.local/share/forge/core/",
+    "@planet57/forge-standard": "file://~/.local/share/forge/repos/forge-standard/mod.ts",
     "cowsay": "npm:cowsay@^1.6.0"
   }
 }
@@ -134,7 +134,7 @@ deno run --node-modules-dir=auto main.ts
 #### 2. Environment Variables
 ```bash
 # Cache location (like forge-home concept)
-export DENO_DIR="/Users/jason/.local/share/forge/deno-cache"
+export DENO_DIR="~/.local/share/forge/deno-cache"
 
 # Authentication for private packages
 export DENO_AUTH_TOKENS="github.com=ghp_TOKEN123"
@@ -274,13 +274,13 @@ import { helper } from "@/helpers";  // resolves to ./src/helpers
 ```json
 {
   "imports": {
-    "forge-modules/": "file:///Users/jason/.local/share/forge/modules/"
+    "forge-modules/": "file://~/.local/share/forge/modules/"
   }
 }
 ```
 ```typescript
 import { something } from "forge-modules/package/mod.ts";
-// resolves to file:///Users/jason/.local/share/forge/modules/package/mod.ts
+// resolves to file://~/.local/share/forge/modules/package/mod.ts
 ```
 
 ---

@@ -87,7 +87,7 @@ Create `~/.local/share/forge/tsconfig.json`:
     "baseUrl": ".",
     "paths": {
       "*": [
-        "/Users/jason/.local/share/forge/node_modules/*",
+        "~/.local/share/forge/node_modules/*",
         "./node_modules/*",
         "*"
       ]
@@ -134,7 +134,7 @@ Use the tsconfig approach when:
 When using `--tsconfig-override` with a tsconfig outside the project directory, Bun shows:
 
 ```
-Internal error: directory mismatch for directory "/Users/jason/.local/share/forge/tsconfig.json", fd 3.
+Internal error: directory mismatch for directory "~/.local/share/forge/tsconfig.json", fd 3.
 You don't need to do anything, but this indicates a bug.
 ```
 

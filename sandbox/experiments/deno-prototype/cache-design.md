@@ -116,8 +116,8 @@ After installing dependencies, generate import map:
 ```json
 {
   "imports": {
-    "@jdillon/forge-standard/": "/Users/jason/.local/share/forge/repos/github.com/jdillon/forge-standard/",
-    "@jdillon/forge-common/": "/Users/jason/.local/share/forge/repos/github.com/jdillon/forge-common/"
+    "@jdillon/forge-standard/": "~/.local/share/forge/repos/github.com/jdillon/forge-standard/",
+    "@jdillon/forge-common/": "~/.local/share/forge/repos/github.com/jdillon/forge-common/"
   }
 }
 ```

@@ -13,7 +13,7 @@
 We work with four key directories:
 
 1. **`userDir`** - Where the user ran `forge` from (CWD)
-   - Example: `/Users/jason/mysite/src/components`
+   - Example: `~/mysite/src/components`
    - Used to: Discover project (walk up tree)
    - Type: Always set (it's process.cwd())
 
@@ -24,14 +24,14 @@ We work with four key directories:
    - Type: Always set (defaults to `~/.forge`)
 
 3. **`projectRoot`** - The project directory
-   - Example: `/Users/jason/mysite`
+   - Example: `~/mysite`
    - How: Parent of `.forge/` directory
    - Used to: Resolve relative paths, detect project boundary
    - Type: Optional (may not be in a project)
 
 4. **`forgeDir`** - Project's Forge directory
-   - Current: `/Users/jason/mysite/.forge/`
-   - Future: `/Users/jason/mysite/.forge/`
+   - Current: `~/mysite/.forge/`
+   - Future: `~/mysite/.forge/`
    - Contains: Project config, project modules, project state
    - Type: Optional (may not be in a project)
 
@@ -74,10 +74,10 @@ Use scope as primary distinguisher: `user*` vs `project*` vs `cwd`
 
 | Current | Proposed | Scope | Example | Description |
 |---------|----------|-------|---------|-------------|
-| `userDir` | **`cwd`** | Runtime | `/Users/jason/mysite/src` | Where user ran command |
+| `userDir` | **`cwd`** | Runtime | `~/mysite/src` | Where user ran command |
 | `forge-home` | **`userRoot`** | User | `~/.forge` | User's Forge home |
-| `projectRoot` | **`projectRoot`** | Project | `/Users/jason/mysite` | Project directory |
-| `forgeDir` | **`projectForgeDir`** | Project | `/Users/jason/mysite/.forge` | Project's `.forge/` |
+| `projectRoot` | **`projectRoot`** | Project | `~/mysite` | Project directory |
+| `forgeDir` | **`projectForgeDir`** | Project | `~/mysite/.forge` | Project's `.forge/` |
 
 ### Usage Examples
 
@@ -89,8 +89,8 @@ const userRoot = getUserRoot();           // ~/.forge
 const userConfig = join(userRoot, 'config');
 const userState = join(userRoot, 'state');
 
-const projectRoot = config.projectRoot;   // /Users/jason/mysite
-const projectForgeDir = config.projectForgeDir;  // /Users/jason/mysite/.forge
+const projectRoot = config.projectRoot;   // ~/mysite
+const projectForgeDir = config.projectForgeDir;  // ~/mysite/.forge
 const projectConfig = join(projectForgeDir, 'config.yml');
 
 // At a glance, clear what scope we're in
@@ -118,10 +118,10 @@ Use location type: `home` vs `project` vs `working`
 
 | Current | Proposed | Scope | Example | Description |
 |---------|----------|-------|---------|-------------|
-| `userDir` | **`workingDir`** | Runtime | `/Users/jason/mysite/src` | Where user ran command |
+| `userDir` | **`workingDir`** | Runtime | `~/mysite/src` | Where user ran command |
 | `forge-home` | **`homeDir`** | User | `~/.forge` | User's Forge home |
-| `projectRoot` | **`projectDir`** | Project | `/Users/jason/mysite` | Project directory |
-| `forgeDir` | **`projectConfigDir`** | Project | `/Users/jason/mysite/.forge` | Project's `.forge/` |
+| `projectRoot` | **`projectDir`** | Project | `~/mysite` | Project directory |
+| `forgeDir` | **`projectConfigDir`** | Project | `~/mysite/.forge` | Project's `.forge/` |
 
 ### Usage Examples
 
@@ -129,8 +129,8 @@ Use location type: `home` vs `project` vs `working`
 import { getHomeDir, getProjectDir } from './paths';
 
 const homeDir = getHomeDir();                    // ~/.forge
-const projectDir = config.projectDir;            // /Users/jason/mysite
-const projectConfigDir = config.projectConfigDir; // /Users/jason/mysite/.forge
+const projectDir = config.projectDir;            // ~/mysite
+const projectConfigDir = config.projectConfigDir; // ~/mysite/.forge
 
 // Clear what location we're referring to
 await loadConfig(homeDir);
@@ -156,10 +156,10 @@ Combine best of both: Use standard terms + Forge prefix where needed
 
 | Current | Proposed | Scope | Example | Description |
 |---------|----------|-------|---------|-------------|
-| `userDir` | **`cwd`** | Runtime | `/Users/jason/mysite/src` | Where user ran command |
+| `userDir` | **`cwd`** | Runtime | `~/mysite/src` | Where user ran command |
 | `forge-home` | **`forgeHome`** | User | `~/.forge` | User's Forge home |
-| `projectRoot` | **`projectRoot`** | Project | `/Users/jason/mysite` | Project directory |
-| `forgeDir` | **`projectDir`** | Project | `/Users/jason/mysite/.forge` | Project's `.forge/` |
+| `projectRoot` | **`projectRoot`** | Project | `~/mysite` | Project directory |
+| `forgeDir` | **`projectDir`** | Project | `~/mysite/.forge` | Project's `.forge/` |
 
 ### Rationale
 
@@ -174,9 +174,9 @@ Combine best of both: Use standard terms + Forge prefix where needed
 import { getForgeHome } from './paths';
 
 const forgeHome = getForgeHome();          // ~/.forge
-const projectRoot = config.projectRoot;    // /Users/jason/mysite
-const projectDir = config.projectDir;      // /Users/jason/mysite/.forge
-const cwd = config.cwd;                    // /Users/jason/mysite/src
+const projectRoot = config.projectRoot;    // ~/mysite
+const projectDir = config.projectDir;      // ~/mysite/.forge
+const cwd = config.cwd;                    // ~/mysite/src
 
 // Clear and concise
 const userConfig = join(forgeHome, 'config', 'user.yml');
@@ -371,7 +371,7 @@ Forge also tracks the **current working directory** (cwd) where you ran the `for
 
 ```
 * user-dir, $CWD: current working directory (where command was run)
-* user-home(-dir), $HOME: user's home directory (/Users/jason)
+* user-home(-dir), $HOME: user's home directory (~)
 
 * forge-home-(dir), $FORGE_HOME: where forge framework has been installed
     * package.json
@@ -424,8 +424,8 @@ interface ForgeConfig {
 interface ForgeConfig {
   cwd: FilePath;              // Where user ran command
   forgeHome: FilePath;        // ~/.forge
-  projectRoot?: FilePath;     // /Users/jason/mysite
-  projectDir?: FilePath;      // /Users/jason/mysite/.forge
+  projectRoot?: FilePath;     // ~/mysite
+  projectDir?: FilePath;      // ~/mysite/.forge
 }
 ```
 

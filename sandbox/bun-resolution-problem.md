@@ -19,7 +19,7 @@ Bun's **package self-reference feature** allows files inside a package to import
 2. node_modules lookup
 3. NODE_PATH (fallback only)
 
-**Result:** Test fixtures at `tests/fixtures/test-project/.forge/test-commands.ts` are physically inside `/Users/jason/ws/jdillon/forge/`, so when they import `@planet57/forge/*`, Bun finds the local package.json and resolves to project source instead of using NODE_PATH to find the installed package.
+**Result:** Test fixtures at `tests/fixtures/test-project/.forge/test-commands.ts` are physically inside `~/ws/forge/`, so when they import `@planet57/forge/*`, Bun finds the local package.json and resolves to project source instead of using NODE_PATH to find the installed package.
 
 ---
 
@@ -233,7 +233,7 @@ Bun.resolveSync(moduleId, parent, {
 
 **Structure:**
 ```
-/Users/jason/ws/jdillon/
+~/ws/jdillon/
   forge/                    # Main project
   forge-test-fixtures/      # Separate directory
     test-project/
