@@ -252,7 +252,7 @@ describe('Installation and Uninstallation', () => {
     // Should succeed
     expect(result.exitCode).toBe(0);
 
-    const packageJson = join(testHome, ".local/share/forge/package.json");
+    const packageJson = join(testHome, ".forge/package.json");
     const pkg = await Bun.file(packageJson).json();
 
     expect(pkg.name).toBe("forge-meta");
