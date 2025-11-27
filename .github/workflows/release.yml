@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get version from package.json
         id: version
@@ -39,33 +37,20 @@ jobs:
       - name: Build tarball
         run: bun run pack
 
-      - name: Create and push tag
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag "v${{ steps.version.outputs.current }}"
-          git push origin "v${{ steps.version.outputs.current }}"
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.version.outputs.current }}
-          files: build/*.tgz
-          generate_release_notes: true
-
       - name: Compute SHA256
         id: checksum
         run: |
           TARBALL=$(ls build/*.tgz)
           SHA256=$(shasum -a 256 "$TARBALL" | awk '{print $1}')
           echo "sha256=${SHA256}" >> $GITHUB_OUTPUT
+          echo "tarball=${TARBALL}" >> $GITHUB_OUTPUT
 
-      - name: Update Homebrew formula
+      - name: Prepare Homebrew formula
         env:
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
         run: |
           if [ -z "$HOMEBREW_TAP_TOKEN" ]; then
-            echo "::warning::HOMEBREW_TAP_TOKEN not set - skipping Homebrew update"
+            echo "::warning::HOMEBREW_TAP_TOKEN not set - will skip Homebrew update"
             exit 0
           fi
 
@@ -135,6 +120,32 @@ jobs:
           end
           FORMULA
 
+      # === All preparation done, now push everything ===
+
+      - name: Create and push tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v${{ steps.version.outputs.current }}"
+          git push origin "v${{ steps.version.outputs.current }}"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.current }}
+          files: build/*.tgz
+          generate_release_notes: true
+
+      - name: Push Homebrew formula
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          if [ -z "$HOMEBREW_TAP_TOKEN" ] || [ ! -d "tap" ]; then
+            echo "Skipping Homebrew update"
+            exit 0
+          fi
+
+          VERSION="${{ steps.version.outputs.current }}"
           cd tap
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -142,13 +153,10 @@ jobs:
           git commit -m "Update forge to ${VERSION}"
           git push
 
-      - name: Bump version to next patch
+      - name: Bump version and push
         run: |
           jq '.version = "${{ steps.version.outputs.next }}"' package.json > package.json.tmp
           mv package.json.tmp package.json
-
-      - name: Commit version bump
-        run: |
           git add package.json
           git commit -m "chore: bump version to ${{ steps.version.outputs.next }}"
           git push
