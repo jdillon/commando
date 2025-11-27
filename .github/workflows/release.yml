@@ -1,8 +1,7 @@
 name: Release
 
 on:
-  push:
-    tags: ['v*']
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -10,14 +9,21 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get version from tag
+      - name: Get version from package.json
         id: version
-        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: |
+          VERSION=$(jq -r .version package.json)
+          echo "current=${VERSION}" >> $GITHUB_OUTPUT
+
+          # Calculate next patch version
+          IFS='.' read -r major minor patch <<< "$VERSION"
+          NEXT="${major}.${minor}.$((patch + 1))"
+          echo "next=${NEXT}" >> $GITHUB_OUTPUT
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -33,49 +39,52 @@ jobs:
       - name: Build tarball
         run: bun run pack
 
+      - name: Create and push tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v${{ steps.version.outputs.current }}"
+          git push origin "v${{ steps.version.outputs.current }}"
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ steps.version.outputs.current }}
           files: build/*.tgz
           generate_release_notes: true
-
-  update-homebrew:
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download release tarball
-        run: |
-          VERSION="${{ needs.release.outputs.version }}"
-          curl -sL "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/planet57-forge-${VERSION}.tgz" -o forge.tgz
 
       - name: Compute SHA256
         id: checksum
         run: |
-          SHA256=$(shasum -a 256 forge.tgz | awk '{print $1}')
+          TARBALL=$(ls build/*.tgz)
+          SHA256=$(shasum -a 256 "$TARBALL" | awk '{print $1}')
           echo "sha256=${SHA256}" >> $GITHUB_OUTPUT
 
-      - name: Clone tap repository
+      - name: Update Homebrew formula
         env:
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
         run: |
-          git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/jdillon/homebrew-planet57.git" tap
+          if [ -z "$HOMEBREW_TAP_TOKEN" ]; then
+            echo "::warning::HOMEBREW_TAP_TOKEN not set - skipping Homebrew update"
+            exit 0
+          fi
 
-      - name: Update formula
-        run: |
-          VERSION="${{ needs.release.outputs.version }}"
+          VERSION="${{ steps.version.outputs.current }}"
           SHA256="${{ steps.checksum.outputs.sha256 }}"
 
-          cat > tap/Formula/forge.rb << 'FORMULA'
+          git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/jdillon/homebrew-planet57.git" tap
+
+          cat > tap/Formula/forge.rb << FORMULA
           # Homebrew formula for Forge
           # Install: brew tap jdillon/planet57 && brew install forge
 
           class Forge < Formula
             desc "Modern CLI framework for deployments"
             homepage "https://github.com/jdillon/forge"
-            url "https://github.com/jdillon/forge/releases/download/v__VERSION__/planet57-forge-__VERSION__.tgz"
-            sha256 "__SHA256__"
+            url "https://github.com/jdillon/forge/releases/download/v${VERSION}/planet57-forge-${VERSION}.tgz"
+            sha256 "${SHA256}"
             license "Apache-2.0"
-            version "__VERSION__"
+            version "${VERSION}"
 
             depends_on "oven-sh/bun/bun"
 
@@ -125,18 +134,20 @@ jobs:
           end
           FORMULA
 
-          # Replace placeholders
-          sed -i "s/__VERSION__/${VERSION}/g" tap/Formula/forge.rb
-          sed -i "s/__SHA256__/${SHA256}/g" tap/Formula/forge.rb
-
-      - name: Push to tap
-        env:
-          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-        run: |
-          VERSION="${{ needs.release.outputs.version }}"
           cd tap
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add Formula/forge.rb
           git commit -m "Update forge to ${VERSION}"
+          git push
+
+      - name: Bump version to next patch
+        run: |
+          jq '.version = "${{ steps.version.outputs.next }}"' package.json > package.json.tmp
+          mv package.json.tmp package.json
+
+      - name: Commit version bump
+        run: |
+          git add package.json
+          git commit -m "chore: bump version to ${{ steps.version.outputs.next }}"
           git push
