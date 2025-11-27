@@ -136,6 +136,7 @@ jobs:
           tag_name: v${{ steps.version.outputs.current }}
           files: ${{ steps.checksum.outputs.tarball }}
           generate_release_notes: true
+          draft: false
 
       - name: Push Homebrew formula
         env:
