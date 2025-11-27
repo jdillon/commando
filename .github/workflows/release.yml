@@ -61,65 +61,87 @@ jobs:
           git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/jdillon/homebrew-planet57.git" tap
           mkdir -p tap/Formula
 
-          cat > tap/Formula/forge.rb << FORMULA
-          # Homebrew formula for Forge
-          # Install: brew tap jdillon/planet57 && brew install forge
+          cat > tap/Formula/forge.rb << 'FORMULA'
+# Homebrew formula for Forge
+# Install: brew tap jdillon/planet57 && brew install forge
 
-          class Forge < Formula
-            desc "Modern CLI framework for deployments"
-            homepage "https://github.com/jdillon/forge"
-            url "https://github.com/jdillon/forge/releases/download/v${VERSION}/planet57-forge-${VERSION}.tgz"
-            sha256 "${SHA256}"
-            license "Apache-2.0"
-            version "${VERSION}"
+class Forge < Formula
+  desc "Modern CLI framework for deployments"
+  homepage "https://github.com/jdillon/forge"
+  url "https://github.com/jdillon/forge/releases/download/v__VERSION__/planet57-forge-__VERSION__.tgz"
+  sha256 "__SHA256__"
+  license "Apache-2.0"
+  version "__VERSION__"
 
-            depends_on "oven-sh/bun/bun"
+  depends_on "oven-sh/bun/bun"
 
-            def install
-              forge_home = ENV["FORGE_HOME"] || "#{Dir.home}/.forge"
+  def install
+    # Stage package to libexec for Homebrew tracking
+    # Actual installation happens in post_install
+    libexec.install Dir["*"]
+  end
 
-              system "mkdir", "-p", "#{forge_home}/config", "#{forge_home}/state", "#{forge_home}/cache", "#{forge_home}/logs"
+  def post_install
+    forge_home = ENV["FORGE_HOME"] || "#{Dir.home}/.forge"
 
-              File.write("#{forge_home}/package.json", <<~JSON)
-                {
-                  "name": "forge-meta",
-                  "version": "1.0.0",
-                  "private": true
-                }
-              JSON
+    # Create directory structure
+    system "mkdir", "-p",
+      "#{forge_home}/config",
+      "#{forge_home}/state",
+      "#{forge_home}/cache",
+      "#{forge_home}/logs"
 
-              File.write("#{forge_home}/bunfig.toml", <<~TOML)
-                [install]
-                exact = true
-                dev = false
-                peer = true
-                optional = false
-                auto = "disable"
-              TOML
+    # Write package.json (meta-project)
+    File.write("#{forge_home}/package.json", <<~JSON)
+      {
+        "name": "forge-meta",
+        "version": "1.0.0",
+        "private": true
+      }
+    JSON
 
-              cd forge_home do
-                system "bun", "add", "file://#{buildpath}"
-              end
+    # Write bunfig.toml
+    File.write("#{forge_home}/bunfig.toml", <<~TOML)
+      [install]
+      exact = true
+      dev = false
+      peer = true
+      optional = false
+      auto = "disable"
+    TOML
 
-              forge_cli = "#{forge_home}/node_modules/@planet57/forge/bin/forge"
-              unless File.exist?(forge_cli)
-                odie "Installation failed: forge CLI not found"
-              end
+    # Install package to forge_home using bun
+    Dir.chdir(forge_home) do
+      system Formula["bun"].opt_bin/"bun", "add", "file://#{libexec}"
+    end
 
-              bin.install_symlink forge_cli
-            end
+    # Verify installation
+    forge_bin = "#{forge_home}/node_modules/@planet57/forge/bin/forge"
+    unless File.exist?(forge_bin)
+      odie "Installation failed: forge CLI not found at #{forge_bin}"
+    end
 
-            def caveats
-              <<~EOS
-                Forge installed to #{ENV["FORGE_HOME"] || "~/.forge"}
-              EOS
-            end
+    # Symlink the wrapper script
+    bin.install_symlink forge_bin => "forge"
+  end
 
-            test do
-              assert_match "forge", shell_output("#{bin}/forge --help")
-            end
-          end
-          FORMULA
+  def caveats
+    <<~EOS
+      Forge installed to #{ENV["FORGE_HOME"] || "~/.forge"}
+
+      User data (config, plugins, state) persists across upgrades.
+    EOS
+  end
+
+  test do
+    assert_match "forge", shell_output("#{bin}/forge --help")
+  end
+end
+FORMULA
+
+          # Replace placeholders with actual values
+          sed -i '' "s/__VERSION__/${VERSION}/g" tap/Formula/forge.rb
+          sed -i '' "s/__SHA256__/${SHA256}/g" tap/Formula/forge.rb
 
       # === All preparation done, now push everything ===
 

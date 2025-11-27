@@ -18,6 +18,37 @@ Project-specific guidance for Forge. See `~/.claude/CLAUDE.md` for global prefer
 
 ---
 
+## ⚠️ FORGE_HOME Architecture (Critical)
+
+**DO NOT redesign this without explicit approval.**
+
+Forge requires `FORGE_HOME=~/.forge` with this structure:
+```
+~/.forge/
+├── config/      # User configuration
+├── state/       # Runtime state
+├── cache/       # Cached data
+├── logs/        # Log files
+├── plugins/     # User plugins
+├── node_modules/ # Installed dependencies
+└── package.json  # Package manifest
+```
+
+**Current reality:**
+- Forge is designed as a single-user install
+- The tool expects and requires `~/.forge` to exist with proper structure
+- This is a mismatch with Homebrew's Cellar-based approach
+
+**Homebrew strategy:**
+- Use brew as an **installation/update mechanism only**
+- Formula must bootstrap `~/.forge` structure during install
+- Brew installs the package, but forge runs from `~/.forge`
+- This is intentional - don't "fix" it to be more Homebrew-native
+
+**Future consideration:** May refactor to separate install dir from user data, but not now.
+
+---
+
 ## Beads (Issue Tracking)
 
 Use beads MCP tools for ALL issue tracking. Do NOT use TodoWrite or markdown TODOs.
