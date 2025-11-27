@@ -41,7 +41,7 @@
 - **CLI**: Commander.js
 - **Logging**: Pino (structured JSON + pretty mode)
 - **UI**: chalk, ora, listr2, boxen, cli-table3
-- **Config**: YAML (.forge2/config.yml)
+- **Config**: YAML (.forge/config.yml)
 - **Paths**: XDG-compliant (~/.local/share/forge/)
 
 ---

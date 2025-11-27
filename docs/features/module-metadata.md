@@ -19,7 +19,7 @@ export const build: ForgeCommand = { ... };
 export const deploy: ForgeCommand = { ... };
 ```
 
-**Result**: Commands under `forge2 web build`, not `forge2 website build`
+**Result**: Commands under `forge web build`, not `forge website build`
 
 ---
 
@@ -32,7 +32,7 @@ Without `__module__`, group name derives from filename:
 export const build = { ... };
 ```
 
-**Result**: `forge2 website build` (group = "website")
+**Result**: `forge website build` (group = "website")
 
 ---
 
@@ -51,8 +51,8 @@ export const config: ForgeCommand = { ... };
 ```
 
 **Result**:
-- `forge2 version` (not `forge2 utils version`)
-- `forge2 config` (not `forge2 utils config`)
+- `forge version` (not `forge utils version`)
+- `forge config` (not `forge utils config`)
 
 ---
 
@@ -78,7 +78,7 @@ export const __module__ = {
 };
 
 export const build = { ... };
-// Usage: forge2 website build
+// Usage: forge website build
 ```
 
 ### Top-Level Utilities
@@ -90,7 +90,7 @@ export const __module__ = {
 
 export const version = { ... };
 export const help = { ... };
-// Usage: forge2 version, forge2 help
+// Usage: forge version, forge help
 ```
 
 ### Add Description
@@ -107,7 +107,7 @@ export default {
 };
 ```
 
-When user runs `forge2 examples --help`, they see the description.
+When user runs `forge examples --help`, they see the description.
 
 ---
 
@@ -116,7 +116,7 @@ When user runs `forge2 examples --help`, they see the description.
 Modules declared in config.yml use their metadata:
 
 ```yaml
-# .forge2/config.yml
+# .forge/config.yml
 modules:
   - ./website        # Uses __module__ if present, else "website"
   - ./examples       # Uses __module__ if present, else "examples"

@@ -1,0 +1,59 @@
+# Example Homebrew Formula for Forge
+# This would go in: homebrew-forge/Formula/forge.rb
+
+class Forge < Formula
+  desc "Modern CLI framework for deployments"
+  homepage "https://github.com/jdillon/forge"
+  url "https://github.com/jdillon/forge/archive/refs/tags/v1.0.0.tar.gz"
+  sha256 "0000000000000000000000000000000000000000000000000000000000000000"  # Replace with actual SHA256
+  license "Apache-2.0"
+
+  depends_on "bun"
+
+  def install
+    # Install dependencies (production only)
+    system "bun", "install", "--production", "--no-save"
+
+    # Install everything to libexec (standard location for language-specific packages)
+    libexec.install Dir["*"]
+
+    # Create wrapper script that sets environment correctly
+    # This handles the FORGE_HOME vs installation directory separation
+    (bin/"forge").write <<~EOS
+      #!/usr/bin/env bash
+      set -euo pipefail
+
+      # Installation directory (where Homebrew installed Forge)
+      export FORGE_INSTALL="#{libexec}"
+
+      # User data directory (where user's config/state/cache lives)
+      # Can be overridden by user setting FORGE_HOME before running
+      export FORGE_HOME="${FORGE_HOME:-${HOME}/.forge}"
+
+      # Create FORGE_HOME structure if it doesn't exist
+      if [[ ! -d "${FORGE_HOME}" ]]; then
+        mkdir -p "${FORGE_HOME}"/{config,state,cache,logs}
+      fi
+
+      # Run the Forge CLI using the installation directory
+      exec bun run --preserve-symlinks "${FORGE_INSTALL}/lib/cli.ts" "$@"
+    EOS
+  end
+
+  def post_install
+    # Create initial FORGE_HOME structure for the user
+    forge_home = ENV["FORGE_HOME"] || "#{Dir.home}/.forge"
+    (forge_home/"config").mkpath
+    (forge_home/"state").mkpath
+    (forge_home/"cache").mkpath
+    (forge_home/"logs").mkpath
+  end
+
+  test do
+    # Test that forge runs and reports its version
+    assert_match version.to_s, shell_output("#{bin}/forge --version")
+
+    # Test that forge can show help
+    assert_match "Modern CLI framework", shell_output("#{bin}/forge --help")
+  end
+end

@@ -94,7 +94,7 @@ This specification defines the installation, upgrade, and module system for Forg
              ▼
 ┌─────────────────────────────────────────────────────────┐
 │  Module Resolution                                       │
-│  1. Local: .forge2/website.ts                           │
+│  1. Local: .forge/website.ts                           │
 │  2. Shared: ~/.local/share/forge/node_modules/...       │
 │  3. Project: <project>/node_modules/... (optional)      │
 └────────────┬────────────────────────────────────────────┘
@@ -276,12 +276,12 @@ Each with `__module__: { group: false }`. Will determine best approach during im
 
 #### 1. Local Modules (Project-Specific)
 
-**Location**: `.forge2/*.ts` in project directory
+**Location**: `.forge/*.ts` in project directory
 
 **Example**:
 ```
 myproject/
-└── .forge2/
+└── .forge/
     ├── config.yml
     ├── helper.ts          # Local module
     └── deploy.ts          # Local module
@@ -358,14 +358,14 @@ modules:
 
 All configuration uses YAML (not JSON) for readability and comments.
 
-### Location: `.forge2/config.yml`
+### Location: `.forge/config.yml`
 
 Project-specific configuration file.
 
 ### Structure
 
 ```yaml
-# .forge2/config.yml
+# .forge/config.yml
 
 # Dependencies: Module packages to install
 dependencies:
@@ -375,7 +375,7 @@ dependencies:
 
 # Modules: What to load (local or from dependencies)
 modules:
-  - helper                           # Local: .forge2/helper.ts
+  - helper                           # Local: .forge/helper.ts
   - @planet57/forge-standard/aws     # From dependency
   - @planet57/forge-standard/terraform
   - @acme/forge-aws                  # Whole package
@@ -415,7 +415,7 @@ dependencies:
 **Local modules**:
 ```yaml
 modules:
-  - helper                 # Loads .forge2/helper.ts
+  - helper                 # Loads .forge/helper.ts
   - ./path/to/module       # Relative path
 ```
 
@@ -446,18 +446,18 @@ Following XDG Base Directory Specification where practical:
 │           ├── @planet57/forge/      # Core
 │           └── @planet57/forge-standard/  # Shared modules
 ├── state/                            # Application state
-│   └── forge2/
+│   └── forge/
 │       └── state.json                # User state
 └── cache/                            # Cached data
-    └── forge2/
+    └── forge/
         └── (future use)
 
 ~/.config/                            # Configuration
-└── forge2/
+└── forge/
     └── config.yml                    # User-wide config (optional)
 
 <project>/
-└── .forge2/
+└── .forge/
     ├── .gitignore                    # Ignore local files
     ├── config.yml                    # Project config (committed to git)
     ├── config.local.yml              # Project-local user config (gitignored)
@@ -466,9 +466,9 @@ Following XDG Base Directory Specification where practical:
     └── deploy.ts
 ```
 
-### .forge2/.gitignore
+### .forge/.gitignore
 
-The `.forge2/.gitignore` file should contain:
+The `.forge/.gitignore` file should contain:
 
 ```gitignore
 config.local.yml
@@ -485,15 +485,15 @@ This ensures:
 
 Forge supports three levels of configuration with merge precedence:
 
-1. **User-wide config**: `~/.config/forge2/config.yml`
+1. **User-wide config**: `~/.config/forge/config.yml`
    - System-wide defaults for all projects
    - Example: Default logging level, update preferences
 
-2. **Project config**: `<project>/.forge2/config.yml`
+2. **Project config**: `<project>/.forge/config.yml`
    - Committed to git, shared with team
    - Defines modules, dependencies, project settings
 
-3. **Project-local config**: `<project>/.forge2/config.local.yml`
+3. **Project-local config**: `<project>/.forge/config.local.yml`
    - Gitignored, user-specific overrides
    - Example: Local development paths, personal preferences
 
@@ -501,12 +501,12 @@ Forge supports three levels of configuration with merge precedence:
 
 **Example**:
 ```yaml
-# .forge2/config.yml (committed)
+# .forge/config.yml (committed)
 modules:
   - helper
   - website
 
-# .forge2/config.local.yml (gitignored)
+# .forge/config.local.yml (gitignored)
 logging:
   level: debug  # Override for local development
 ```
@@ -533,9 +533,9 @@ async function resolveModule(name: string): Promise<ModulePath> {
   const projectRoot = findProjectRoot();
   const sharedPath = '~/.local/share/forge/node_modules';
 
-  // 1. Local module in .forge2/
+  // 1. Local module in .forge/
   if (!name.includes('/') && !name.startsWith('@')) {
-    const localPath = resolve(projectRoot, '.forge2', `${name}.ts`);
+    const localPath = resolve(projectRoot, '.forge', `${name}.ts`);
     if (exists(localPath)) {
       return { type: 'local', path: localPath };
     }
@@ -566,7 +566,7 @@ const sharedPath = path.join(os.homedir(), '.local/share/forge/node_modules');
 try {
   const modulePath = require.resolve(name, {
     paths: [
-      path.join(projectRoot, '.forge2'),
+      path.join(projectRoot, '.forge'),
       sharedPath,
       path.join(projectRoot, 'node_modules')
     ]
@@ -669,7 +669,7 @@ export const moduleUpdate: ForgeCommand = {
 
 **Configurable check frequency**:
 ```yaml
-# .forge2/config.yml or ~/.config/forge2/config.yml
+# .forge/config.yml or ~/.config/forge/config.yml
 updates:
   check: daily  # daily, weekly, never
   notify: true
@@ -716,7 +716,7 @@ if (await shouldCheckForUpdates()) {
 **Success criteria**:
 - Can install forge via install.sh
 - `forge --version` works
-- Local modules (`.forge2/*.ts`) still work
+- Local modules (`.forge/*.ts`) still work
 
 **No changes to**:
 - Current module loading
@@ -1032,7 +1032,7 @@ Location: `tests/fixtures/`
 ### Glossary
 
 - **Meta project** - Bun project at `~/.local/share/forge/` managing forge core and shared modules
-- **Local module** - Project-specific TypeScript file in `.forge2/`
+- **Local module** - Project-specific TypeScript file in `.forge/`
 - **Shared module** - Reusable module installed to meta project
 - **Wrapper script** - Lightweight script at `~/.local/bin/forge` that delegates to real CLI
 - **Bootstrap** - Initial setup and delegation (we use wrapper instead)

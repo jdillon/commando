@@ -10,16 +10,16 @@ Instead of git-cloning modules like we planned, **use Bun's package manager**:
 
 ```bash
 # Old plan (git-based):
-git clone https://github.com/user/forge-module-aws ~/.local/share/forge2/modules/aws
+git clone https://github.com/user/forge-module-aws ~/.local/share/forge/modules/aws
 
 # New plan (npm-based):
-cd ~/.local/share/forge2
+cd ~/.local/share/forge
 bun add @forge-modules/aws
 
 # Or even simpler (from project):
 cd my-project
-forge2 module add aws
-# → Installs to ~/.local/share/forge2/node_modules/@forge-modules/aws
+forge module add aws
+# → Installs to ~/.local/share/forge/node_modules/@forge-modules/aws
 ```
 
 **Why this is brilliant:**
@@ -43,7 +43,7 @@ cd forge-module-aws
 bun publish
 
 # Users install
-forge2 module add aws
+forge module add aws
 # → bun add @forge-modules/aws
 ```
 
@@ -63,7 +63,7 @@ forge2 module add aws
 
 **Install directly from git:**
 ```bash
-forge2 module add https://github.com/user/forge-module-aws
+forge module add https://github.com/user/forge-module-aws
 # → bun add github:user/forge-module-aws
 ```
 
@@ -92,14 +92,14 @@ forge2 module add https://github.com/user/forge-module-aws
 
 ```bash
 # Official (vetted)
-forge2 module add aws
+forge module add aws
 # → bun add @forge-modules/aws
 
 # Community (git)
-forge2 module add https://github.com/someuser/forge-module-custom
+forge module add https://github.com/someuser/forge-module-custom
 
 # Private (company registry)
-forge2 module add @mycompany/forge-module-internal
+forge module add @mycompany/forge-module-internal
 # → Uses private npm registry
 ```
 
@@ -127,7 +127,7 @@ bun add picocolors pino ora
 
 **Use case:** Develop multiple modules together
 ```
-~/.local/share/forge2/
+~/.local/share/forge/
 ├── package.json
 ├── node_modules/
 └── modules/
@@ -189,9 +189,9 @@ bun pm ls --all
 ### Install Module
 
 ```bash
-forge2 module add aws
-forge2 module add github:user/forge-module-custom
-forge2 module add https://github.com/user/repo.git#v1.2.3
+forge module add aws
+forge module add github:user/forge-module-custom
+forge module add https://github.com/user/repo.git#v1.2.3
 ```
 
 **Implementation:**
@@ -219,7 +219,7 @@ export async function installModule(spec: string) {
 ### List Modules
 
 ```bash
-forge2 module list
+forge module list
 ```
 
 **Shows:**
@@ -239,13 +239,13 @@ Available commands:
 
 ```bash
 # Update all modules
-forge2 module update
+forge module update
 
 # Update specific module
-forge2 module update aws
+forge module update aws
 
 # Check for updates
-forge2 module outdated
+forge module outdated
 ```
 
 **Implementation:**
@@ -267,7 +267,7 @@ export async function updateModules(moduleName?: string) {
 ### Audit Security
 
 ```bash
-forge2 module audit
+forge module audit
 ```
 
 **Shows vulnerabilities in installed modules:**
@@ -282,13 +282,13 @@ Found 2 vulnerabilities:
   Low: ReDoS in semver@5.7.0
     Fix: bun update semver
 
-Run 'forge2 module update' to fix.
+Run 'forge module update' to fix.
 ```
 
 ### Remove Module
 
 ```bash
-forge2 module remove aws
+forge module remove aws
 ```
 
 ---
@@ -364,23 +364,23 @@ export default {
 
 ```bash
 # Only update patch versions (1.2.x)
-forge2 module update --patch
+forge module update --patch
 
 # Check what would update first
-forge2 module outdated
+forge module outdated
 ```
 
 ### Strategy 2: Review Before Update
 
 ```bash
 # Show what would change
-forge2 module update --dry-run
+forge module update --dry-run
 
 # Review changelog
-forge2 module changelog aws
+forge module changelog aws
 
 # Then update
-forge2 module update aws
+forge module update aws
 ```
 
 ### Strategy 3: Lock Major Versions
@@ -398,7 +398,7 @@ forge2 module update aws
 
 ```bash
 # Add to cron or CI
-forge2 module audit --json > /tmp/audit.json
+forge module audit --json > /tmp/audit.json
 
 # Alert if vulnerabilities found
 if [ -s /tmp/audit.json ]; then
@@ -419,7 +419,7 @@ For company-internal modules:
 echo "registry = \"https://npm.company.com\"" >> ~/.bunfig.toml
 
 # Or per-project
-cat > ~/.local/share/forge2/.bunfig.toml <<EOF
+cat > ~/.local/share/forge/.bunfig.toml <<EOF
 [install]
 scopes = {
   "@mycompany" = { url = "https://npm.company.com" }
@@ -437,7 +437,7 @@ bun publish --registry https://npm.company.com
 ### Install Private Module
 
 ```bash
-forge2 module add @mycompany/forge-module-internal
+forge module add @mycompany/forge-module-internal
 # → Uses private registry
 ```
 
@@ -467,8 +467,8 @@ https://forge-modules.dev
 ### Search
 
 ```bash
-forge2 module search aws
-forge2 module search kubernetes
+forge module search aws
+forge module search kubernetes
 ```
 
 **Implementation:**
@@ -497,7 +497,7 @@ export async function searchModules(query: string) {
 Modules have their own `node_modules`:
 
 ```
-~/.local/share/forge2/
+~/.local/share/forge/
 └── node_modules/
     ├── @forge-modules/
     │   ├── aws/
@@ -523,13 +523,13 @@ Modules have their own `node_modules`:
 ### Phase 1: Manual Install (Now)
 ```bash
 # Just add dependencies manually
-cd ~/.local/share/forge2
+cd ~/.local/share/forge
 bun add picocolors
 ```
 
 ### Phase 2: Module Command (Soon)
 ```bash
-forge2 module add aws
+forge module add aws
 # → Calls bun add under the hood
 ```
 
@@ -590,13 +590,13 @@ forge2 module add aws
 - [ ] Load modules from `node_modules/@forge-modules/*`
 
 ### CLI Commands
-- [ ] `forge2 module add <name|url>`
-- [ ] `forge2 module remove <name>`
-- [ ] `forge2 module list`
-- [ ] `forge2 module update [name]`
-- [ ] `forge2 module audit`
-- [ ] `forge2 module search <query>`
-- [ ] `forge2 module outdated`
+- [ ] `forge module add <name|url>`
+- [ ] `forge module remove <name>`
+- [ ] `forge module list`
+- [ ] `forge module update [name]`
+- [ ] `forge module audit`
+- [ ] `forge module search <query>`
+- [ ] `forge module outdated`
 
 ### Module Publishing
 - [ ] Create @forge-modules npm organization
@@ -618,23 +618,23 @@ forge2 module add aws
 
 ```bash
 # Initial setup
-git clone https://github.com/jdillon/forge ~/.local/share/forge2
-cd ~/.local/share/forge2
-bun install  # Installs forge2 core deps
+git clone https://github.com/jdillon/forge ~/.local/share/forge
+cd ~/.local/share/forge
+bun install  # Installs forge core deps
 
 # Add modules
-forge2 module add aws
-forge2 module add kubernetes
+forge module add aws
+forge module add kubernetes
 
 # Use in project
 cd ~/my-project
-forge2 aws:sync my-bucket
-forge2 k8s:deploy staging
+forge aws:sync my-bucket
+forge k8s:deploy staging
 
 # Update modules (monthly)
-forge2 module outdated
-forge2 module audit
-forge2 module update
+forge module outdated
+forge module audit
+forge module update
 
 # Everything safe and up to date! ✓
 ```
@@ -667,7 +667,7 @@ EOF
 bun publish
 
 # Users can now:
-# forge2 module add aws
+# forge module add aws
 ```
 
 ---
@@ -676,13 +676,13 @@ bun publish
 
 | Aspect | Bash + Git Modules | Bun + npm Modules |
 |--------|-------------------|-------------------|
-| Install | `git clone ...` | `forge2 module add aws` |
-| Update | Manual `git pull` | `forge2 module update` |
+| Install | `git clone ...` | `forge module add aws` |
+| Update | Manual `git pull` | `forge module update` |
 | Versions | Git SHAs | Semantic versions |
 | Dependencies | None | Automatic |
-| Security | Manual review | `forge2 module audit` |
+| Security | Manual review | `forge module audit` |
 | Private modules | SSH complexity | npm registry |
-| Discovery | README lists | `forge2 module search` |
+| Discovery | README lists | `forge module search` |
 
 **Bun's package manager turns modules into a first-class feature.**
 

@@ -79,7 +79,7 @@ Commands: greet, info
 
 ## Configuration
 
-See `.forge2/config.yml`:
+See `.forge/config.yml`:
 
 ```yaml
 dependencies:

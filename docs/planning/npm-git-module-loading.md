@@ -10,7 +10,7 @@
 
 ## Overview
 
-Enable Forge to load modules from npm packages and git repositories, not just local `.forge2/` directories.
+Enable Forge to load modules from npm packages and git repositories, not just local `.forge/` directories.
 
 ---
 
@@ -23,7 +23,7 @@ Enable Forge to load modules from npm packages and git repositories, not just lo
 - Standard pattern for modern development tools
 
 **Current limitation**:
-- Modules must be in project's `.forge2/` directory
+- Modules must be in project's `.forge/` directory
 - No version management
 - Manual copying required
 - No dependency resolution
@@ -51,7 +51,7 @@ Enable Forge to load modules from npm packages and git repositories, not just lo
 
 1. **Local filesystem** (current, keep for compatibility)
    ```
-   .forge2/
+   .forge/
    └── commands/
        └── mycommand.ts
    ```
@@ -59,7 +59,7 @@ Enable Forge to load modules from npm packages and git repositories, not just lo
 2. **npm packages**
    ```json
    {
-     "forge2Modules": {
+     "forgeModules": {
        "@myorg/forge-aws": "^1.2.0",
        "forge-terraform": "~2.0.1"
      }
@@ -68,7 +68,7 @@ Enable Forge to load modules from npm packages and git repositories, not just lo
 
 3. **git repositories**
    ```yaml
-   # .forge2/config.yml
+   # .forge/config.yml
    modules:
      - github:jdillon/forge-website#v1.0.0
      - gitlab:myorg/forge-custom#main
@@ -83,9 +83,9 @@ Enable Forge to load modules from npm packages and git repositories, not just lo
 ├───────────────────────────────────────────┤
 │  1. Check config.yml for module sources   │
 │  2. Resolve each source type:             │
-│     • Local: .forge2/                     │
+│     • Local: .forge/                     │
 │     • npm: node_modules/@org/pkg          │
-│     • git: .forge2/cache/git/...          │
+│     • git: .forge/cache/git/...          │
 │  3. Load modules from resolved locations  │
 │  4. Register commands in Commander        │
 └───────────────────────────────────────────┘
@@ -93,7 +93,7 @@ Enable Forge to load modules from npm packages and git repositories, not just lo
 ┌───────────────────┐  ┌────────────────────┐  ┌─────────────────┐
 │  Local Resolver   │  │   npm Resolver     │  │  Git Resolver   │
 ├───────────────────┤  ├────────────────────┤  ├─────────────────┤
-│ • Read .forge2/   │  │ • Read package.json│  │ • Parse git URL │
+│ • Read .forge/   │  │ • Read package.json│  │ • Parse git URL │
 │ • Load *.ts files │  │ • Install if needed│  │ • Clone/fetch   │
 │ • Immediate       │  │ • Load from        │  │ • Checkout ref  │
 │                   │  │   node_modules/    │  │ • Cache locally │
@@ -103,9 +103,9 @@ Enable Forge to load modules from npm packages and git repositories, not just lo
 ### Module Resolution Order
 
 **Priority** (first match wins):
-1. Local `.forge2/` (highest priority, for overrides/development)
+1. Local `.forge/` (highest priority, for overrides/development)
 2. npm packages in `node_modules/`
-3. Git repositories in `.forge2/cache/git/`
+3. Git repositories in `.forge/cache/git/`
 
 **Rationale**: Local modules can override installed ones for testing/development
 
@@ -115,18 +115,18 @@ Enable Forge to load modules from npm packages and git repositories, not just lo
 ```json
 {
   "name": "my-project",
-  "forge2Modules": {
+  "forgeModules": {
     "@myorg/forge-aws": "^1.2.0",
     "forge-terraform": "~2.0.1"
   },
-  "forge2ModulesGit": [
+  "forgeModulesGit": [
     "github:jdillon/forge-website#v1.0.0",
     "gitlab:myorg/forge-custom#main"
   ]
 }
 ```
 
-#### Option 2: .forge2/config.yml (current config file)
+#### Option 2: .forge/config.yml (current config file)
 ```yaml
 modules:
   # npm packages
@@ -144,7 +144,7 @@ modules:
 
 #### Option 3: Hybrid (recommended)
 - Use `package.json` for npm packages (standard node workflow)
-- Use `.forge2/config.yml` for git sources (keeps forge config together)
+- Use `.forge/config.yml` for git sources (keeps forge config together)
 
 ### npm Package Structure
 
@@ -157,7 +157,7 @@ modules:
 │     "name": "@myorg/forge-aws",
 │     "version": "1.2.0",
 │     "main": "dist/index.js",
-│     "forge2": {
+│     "forge": {
 │       "group": "aws",
 │       "description": "AWS deployment commands"
 │     }
@@ -169,7 +169,7 @@ modules:
 └── README.md
 ```
 
-**Discovery**: Look for `forge2` field in package.json
+**Discovery**: Look for `forge` field in package.json
 
 ### Git Repository Structure
 
@@ -177,7 +177,7 @@ modules:
 
 ```
 forge-website/
-├── .forge2module          # Marker file (indicates this is a forge2 module)
+├── .forgemodule          # Marker file (indicates this is a forge module)
 ├── package.json           # Standard metadata
 ├── commands/
 │   ├── deploy.ts
@@ -185,7 +185,7 @@ forge-website/
 └── README.md
 ```
 
-**Discovery**: Check for `.forge2module` marker or `forge2` in package.json
+**Discovery**: Check for `.forgemodule` marker or `forge` in package.json
 
 ---
 
@@ -202,7 +202,7 @@ forge-website/
    ```
 
 2. **Implement resolvers**:
-   - `LocalResolver`: Already works (`.forge2/` loading)
+   - `LocalResolver`: Already works (`.forge/` loading)
    - `NpmResolver`: Load from `node_modules/`
    - `GitResolver`: Clone/fetch git repos
 
@@ -210,32 +210,32 @@ forge-website/
 
 ### Phase 2: npm Package Support
 
-1. **Parse package.json**: Read `forge2Modules` field
+1. **Parse package.json**: Read `forgeModules` field
 2. **Install packages**: Run `bun install` if packages missing
-3. **Discover modules**: Scan `node_modules/` for forge2-compatible packages
+3. **Discover modules**: Scan `node_modules/` for forge-compatible packages
 4. **Load and register**: Use existing module loading logic
 
 ### Phase 3: Git Repository Support
 
 1. **Parse git URLs**: Support github:, gitlab:, git+ssh:, git+https:
 2. **Clone/fetch**: Use `simple-git` or shell out to `git clone`
-3. **Cache**: Store in `.forge2/cache/git/<hash>/`
+3. **Cache**: Store in `.forge/cache/git/<hash>/`
 4. **Checkout ref**: Support branches, tags, commit SHAs
-5. **Update strategy**: `forge2 module update` re-fetches
+5. **Update strategy**: `forge module update` re-fetches
 
 ### Phase 4: Version Management
 
-1. **Lock file**: Create `.forge2/modules.lock` (like package-lock.json)
+1. **Lock file**: Create `.forge/modules.lock` (like package-lock.json)
 2. **Version resolution**: Handle semver ranges
-3. **Update command**: `forge2 module update [name]`
-4. **Prune command**: `forge2 module prune` (remove unused)
+3. **Update command**: `forge module update [name]`
+4. **Prune command**: `forge module prune` (remove unused)
 
 ---
 
 ## Open Questions
 
 1. **npm install integration**:
-   - Should `forge2` run `bun install` automatically?
+   - Should `forge` run `bun install` automatically?
    - Or require user to run it separately?
    - What about CI/CD environments?
 
@@ -246,7 +246,7 @@ forge-website/
 
 3. **Caching strategy**:
    - Cache git repos permanently or temporary?
-   - Where to store cache (`.forge2/cache/` or `~/.cache/forge2/`)?
+   - Where to store cache (`.forge/cache/` or `~/.cache/forge/`)?
    - How to invalidate cache?
 
 4. **Module namespace conflicts**:

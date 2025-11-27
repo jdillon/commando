@@ -16,7 +16,7 @@ bun add pino
 bun add -D pino-pretty
 ```
 
-**Current version in forge2**: `^8.19.0` (pino), `^11.0.0` (pino-pretty)
+**Current version in forge**: `^8.19.0` (pino), `^11.0.0` (pino-pretty)
 
 ---
 
@@ -169,7 +169,7 @@ log.info({
 
 ```bash
 # Environment variable
-LOG_LEVEL=debug forge2 deploy
+LOG_LEVEL=debug forge deploy
 
 # Or programmatically
 log.level = 'debug';
@@ -183,7 +183,7 @@ log.level = 'debug';
 import pino from 'pino';
 
 const log = pino(
-  pino.destination('/var/log/forge2.log')
+  pino.destination('/var/log/forge.log')
 );
 ```
 

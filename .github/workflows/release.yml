@@ -1,0 +1,142 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get version from tag
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run tests
+        run: bun test
+
+      - name: Build tarball
+        run: bun run pack
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/*.tgz
+          generate_release_notes: true
+
+  update-homebrew:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download release tarball
+        run: |
+          VERSION="${{ needs.release.outputs.version }}"
+          curl -sL "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/planet57-forge-${VERSION}.tgz" -o forge.tgz
+
+      - name: Compute SHA256
+        id: checksum
+        run: |
+          SHA256=$(shasum -a 256 forge.tgz | awk '{print $1}')
+          echo "sha256=${SHA256}" >> $GITHUB_OUTPUT
+
+      - name: Clone tap repository
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/jdillon/homebrew-planet57.git" tap
+
+      - name: Update formula
+        run: |
+          VERSION="${{ needs.release.outputs.version }}"
+          SHA256="${{ steps.checksum.outputs.sha256 }}"
+
+          cat > tap/Formula/forge.rb << 'FORMULA'
+          # Homebrew formula for Forge
+          # Install: brew tap jdillon/planet57 && brew install forge
+
+          class Forge < Formula
+            desc "Modern CLI framework for deployments"
+            homepage "https://github.com/jdillon/forge"
+            url "https://github.com/jdillon/forge/releases/download/v__VERSION__/planet57-forge-__VERSION__.tgz"
+            sha256 "__SHA256__"
+            license "Apache-2.0"
+            version "__VERSION__"
+
+            depends_on "oven-sh/bun/bun"
+
+            def install
+              forge_home = ENV["FORGE_HOME"] || "#{Dir.home}/.forge"
+
+              system "mkdir", "-p", "#{forge_home}/config", "#{forge_home}/state", "#{forge_home}/cache", "#{forge_home}/logs"
+
+              File.write("#{forge_home}/package.json", <<~JSON)
+                {
+                  "name": "forge-meta",
+                  "version": "1.0.0",
+                  "private": true
+                }
+              JSON
+
+              File.write("#{forge_home}/bunfig.toml", <<~TOML)
+                [install]
+                exact = true
+                dev = false
+                peer = true
+                optional = false
+                auto = "disable"
+              TOML
+
+              cd forge_home do
+                system "bun", "add", "file://#{buildpath}/package"
+              end
+
+              forge_cli = "#{forge_home}/node_modules/@planet57/forge/bin/forge"
+              unless File.exist?(forge_cli)
+                odie "Installation failed: forge CLI not found"
+              end
+
+              bin.install_symlink forge_cli
+            end
+
+            def caveats
+              <<~EOS
+                Forge installed to #{ENV["FORGE_HOME"] || "~/.forge"}
+              EOS
+            end
+
+            test do
+              assert_match "forge", shell_output("#{bin}/forge --help")
+            end
+          end
+          FORMULA
+
+          # Replace placeholders
+          sed -i "s/__VERSION__/${VERSION}/g" tap/Formula/forge.rb
+          sed -i "s/__SHA256__/${SHA256}/g" tap/Formula/forge.rb
+
+      - name: Push to tap
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          VERSION="${{ needs.release.outputs.version }}"
+          cd tap
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/forge.rb
+          git commit -m "Update forge to ${VERSION}"
+          git push

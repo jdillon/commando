@@ -59,7 +59,7 @@ Commands: greet, info
 
 ## Configuration
 
-See `.forge2/config.yml`:
+See `.forge/config.yml`:
 
 ```yaml
 dependencies:
@@ -74,7 +74,7 @@ modules:
 **Development** (current):
 ```yaml
 dependencies:
-  - file:/Users/jason/ws/jdillon/forge-standard  # Local symlink
+  - file:~/ws/forge-standard  # Local symlink
 ```
 
 **Production** (future):
@@ -85,7 +85,7 @@ dependencies:
 
 ## Related
 
-- **forge-standard source**: `/Users/jason/ws/jdillon/forge-standard/`
+- **forge-standard source**: `~/ws/forge-standard/`
 - **Installed location**: `~/.local/share/forge/node_modules/@jdillon/forge-standard/`
 - **Module resolver**: `lib/module-resolver.ts`
 - **Phase 3 docs**: `docs/wip/module-system/phase3-implementation-proposal.md`

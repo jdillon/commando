@@ -131,7 +131,7 @@ if [[ "$CONFIG_EXISTS" == "true" && "$PURGE_CONFIG" != "true" ]]; then
   echo "      Use --purge to also remove configuration"
   echo
 fi
-echo "${YELLOW}Note:${RESET} Project files (e.g., .forge2/) will ${BOLD}NOT${RESET} be modified."
+echo "${YELLOW}Note:${RESET} Project files (e.g., .forge/) will ${BOLD}NOT${RESET} be modified."
 echo
 
 # Confirm unless -y was passed

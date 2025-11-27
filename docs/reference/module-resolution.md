@@ -1,6 +1,6 @@
 # Module Resolution in Forge
 
-**Purpose:** How Forge enables modules in `.forge2/` to import packages from the shared forge home.
+**Purpose:** How Forge enables modules in `.forge/` to import packages from the shared forge home.
 
 **Updated:** 2025-11-01
 
@@ -12,7 +12,7 @@ Forge uses a **shared dependency model** where packages are installed once in `~
 
 ### The Challenge
 
-When a Forge module (e.g., `.forge2/moo.ts`) needs to import a package:
+When a Forge module (e.g., `.forge/moo.ts`) needs to import a package:
 
 ```typescript
 import cowsay from "cowsay";
@@ -35,7 +35,7 @@ Forge sets the `NODE_PATH` environment variable before executing Bun:
 
 ```bash
 export NODE_PATH="$FORGE_HOME/node_modules"
-bun run .forge2/module.ts
+bun run .forge/module.ts
 ```
 
 This instructs Bun to include forge home's `node_modules` in its module resolution search path.
@@ -87,7 +87,7 @@ Create `~/.local/share/forge/tsconfig.json`:
     "baseUrl": ".",
     "paths": {
       "*": [
-        "/Users/jason/.local/share/forge/node_modules/*",
+        "~/.local/share/forge/node_modules/*",
         "./node_modules/*",
         "*"
       ]
@@ -104,7 +104,7 @@ Create `~/.local/share/forge/tsconfig.json`:
 **Usage:**
 
 ```bash
-bun run --tsconfig-override="$FORGE_HOME/tsconfig.json" .forge2/module.ts
+bun run --tsconfig-override="$FORGE_HOME/tsconfig.json" .forge/module.ts
 ```
 
 ### When to Use
@@ -134,7 +134,7 @@ Use the tsconfig approach when:
 When using `--tsconfig-override` with a tsconfig outside the project directory, Bun shows:
 
 ```
-Internal error: directory mismatch for directory "/Users/jason/.local/share/forge/tsconfig.json", fd 3.
+Internal error: directory mismatch for directory "~/.local/share/forge/tsconfig.json", fd 3.
 You don't need to do anything, but this indicates a bug.
 ```
 
@@ -168,11 +168,11 @@ Similar to `BUN_INSTALL_GLOBAL_DIR`, this only affects package installation loca
 While technically works, this defeats the purpose of a shared configuration:
 
 ```bash
-# Creates .forge2/tsconfig.json in every project
+# Creates .forge/tsconfig.json in every project
 # Not recommended - adds files to each project
 ```
 
-Forge specifically avoids adding configuration files to `.forge2/` directories.
+Forge specifically avoids adding configuration files to `.forge/` directories.
 
 ---
 
@@ -191,8 +191,8 @@ export FORGE_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/forge"
 export NODE_PATH="$FORGE_HOME/node_modules"
 
 # Optional: Add project-local node_modules if it exists (for overrides)
-if [[ -d ".forge2/node_modules" ]]; then
-  export NODE_PATH=".forge2/node_modules:$NODE_PATH"
+if [[ -d ".forge/node_modules" ]]; then
+  export NODE_PATH=".forge/node_modules:$NODE_PATH"
 fi
 
 # Execute forge CLI
@@ -219,7 +219,7 @@ fi
 ```bash
 cd examples/deps
 export NODE_PATH="$HOME/.local/share/forge/node_modules"
-bun run .forge2/moo2.ts
+bun run .forge/moo2.ts
 ```
 
 Expected output: Cowsay ASCII art (imports work)
@@ -228,7 +228,7 @@ Expected output: Cowsay ASCII art (imports work)
 
 ```bash
 cd examples/deps
-bun run --tsconfig-override="$HOME/.local/share/forge/tsconfig.json" .forge2/moo2.ts
+bun run --tsconfig-override="$HOME/.local/share/forge/tsconfig.json" .forge/moo2.ts
 ```
 
 Expected output: Cowsay ASCII art + harmless warning
@@ -272,7 +272,7 @@ NODE_PATH supports multiple directories (colon-separated on Unix):
 
 ```bash
 # Local overrides forge home
-export NODE_PATH=".forge2/node_modules:$FORGE_HOME/node_modules"
+export NODE_PATH=".forge/node_modules:$FORGE_HOME/node_modules"
 
 # Or multiple shared locations
 export NODE_PATH="/opt/shared/node_modules:$FORGE_HOME/node_modules"
@@ -313,7 +313,7 @@ export NODE_PATH="${local_modules}${SEP}${FORGE_HOME}/node_modules"
 
 ## Why Not Symlinks?
 
-Previous iterations considered symlinking `.forge2/node_modules` → `$FORGE_HOME/node_modules`.
+Previous iterations considered symlinking `.forge/node_modules` → `$FORGE_HOME/node_modules`.
 
 **Why we don't use symlinks:**
 
@@ -422,6 +422,6 @@ All tests confirm NODE_PATH and --tsconfig-override work reliably.
 
 **Alternative:** Use `--tsconfig-override="$FORGE_HOME/tsconfig.json"` for explicit config
 
-**Result:** Modules in `.forge2/` can import from forge home without per-project configuration or symlinks
+**Result:** Modules in `.forge/` can import from forge home without per-project configuration or symlinks
 
 **Recommendation:** Use NODE_PATH unless you have specific needs for explicit configuration

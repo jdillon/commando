@@ -16,7 +16,7 @@ import { Command } from 'commander';
 const program = new Command();
 
 program
-  .name('forge2')
+  .name('forge')
   .description('Modern CLI framework')
   .version('2.0.0');
 
@@ -42,8 +42,8 @@ program.parse();
 
 **Auto-generated help:**
 ```bash
-$ forge2 --help
-Usage: forge2 [options] [command]
+$ forge --help
+Usage: forge [options] [command]
 
 Modern CLI framework
 
@@ -56,8 +56,8 @@ Commands:
   deploy [options] <environment>  Deploy to environment
   help [command]             display help for command
 
-$ forge2 sync --help
-Usage: forge2 sync [options]
+$ forge sync --help
+Usage: forge sync [options]
 
 Sync to S3
 
@@ -92,7 +92,7 @@ Options:
 import { cli } from 'cleye';
 
 const argv = cli({
-  name: 'forge2',
+  name: 'forge',
   version: '2.0.0',
 
   flags: {
@@ -144,7 +144,7 @@ const argv = cli({
 import { Command } from 'cliffy';
 
 await new Command()
-  .name('forge2')
+  .name('forge')
   .version('2.0.0')
   .command('sync', 'Sync to S3')
     .option('-d, --dry-run', 'Preview')
@@ -175,7 +175,7 @@ await new Command()
 ```typescript
 import cac from 'cac';
 
-const cli = cac('forge2');
+const cli = cac('forge');
 
 cli
   .command('sync', 'Sync to S3')
@@ -265,7 +265,7 @@ bun add omelette
 ```typescript
 import omelette from 'omelette';
 
-const completion = omelette('forge2 <command> <subcommand>');
+const completion = omelette('forge <command> <subcommand>');
 
 completion.on('command', ({ reply }) => {
   reply(['sync', 'deploy', 'publish', 'module']);
@@ -280,15 +280,15 @@ completion.init();
 
 **Setup:**
 ```bash
-forge2 completion >> ~/.bashrc
+forge completion >> ~/.bashrc
 # or
-forge2 completion >> ~/.zshrc
+forge completion >> ~/.zshrc
 ```
 
 **Usage:**
 ```bash
-forge2 <TAB>       # → sync, deploy, publish, module
-forge2 sync --<TAB> # → --dry-run, --bucket
+forge <TAB>       # → sync, deploy, publish, module
+forge sync --<TAB> # → --dry-run, --bucket
 ```
 
 ---
@@ -299,9 +299,9 @@ Fig provides IDE-like autocomplete for terminal (macOS only).
 
 **Create completion spec:**
 ```typescript
-// .fig/forge2.ts
+// .fig/forge.ts
 const completionSpec = {
-  name: "forge2",
+  name: "forge",
   description: "Modern CLI framework",
   subcommands: [
     {
@@ -343,7 +343,7 @@ program
 ## Example: Full Commander Setup
 
 ```typescript
-// forge2
+// forge
 #!/usr/bin/env bun
 import { Command } from 'commander';
 import { $ } from 'bun';
@@ -352,7 +352,7 @@ import pc from 'picocolors';
 const program = new Command();
 
 program
-  .name('forge2')
+  .name('forge')
   .description('Modern CLI framework for deployments')
   .version('2.0.0');
 
@@ -395,8 +395,8 @@ website
     console.log(pc.blue('Publishing website...'));
 
     // Run other commands
-    await website.parseAsync(['node', 'forge2', 'build'], { from: 'user' });
-    await website.parseAsync(['node', 'forge2', 'sync', ...(options.dryRun ? ['--dry-run'] : [])], { from: 'user' });
+    await website.parseAsync(['node', 'forge', 'build'], { from: 'user' });
+    await website.parseAsync(['node', 'forge', 'sync', ...(options.dryRun ? ['--dry-run'] : [])], { from: 'user' });
 
     console.log(pc.green('✓') + ' Published!');
   });
@@ -443,7 +443,7 @@ program
   .action(() => {
     // Generate completion script
     console.log('# Add to ~/.bashrc or ~/.zshrc:');
-    console.log('eval "$(forge2 completion)"');
+    console.log('eval "$(forge completion)"');
   });
 
 // Parse
@@ -452,8 +452,8 @@ await program.parseAsync(process.argv);
 
 **Usage:**
 ```bash
-$ forge2 --help
-Usage: forge2 [options] [command]
+$ forge --help
+Usage: forge [options] [command]
 
 Modern CLI framework for deployments
 
@@ -469,8 +469,8 @@ Commands:
   completion         Generate shell completion
   help [command]     display help for command
 
-$ forge2 website --help
-Usage: forge2 website [options] [command]
+$ forge website --help
+Usage: forge website [options] [command]
 
 Website deployment commands
 
@@ -479,7 +479,7 @@ Commands:
   publish [options]  Full publish (build + sync + invalidate)
   help [command]     display help for command
 
-$ forge2 module add aws
+$ forge module add aws
 Installing module: aws
 ✓ Installed
 ```
@@ -540,13 +540,13 @@ log.fatal('Fatal error');    // 60
 
 ```bash
 # JSON logs for production (parseable)
-NODE_ENV=production forge2 deploy > logs.json
+NODE_ENV=production forge deploy > logs.json
 
 # Pretty logs for development
-forge2 deploy
+forge deploy
 
 # Pipe to analysis
-forge2 deploy | jq 'select(.level >= 50)'  # Errors only
+forge deploy | jq 'select(.level >= 50)'  # Errors only
 ```
 
 ---
@@ -555,7 +555,7 @@ forge2 deploy | jq 'select(.level >= 50)'  # Errors only
 
 ```json
 {
-  "name": "forge2",
+  "name": "forge",
   "version": "2.0.0-prototype",
   "type": "module",
   "dependencies": {

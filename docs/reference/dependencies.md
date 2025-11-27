@@ -231,7 +231,7 @@ const proceed = input?.toLowerCase() === 'y';
 ### Minimal Approach (Recommended)
 ```json
 {
-  "name": "forge2",
+  "name": "forge",
   "version": "2.0.0-prototype",
   "type": "module",
   "dependencies": {
@@ -248,7 +248,7 @@ const proceed = input?.toLowerCase() === 'y';
 ### Enhanced Approach (If You Want Features)
 ```json
 {
-  "name": "forge2",
+  "name": "forge",
   "version": "2.0.0-prototype",
   "type": "module",
   "dependencies": {

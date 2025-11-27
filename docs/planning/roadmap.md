@@ -60,7 +60,7 @@ Forge is a modern CLI framework for deployments built with TypeScript/Bun. This 
 Enable users to install, list, update, and remove modules from private registries (npm, GitLab packages).
 
 **Key Features**:
-- Commands: `forge2 module add/list/update/remove`
+- Commands: `forge module add/list/update/remove`
 - Registry support: npm, GitLab packages
 - Authentication for private registries
 - Local module cache
@@ -78,7 +78,7 @@ Generate and install shell completion for bash/zsh/fish.
 **Key Features**:
 - Auto-complete commands, subcommands, flags
 - Support bash, zsh, fish
-- Installation: `forge2 completion install`
+- Installation: `forge completion install`
 
 **Dependencies**: omelette package (already installed)
 
@@ -89,8 +89,8 @@ Generate and install shell completion for bash/zsh/fish.
 
 Support commands at top level, not just subcommands.
 
-**Current**: `forge2 website deploy`
-**Desired**: `forge2 deploy` or `forge2 website:deploy`
+**Current**: `forge website deploy`
+**Desired**: `forge deploy` or `forge website:deploy`
 
 ---
 

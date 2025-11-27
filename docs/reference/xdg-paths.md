@@ -21,7 +21,7 @@ The [XDG Base Directory Specification](https://specifications.freedesktop.org/ba
 
 # User executables (should be in $PATH)
 ~/.local/bin/
-  └── mise, uv, forge2
+  └── mise, uv, forge
 
 # User state data (logs, history, recent files)
 ~/.local/state/
@@ -79,10 +79,10 @@ Following XDG provides several benefits:
 ```bash
 # Executables (in PATH)
 ~/.local/bin/
-└── forge2                          # Main executable
+└── forge                          # Main executable
 
 # Application data
-~/.local/share/forge2/
+~/.local/share/forge/
 ├── modules/                        # Shared modules
 │   ├── aws/
 │   ├── kubernetes/
@@ -94,16 +94,16 @@ Following XDG provides several benefits:
     └── core.ts                     # Framework libraries
 
 # User configuration (optional)
-~/.config/forge2/
+~/.config/forge/
 └── config.ts                       # Global user config
 
 # Cache (safe to delete anytime)
-~/.cache/forge2/
+~/.cache/forge/
 ├── module-cache/                   # Downloaded modules
 └── bun-cache/                      # Bun build artifacts
 
 # State (logs, history)
-~/.local/state/forge2/
+~/.local/state/forge/
 ├── update-check.json               # Last update check
 └── command-history.json            # Command usage stats
 ```
@@ -112,14 +112,14 @@ Following XDG provides several benefits:
 
 ```bash
 project/
-├── .forge2/                        # Project config (prototype)
+├── .forge/                        # Project config (prototype)
 │   ├── config.yml                  # Module list and settings
 │   ├── website.ts                  # Command implementations
 │   ├── state.json                  # Project state (git-tracked)
 │   └── state.local.json            # User state (gitignored)
 └── ...
 
-# In final version, will be .forge/ instead of .forge2/
+# In final version, will be .forge/ instead of .forge/
 ```
 
 ---
@@ -131,19 +131,19 @@ Forge respects XDG environment variables with standard fallbacks:
 ```bash
 # Override data directory
 export XDG_DATA_HOME="$HOME/my-data"
-# Forge uses: $XDG_DATA_HOME/forge2
+# Forge uses: $XDG_DATA_HOME/forge
 
 # Override config directory
 export XDG_CONFIG_HOME="$HOME/my-config"
-# Forge uses: $XDG_CONFIG_HOME/forge2
+# Forge uses: $XDG_CONFIG_HOME/forge
 
 # Override cache directory
 export XDG_CACHE_HOME="$HOME/my-cache"
-# Forge uses: $XDG_CACHE_HOME/forge2
+# Forge uses: $XDG_CACHE_HOME/forge
 
 # Override state directory
 export XDG_STATE_HOME="$HOME/my-state"
-# Forge uses: $XDG_STATE_HOME/forge2
+# Forge uses: $XDG_STATE_HOME/forge
 ```
 
 **Defaults** (when env vars not set):
@@ -179,12 +179,12 @@ function getXDGStateHome(): string {
 
 export function getForgePaths() {
   return {
-    data: join(getXDGDataHome(), 'forge2'),
-    config: join(getXDGConfigHome(), 'forge2'),
-    cache: join(getXDGCacheHome(), 'forge2'),
-    state: join(getXDGStateHome(), 'forge2'),
-    modules: join(getXDGDataHome(), 'forge2', 'modules'),
-    runtime: join(getXDGDataHome(), 'forge2', 'runtime'),
+    data: join(getXDGDataHome(), 'forge'),
+    config: join(getXDGConfigHome(), 'forge'),
+    cache: join(getXDGCacheHome(), 'forge'),
+    state: join(getXDGStateHome(), 'forge'),
+    modules: join(getXDGDataHome(), 'forge', 'modules'),
+    runtime: join(getXDGDataHome(), 'forge', 'runtime'),
   };
 }
 ```
@@ -193,15 +193,15 @@ export function getForgePaths() {
 
 Modules are searched in order:
 
-1. **Project modules**: `<project>/.forge2/modules/<name>/`
-2. **User modules**: `~/.local/share/forge2/modules/<name>/`
+1. **Project modules**: `<project>/.forge/modules/<name>/`
+2. **User modules**: `~/.local/share/forge/modules/<name>/`
 3. **System modules**: (future - for system-wide installs)
 
 ```typescript
 export function findModulePath(moduleName: string, projectRoot: string): string | null {
   const paths = getForgePaths();
   const candidates = [
-    join(projectRoot, '.forge2', 'modules', moduleName),
+    join(projectRoot, '.forge', 'modules', moduleName),
     join(paths.modules, moduleName),
   ];
 
@@ -223,26 +223,26 @@ export function findModulePath(moduleName: string, projectRoot: string): string 
 
 ```bash
 # Set Bun install location
-export BUN_INSTALL="$HOME/.local/share/forge2/runtime"
+export BUN_INSTALL="$HOME/.local/share/forge/runtime"
 
 # Install Bun
 curl -fsSL https://bun.sh/install | bash
 
 # Result:
-# ~/.local/share/forge2/runtime/bin/bun
+# ~/.local/share/forge/runtime/bin/bun
 ```
 
 ### Add to PATH
 
 **Option 1: Symlink** (recommended)
 ```bash
-ln -s ~/.local/share/forge2/runtime/bin/bun ~/.local/bin/bun
+ln -s ~/.local/share/forge/runtime/bin/bun ~/.local/bin/bun
 ```
 
 **Option 2: Add to PATH**
 ```bash
 # In ~/.bashrc or ~/.zshrc
-export PATH="$HOME/.local/share/forge2/runtime/bin:$PATH"
+export PATH="$HOME/.local/share/forge/runtime/bin:$PATH"
 ```
 
 ---
@@ -255,7 +255,7 @@ export PATH="$HOME/.local/share/forge2/runtime/bin:$PATH"
 |------|-----------|------|--------|-------|
 | **mise** | `~/.local/bin/mise` | `~/.local/share/mise/` | `~/.config/mise/` | ✅ Full XDG |
 | **uv** | `~/.local/bin/uv` | `~/.local/share/uv/` | `~/.config/uv/` | ✅ Full XDG |
-| **forge v2** | `~/.local/bin/forge2` | `~/.local/share/forge2/` | `~/.config/forge2/` | ✅ Full XDG |
+| **forge v2** | `~/.local/bin/forge` | `~/.local/share/forge/` | `~/.config/forge/` | ✅ Full XDG |
 | **cargo** | `~/.cargo/bin/*` | `~/.cargo/` | `~/.cargo/config.toml` | ⚠️ Partial (uses ~/.cargo) |
 | **neovim** | `/usr/bin/nvim` | `~/.local/share/nvim/` | `~/.config/nvim/` | ✅ Full XDG |
 
@@ -276,22 +276,22 @@ export PATH="$HOME/.local/share/forge2/runtime/bin:$PATH"
 
 ```bash
 # All forge files in one place
-ls ~/.local/share/forge2/
+ls ~/.local/share/forge/
 # modules/  runtime/  lib/
 
 # Easy to back up or remove
-cp -r ~/.local/share/forge2/ /backup/
-rm -rf ~/.local/share/forge2/
+cp -r ~/.local/share/forge/ /backup/
+rm -rf ~/.local/share/forge/
 ```
 
 ### 2. Cache Management
 
 ```bash
 # Clear cache safely
-rm -rf ~/.cache/forge2/
+rm -rf ~/.cache/forge/
 
 # Cache rebuilds automatically on next run
-forge2 update
+forge update
 ```
 
 ### 3. Portable Configuration
@@ -300,17 +300,17 @@ forge2 update
 # Use different config in container
 docker run -e XDG_CONFIG_HOME=/container-config myimage
 
-# Forge uses: /container-config/forge2/
+# Forge uses: /container-config/forge/
 ```
 
 ### 4. Clear Separation
 
 ```bash
 # Back up user config
-cp -r ~/.config/forge2/ /backup/config/
+cp -r ~/.config/forge/ /backup/config/
 
 # Back up user data (modules, etc.)
-cp -r ~/.local/share/forge2/ /backup/data/
+cp -r ~/.local/share/forge/ /backup/data/
 
 # Skip cache and state (not important)
 ```
@@ -329,10 +329,10 @@ project/.forge/                     # Project config
 ### New Paths (v2 - Bun)
 
 ```bash
-~/.local/share/forge2/              # Application data
-~/.local/bin/forge2                 # Executable
-~/.config/forge2/                   # User config (optional)
-project/.forge2/                    # Project config (prototype)
+~/.local/share/forge/              # Application data
+~/.local/bin/forge                 # Executable
+~/.config/forge/                   # User config (optional)
+project/.forge/                    # Project config (prototype)
 ```
 
 **No migration needed** - v2 uses completely different locations.
@@ -346,7 +346,7 @@ project/.forge2/                    # Project config (prototype)
 Currently optional, but could be used for:
 
 ```typescript
-// ~/.config/forge2/config.ts
+// ~/.config/forge/config.ts
 export default {
   // Global module aliases
   modules: {
@@ -370,7 +370,7 @@ export default {
 ### State Tracking
 
 ```bash
-# ~/.local/state/forge2/update-check.json
+# ~/.local/state/forge/update-check.json
 {
   "lastCheck": "2025-10-29T12:00:00Z",
   "currentVersion": "2.0.0",
@@ -378,7 +378,7 @@ export default {
   "updateAvailable": true
 }
 
-# ~/.local/state/forge2/command-history.json
+# ~/.local/state/forge/command-history.json
 {
   "commands": {
     "sync": { "count": 45, "lastUsed": "2025-10-29T11:30:00Z" },
@@ -402,10 +402,10 @@ export default {
 Forge follows XDG standards for a cleaner, more maintainable installation:
 
 - ✅ Executable in `~/.local/bin/` (standard location, likely in PATH)
-- ✅ Data in `~/.local/share/forge2/` (modules, runtime)
-- ✅ Config in `~/.config/forge2/` (optional user config)
-- ✅ Cache in `~/.cache/forge2/` (safe to delete)
-- ✅ State in `~/.local/state/forge2/` (logs, history)
+- ✅ Data in `~/.local/share/forge/` (modules, runtime)
+- ✅ Config in `~/.config/forge/` (optional user config)
+- ✅ Cache in `~/.cache/forge/` (safe to delete)
+- ✅ State in `~/.local/state/forge/` (logs, history)
 - ✅ Respects `XDG_*` environment variables
 - ✅ Mirrors FHS (Filesystem Hierarchy Standard) at user level
 

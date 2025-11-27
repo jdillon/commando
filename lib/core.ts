@@ -136,7 +136,7 @@ export function discoverCommands(
  * Load a module from a path and discover its commands
  *
  * Handles:
- * - Module resolution (local .forge2/ or npm package)
+ * - Module resolution (local .forge/ or npm package)
  * - Symlink rewriting for correct forge instance
  * - Command discovery via discoverCommands()
  *
@@ -307,8 +307,8 @@ export class Forge {
       forgeDir: this.config.forgeDir
     }, 'Project context available');
 
-    // 3. Setup symlink for .forge2 directory
-    log.debug('Phase 2: Setting up .forge2 symlink');
+    // 3. Setup symlink for .forge directory
+    log.debug('Phase 2: Setting up .forge symlink');
     const symlinkStart = Date.now();
     await symlinkForgeDir(this.config.forgeDir);
     const symlinkDuration = Date.now() - symlinkStart;

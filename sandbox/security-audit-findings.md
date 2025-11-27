@@ -22,21 +22,21 @@
 
 ## ⚠️ Issues Found - User-Specific Paths
 
-### Hardcoded `/Users/jason` Paths
+### Hardcoded `~` Paths
 
 **Critical (blocks others from using):**
 
-1. **examples/standard/.forge2/config.yml:9**
+1. **examples/standard/.forge/config.yml:9**
    ```yaml
-   - file:/Users/jason/ws/jdillon/forge-standard
+   - file:~/ws/forge-standard
    ```
    **Impact:** Example won't work for other users
    **Fix:** Use relative path or remove example if forge-standard doesn't exist
 
 2. **examples/standard/README.md**
-   - Line 18: `file:/Users/jason/ws/jdillon/forge-standard`
-   - Line 54: `file:/Users/jason/ws/jdillon/forge-standard`
-   - Line 66: `file:/Users/jason/ws/jdillon/forge-standard`
+   - Line 18: `file:~/ws/forge-standard`
+   - Line 54: `file:~/ws/forge-standard`
+   - Line 66: `file:~/ws/forge-standard`
    **Impact:** Documentation shows user-specific path
    **Fix:** Update to use relative paths or `../../../forge-standard` pattern
 
@@ -98,7 +98,7 @@ dev-home/                # ✅ Dev environment
 ## 📋 Action Items
 
 ### High Priority
-- [ ] Fix `examples/standard/.forge2/config.yml` - remove or update hardcoded path
+- [ ] Fix `examples/standard/.forge/config.yml` - remove or update hardcoded path
 - [ ] Fix `examples/standard/README.md` - update documentation paths
 - [ ] Verify `forge-standard` package exists or remove example
 

@@ -61,7 +61,7 @@ async function bunTypescriptLoader(filepath: string): Promise<any> {
 /**
  * Discover project root by walking up directory tree
  *
- * Searches for .forge2/ directory starting from startDir and moving up
+ * Searches for .forge/ directory starting from startDir and moving up
  * until it finds one or reaches the filesystem root.
  *
  * @param startDir - Directory to start searching from (defaults to cwd)
@@ -75,7 +75,7 @@ async function discoverProject(startDir?: FilePath): Promise<FilePath | null> {
 
   // Walk up to root
   while (dir !== '/' && dir !== '.') {
-    const forgeDir = join(dir, '.forge2');
+    const forgeDir = join(dir, '.forge');
     log.debug(`Checking directory: ${dir}`);
 
     if (existsSync(forgeDir)) {
@@ -115,13 +115,13 @@ function getExplicitProjectRoot(rootPath?: FilePath): FilePath | null {
     const envPath = process.env.FORGE_PROJECT;
     log.debug(`Checking FORGE_PROJECT env var: ${envPath}`);
 
-    if (existsSync(join(envPath, '.forge2'))) {
+    if (existsSync(join(envPath, '.forge'))) {
       log.debug(`Using project root from FORGE_PROJECT env var: ${envPath}`);
       return envPath;
     }
 
-    log.debug(`FORGE_PROJECT env var points to invalid directory (no .forge2/): ${envPath}`);
-    throw new Error(`FORGE_PROJECT=${envPath} but .forge2/ not found`);
+    log.debug(`FORGE_PROJECT env var points to invalid directory (no .forge/): ${envPath}`);
+    throw new Error(`FORGE_PROJECT=${envPath} but .forge/ not found`);
   }
 
   log.debug('No explicit project root provided');
@@ -160,7 +160,7 @@ async function findProjectRoot(options: {
  * Resolve full configuration from bootstrap config
  *
  * Steps:
- * 1. Discover project root (.forge2 directory)
+ * 1. Discover project root (.forge directory)
  * 2. Load .forge/config.yml if project exists
  * 3. DEFERRED: Merge with user config (~/.forge/config) and defaults
  * 4. DEFERRED: Apply ENV var overrides beyond existing FORGE_* vars
@@ -201,15 +201,15 @@ export async function resolveConfig(
 
       log.debug(`Configuring cosmiconfig to search for: ${searchPlaces.join(', ')}`);
 
-      const explorer = cosmiconfig("forge2", {
+      const explorer = cosmiconfig("forge", {
         searchPlaces,
         loaders: {
           ".ts": bunTypescriptLoader,
         },
       });
 
-      // Search in .forge2 directory
-      const forgeDir = resolve(projectRoot, ".forge2");
+      // Search in .forge directory
+      const forgeDir = resolve(projectRoot, ".forge");
       log.debug(`Searching for config in: ${forgeDir}`);
 
       const configLoadStart = Date.now();
@@ -229,7 +229,7 @@ export async function resolveConfig(
       // Config parse error - throw to let CLI error handler deal with it
       log.debug(`Config load failed: ${err.message}`);
       throw new Error(
-        `Failed to load .forge2/config: ${err.message}`,
+        `Failed to load .forge/config: ${err.message}`,
         { cause: err },
       );
     }
@@ -239,10 +239,10 @@ export async function resolveConfig(
   // TODO: Implement layered config merge:
   //   - Defaults
   //   - User config (~/.forge/config)
-  //   - Project config (.forge2/config)
-  //   - Local overrides (.forge2/config.local)
+  //   - Project config (.forge/config)
+  //   - Local overrides (.forge/config.local)
   //   - ENV vars (FORGE_*)
-  // For now: Just use .forge2/config directly
+  // For now: Just use .forge/config directly
 
   // 4. DEFERRED: Extended ENV var support
   // TODO: Support ENV var overrides for config values
@@ -256,7 +256,7 @@ export async function resolveConfig(
     // Project info
     projectPresent: !!projectRoot,
     projectRoot: projectRoot ? resolve(projectRoot) : undefined,
-    forgeDir: projectRoot ? resolve(projectRoot, ".forge2") : undefined,
+    forgeDir: projectRoot ? resolve(projectRoot, ".forge") : undefined,
     userDir: resolve(bootstrapConfig.userDir),
 
     // Bootstrap options
@@ -268,7 +268,7 @@ export async function resolveConfig(
     colorMode: bootstrapConfig.colorMode,
     isRestarted: bootstrapConfig.isRestarted,
 
-    // Forge config (from .forge2/config.yml)
+    // Forge config (from .forge/config.yml)
     modules: forgeConfig.modules,
     dependencies: forgeConfig.dependencies,
     settings: forgeConfig.settings,

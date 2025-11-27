@@ -13,7 +13,7 @@ Minimal Forge module demonstrating simple command patterns.
 
 ```
 basic/
-├── .forge2/
+├── .forge/
 │   ├── config.yml      # Forge configuration
 │   ├── simple.ts       # Command module
 │   └── .gitignore
@@ -27,11 +27,11 @@ basic/
 cd examples/basic
 
 # Run commands
-forge2 basic ping
-forge2 basic greet
-forge2 basic greet Alice
-forge2 basic greet --loud
-forge2 basic greet Alice --loud
+forge basic ping
+forge basic greet
+forge basic greet Alice
+forge basic greet --loud
+forge basic greet Alice --loud
 ```
 
 ## Commands
@@ -54,15 +54,15 @@ Greet someone by name.
 
 **Examples**:
 ```bash
-forge2 basic greet                # Hello, Forge User!
-forge2 basic greet Alice          # Hello, Alice!
-forge2 basic greet --loud         # HELLO, FORGE USER!
-forge2 basic greet Bob --loud     # HELLO, BOB!
+forge basic greet                # Hello, Forge User!
+forge basic greet Alice          # Hello, Alice!
+forge basic greet --loud         # HELLO, FORGE USER!
+forge basic greet Bob --loud     # HELLO, BOB!
 ```
 
 ## Module Code
 
-See `.forge2/simple.ts` for the implementation. Key features:
+See `.forge/simple.ts` for the implementation. Key features:
 
 1. **Module metadata** - Uses `__module__` export to customize group name:
    ```typescript
@@ -101,7 +101,7 @@ See `.forge2/simple.ts` for the implementation. Key features:
 
 ## Config
 
-See `.forge2/config.yml`:
+See `.forge/config.yml`:
 
 ```yaml
 modules:

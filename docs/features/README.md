@@ -15,7 +15,7 @@ Documentation for key Forge features.
 
 ## How Features Work Together
 
-1. **List modules** in `.forge2/config.yml`
+1. **List modules** in `.forge/config.yml`
 2. **Export commands** from module files (auto-discovery)
 3. **Add `__module__`** to customize group name (optional)
 4. **Framework groups** commands automatically (subcommand groups)
@@ -26,13 +26,13 @@ Documentation for key Forge features.
 ## Example
 
 ```yaml
-# .forge2/config.yml
+# .forge/config.yml
 modules:
   - ./website
 ```
 
 ```typescript
-// .forge2/website.ts
+// .forge/website.ts
 export const __module__ = {
   group: 'website',
   description: 'Website deployment'
@@ -54,7 +54,7 @@ export const deploy: ForgeCommand = {
 };
 ```
 
-**Result**: `forge2 website deploy staging --dry-run`
+**Result**: `forge website deploy staging --dry-run`
 
 ---
 

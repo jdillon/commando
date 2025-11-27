@@ -295,7 +295,7 @@ notifier.notify();
    ╭──────────────────────────────────────────────────╮
    │                                                  │
    │   Update available: 2.0.0 → 2.1.0                │
-   │   Run `forge2 update` to update                  │
+   │   Run `forge update` to update                  │
    │                                                  │
    ╰──────────────────────────────────────────────────╯
 ```
@@ -389,11 +389,11 @@ render(<App />);
 
 ```json
 {
-  "name": "forge2",
+  "name": "forge",
   "version": "2.0.0-prototype",
   "type": "module",
   "bin": {
-    "forge2": "./forge2"
+    "forge": "./forge"
   },
   "dependencies": {
     "commander": "^12.0.0",
@@ -568,7 +568,7 @@ async function listModules() {
 
   console.log(chalk.bold('\nInstalled Modules:\n'));
   console.log(table.toString());
-  console.log(chalk.gray('\nRun ') + chalk.cyan('forge2 module update') + chalk.gray(' to update modules\n'));
+  console.log(chalk.gray('\nRun ') + chalk.cyan('forge module update') + chalk.gray(' to update modules\n'));
 }
 ```
 
@@ -584,7 +584,7 @@ Installed Modules:
 │ custom              │ 1.0.0    │ github:user/repo │ ✓ Up to date    │
 └─────────────────────┴──────────┴──────────────────┴─────────────────┘
 
-Run forge2 module update to update modules
+Run forge module update to update modules
 ```
 
 ---
@@ -592,7 +592,7 @@ Run forge2 module update to update modules
 ## Example: Update Notifier
 
 ```typescript
-// forge2 entry point
+// forge entry point
 import updateNotifier from 'update-notifier';
 import pkg from './package.json' assert { type: 'json' };
 
@@ -604,7 +604,7 @@ updateNotifier({
   isGlobal: true,
   message: boxen(
     'Update available: ' + chalk.gray('{currentVersion}') + ' → ' + chalk.green('{latestVersion}') + '\n' +
-    'Run ' + chalk.cyan('forge2 update') + ' to update',
+    'Run ' + chalk.cyan('forge update') + ' to update',
     {
       padding: 1,
       margin: 1,
@@ -711,7 +711,7 @@ bun pm audit
 
 ## Summary: The Awesome Experience
 
-**When you run `forge2 deploy`:**
+**When you run `forge deploy`:**
 
 1. 📢 ASCII banner on first run
 2. ✓ Update notification if available

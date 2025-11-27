@@ -27,7 +27,7 @@ export const RESTART_EXIT_CODE = 42;
  * Sync dependencies and handle restart if needed
  *
  * @param config - Forge configuration
- * @param forgeDir - Project .forge2/ directory path
+ * @param forgeDir - Project .forge/ directory path
  * @param isRestarted - True if this is a restarted process (from --forge-restarted flag)
  * @returns True if process should exit for restart
  * @throws Error if dependencies missing on restarted process

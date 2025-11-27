@@ -23,7 +23,7 @@ import { createLogger } from './logging';
  * Resolve module path with priority: local → shared
  *
  * @param modulePath - Module name or path from config (e.g., "./website", "@aws-sdk/client-s3")
- * @param forgeDir - Project's .forge2/ directory
+ * @param forgeDir - Project's .forge/ directory
  * @returns Absolute path to module file
  * @throws Error if module not found
  */

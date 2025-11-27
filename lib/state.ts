@@ -31,7 +31,7 @@ export class StateManager {
 
   constructor(projectRoot: string) {
     this.projectRoot = projectRoot;
-    this.forgeDir = join(projectRoot, '.forge2');
+    this.forgeDir = join(projectRoot, '.forge');
   }
 
   private async readJSON(filename: string): Promise<Record<string, any>> {

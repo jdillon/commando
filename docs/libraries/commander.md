@@ -15,7 +15,7 @@
 bun add commander
 ```
 
-**Current version in forge2**: `14.0.2`
+**Current version in forge**: `14.0.2`
 
 ---
 
@@ -27,7 +27,7 @@ import { Command } from 'commander';
 const program = new Command();
 
 program
-  .name('forge2')
+  .name('forge')
   .description('Modern CLI framework')
   .version('2.0.0');
 
@@ -160,8 +160,8 @@ export const deploy: ForgeCommand = {
 Commander generates help automatically:
 
 ```bash
-$ forge2 deploy --help
-Usage: forge2 deploy [options] <environment>
+$ forge deploy --help
+Usage: forge deploy [options] <environment>
 
 Deploy to environment
 
@@ -235,7 +235,7 @@ cmd
     console.log(`Processing: ${files.join(', ')}`);
   });
 
-// Usage: forge2 process file1.txt file2.txt file3.txt
+// Usage: forge process file1.txt file2.txt file3.txt
 ```
 
 ---
@@ -261,7 +261,7 @@ cache
     console.log('Cache status...');
   });
 
-// Usage: forge2 cache clear
+// Usage: forge cache clear
 ```
 
 ---
