@@ -85,12 +85,9 @@ class Forge < Formula
   end
 
   def caveats
-    <<~EOS
-      First run will complete installation to ~/.forge
-
-      User data (config, plugins, state) persists across upgrades.
-      To fully remove, also delete ~/.forge after uninstall.
-    EOS
+    "First run will complete installation to ~/.forge\n\n" \
+    "User data (config, plugins, state) persists across upgrades.\n" \
+    "To fully remove, also delete ~/.forge after uninstall.\n"
   end
 
   test do
