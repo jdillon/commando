@@ -1,6 +1,31 @@
 # Forge - Yet another CLI Framework
 
-**Philosophy**: *"Make it awesome, it's for me mostly, so I like awesome."*
+**Philosophy**: _"Make it awesome, it's for me mostly, so I like awesome."_
+
+---
+
+## Installation
+
+### Homebrew (recommended)
+
+```bash
+brew tap jdillon/planet57
+brew install jdillon/planet57/forge
+```
+
+### Script
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/jdillon/forge/main/bin/install.sh | bash
+```
+
+Or with auto-confirm:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/jdillon/forge/main/bin/install.sh | bash -s -- -y
+```
+
+**Prerequisites**: [Bun](https://bun.sh) and Git
 
 ---
 
