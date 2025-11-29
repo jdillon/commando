@@ -23,6 +23,7 @@ Project-specific guidance for Forge. See `~/.claude/CLAUDE.md` for global prefer
 **DO NOT redesign this without explicit approval.**
 
 Forge requires `FORGE_HOME=~/.forge` with this structure:
+
 ```
 ~/.forge/
 ├── config/      # User configuration
@@ -35,11 +36,13 @@ Forge requires `FORGE_HOME=~/.forge` with this structure:
 ```
 
 **Current reality:**
+
 - Forge is designed as a single-user install
 - The tool expects and requires `~/.forge` to exist with proper structure
 - This is a mismatch with Homebrew's Cellar-based approach
 
 **Homebrew strategy:**
+
 - Use brew as an **installation/update mechanism only**
 - Formula must bootstrap `~/.forge` structure during install
 - Brew installs the package, but forge runs from `~/.forge`
@@ -49,11 +52,13 @@ Forge requires `FORGE_HOME=~/.forge` with this structure:
 
 ---
 
-## Beads (Issue Tracking)
+## Beads
 
 Use beads MCP tools for ALL issue tracking. Do NOT use TodoWrite or markdown TODOs.
 
-**Commit format**: Include `Resolves: platform-xxx` or `Related: platform-xxx` in commit messages.
+**Do NOT close issues prematurely.** Wait for explicit user verification that the work is complete before closing. Build succeeding is not enough - the user must confirm the feature works as expected.
+
+**Commit format**: Include `Resolves: forge-xxx` or `Related: forge-xxx` in commit messages.
 See `bd onboard` for more information.
 
 ## Code Conventions
