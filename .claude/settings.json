@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(**)",
+      "Write(**)",
+      "Edit(**)",
+      "mcp__plugin_beads_beads",
+      "mcp__chrome_devtools"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
