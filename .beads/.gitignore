@@ -27,3 +27,6 @@ beads.right.meta.json
 !beads.jsonl
 !metadata.json
 !config.json
+
+# Version tracking (local only)
+.local_version
