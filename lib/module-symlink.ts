@@ -27,19 +27,19 @@ const log = createLogger('module-symlink');
  * Create a symlink to the .commando directory in node_modules/.commando-project/
  * Returns the path to import through the symlink
  */
-export async function symlinkForgeDir(forgeDir: string): Promise<string> {
-  log.debug({ forgeDir }, 'Creating symlink for forge directory');
+export async function symlinkCommandoDir(commandoDir: string): Promise<string> {
+  log.debug({ commandoDir }, 'Creating symlink for commando directory');
 
-  // Generate hash from absolute forge dir path (16 chars = 64 bits)
-  const hash = createHash('sha256').update(forgeDir).digest('hex').slice(0, 16);
+  // Generate hash from absolute commando dir path (16 chars = 64 bits)
+  const hash = createHash('sha256').update(commandoDir).digest('hex').slice(0, 16);
 
   // Bucket by first 2 chars to avoid flat directory (like git objects)
   const bucket = hash.slice(0, 2);
   const hashSuffix = hash.slice(2);
 
-  log.debug({ forgeDir, hash, bucket, hashSuffix }, 'Computed symlink hash');
+  log.debug({ commandoDir, hash, bucket, hashSuffix }, 'Computed symlink hash');
 
-  // Symlink location in forge-home node_modules
+  // Symlink location in commando-home node_modules
   const nodeModules = getNodeModulesPath();
   const symlinkDir = join(nodeModules, '.commando-project', bucket);
   const symlinkPath = join(symlinkDir, hashSuffix);
@@ -61,14 +61,14 @@ export async function symlinkForgeDir(forgeDir: string): Promise<string> {
       const target = await readlink(symlinkPath);
       log.debug({ symlinkPath, target }, 'Symlink exists, checking target');
 
-      if (target === forgeDir) {
+      if (target === commandoDir) {
         log.debug({ symlinkPath, target }, 'Symlink already correct');
         return symlinkPath;
       } else {
         log.warn({
           symlinkPath,
           currentTarget: target,
-          expectedTarget: forgeDir
+          expectedTarget: commandoDir
         }, 'Symlink points to wrong target');
         // Could delete and recreate, but for now just use it
       }
@@ -80,10 +80,10 @@ export async function symlinkForgeDir(forgeDir: string): Promise<string> {
     // Create the symlink
     log.debug({ symlinkPath }, 'Symlink does not exist, creating');
     try {
-      await symlink(forgeDir, symlinkPath, 'dir');
-      log.debug({ forgeDir, symlinkPath }, 'Symlink created successfully');
+      await symlink(commandoDir, symlinkPath, 'dir');
+      log.debug({ commandoDir, symlinkPath }, 'Symlink created successfully');
     } catch (e: any) {
-      log.debug({ forgeDir, symlinkPath, error: e.message }, 'Symlink creation failed');
+      log.debug({ commandoDir, symlinkPath, error: e.message }, 'Symlink creation failed');
       throw e;
     }
   }
@@ -95,21 +95,21 @@ export async function symlinkForgeDir(forgeDir: string): Promise<string> {
  * Convert a module path within .commando to go through the symlink
  *
  * Input: /path/to/user/project/.commando/commands.ts
- * Output: /forge-home/node_modules/.commando-project/abc123/commands.ts
+ * Output: /commando-home/node_modules/.commando-project/abc123/commands.ts
  *
  * If the path is NOT in .commando, returns it unchanged.
  *
  * Note: The symlink should already exist (created during project setup in cli.ts)
  */
-export async function rewriteModulePath(fullPath: string, forgeDir: string): Promise<string> {
-  log.debug({ fullPath, forgeDir }, 'Checking if path needs rewrite');
+export async function rewriteModulePath(fullPath: string, commandoDir: string): Promise<string> {
+  log.debug({ fullPath, commandoDir }, 'Checking if path needs rewrite');
 
   // Only rewrite paths that are actually in the .commando directory
-  if (!fullPath.startsWith(forgeDir)) {
+  if (!fullPath.startsWith(commandoDir)) {
     log.debug({
       fullPath,
-      forgeDir,
-      reason: 'path outside forgeDir'
+      commandoDir,
+      reason: 'path outside commandoDir'
     }, 'Skipping rewrite');
     return fullPath;
   }
@@ -117,9 +117,9 @@ export async function rewriteModulePath(fullPath: string, forgeDir: string): Pro
   log.debug({ fullPath }, 'Rewriting path through symlink');
 
   // Symlink should already exist, just compute the path (16 chars = 64 bits)
-  const hash = createHash('sha256').update(forgeDir).digest('hex').slice(0, 16);
+  const hash = createHash('sha256').update(commandoDir).digest('hex').slice(0, 16);
 
-  // Bucket by first 2 chars (matching symlinkForgeDir structure)
+  // Bucket by first 2 chars (matching symlinkCommandoDir structure)
   const bucket = hash.slice(0, 2);
   const hashSuffix = hash.slice(2);
 
@@ -127,7 +127,7 @@ export async function rewriteModulePath(fullPath: string, forgeDir: string): Pro
   const symlinkPath = join(nodeModules, '.commando-project', bucket, hashSuffix);
 
   // Replace the .commando directory with the symlink path
-  const relativePath = fullPath.substring(forgeDir.length);
+  const relativePath = fullPath.substring(commandoDir.length);
   const rewrittenPath = join(symlinkPath, relativePath);
 
   log.debug({

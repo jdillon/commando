@@ -18,7 +18,7 @@ import { Command } from 'commander';
 import { StateManager } from './state';
 import { die, ExitNotification } from './helpers';
 import { getLoggerConfig, createLogger } from './logging';
-import { rewriteModulePath, symlinkForgeDir } from './module-symlink';
+import { rewriteModulePath, symlinkCommandoDir } from './module-symlink';
 import { resolveModule } from './module-resolver';
 import { autoInstallDependencies, RESTART_EXIT_CODE } from './auto-install';
 import * as builtins from './builtins';
@@ -310,7 +310,7 @@ export class Forge {
     // 3. Setup symlink for .commando directory
     log.debug('Phase 2: Setting up .commando symlink');
     const symlinkStart = Date.now();
-    await symlinkForgeDir(this.config.commandoDir);
+    await symlinkCommandoDir(this.config.commandoDir);
     const symlinkDuration = Date.now() - symlinkStart;
 
     log.debug({ durationMs: symlinkDuration }, 'Symlink setup complete');
