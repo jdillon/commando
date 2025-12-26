@@ -15,7 +15,7 @@
 bun add boxen
 ```
 
-**Current version in forge**: `^7.1.1`
+**Current version in commando**: `^7.1.1`
 
 ---
 
@@ -156,7 +156,7 @@ boxen('Long text that will wrap if needed', {
 
 ---
 
-## Common Patterns in Forge
+## Common Patterns in Commando
 
 ### Success Summary
 ```typescript
@@ -203,7 +203,7 @@ console.log(boxen(
 ```typescript
 console.log(boxen(
   'Update available: ' + chalk.gray('2.0.0') + ' → ' + chalk.green('2.1.0') + '\n' +
-  'Run ' + chalk.cyan('forge update') + ' to update',
+  'Run ' + chalk.cyan('cmdo update') + ' to update',
   {
     padding: 1,
     margin: 1,

@@ -249,7 +249,7 @@ function bad_example {
 }
 ```
 
-**3. Forgetting to declare variable first:**
+**3. Failing to declare variable first:**
 ```bash
 get_distribution_id dist_id  # Error if dist_id doesn't exist!
 
@@ -340,7 +340,7 @@ dist_id = get_distribution_id()  # Just works
 1. ✅ **More explicit** than Zsh `reply` (function signature shows intent)
 2. ✅ **More portable** (Bash more common than Zsh)
 3. ✅ **No global pollution** (caller controls variable names)
-4. ✅ **Can auto-upgrade** (like current forge does for Bash 4)
+4. ✅ **Can auto-upgrade** (like current commando does for Bash 4)
 
 **Example pattern:**
 ```bash
@@ -390,7 +390,7 @@ const value = getValue();  // Natural
 
 ---
 
-## Real Forge Example: Website Commands
+## Real Commando Example: Website Commands
 
 ### Current (OUTPUT_PATTERN):
 

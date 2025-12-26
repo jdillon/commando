@@ -15,7 +15,7 @@
 bun add chalk
 ```
 
-**Current version in forge**: `^5.3.0`
+**Current version in commando**: `^5.3.0`
 
 ---
 
@@ -80,7 +80,7 @@ console.log(chalk.hex('#DEADED')('Custom hex color'));
 
 ---
 
-## Common Patterns in Forge
+## Common Patterns in Commando
 
 ### Success Messages
 ```typescript

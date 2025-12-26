@@ -1,4 +1,4 @@
-# Awesome CLI Experience for Forge
+# Awesome CLI Experience for Commando
 
 **Philosophy**: "It's for me mostly, so I like awesome"
 
@@ -252,7 +252,7 @@ import figlet from 'figlet';
 
 console.log(
   chalk.cyan(
-    figlet.textSync('FORGE', { font: 'ANSI Shadow' })
+    figlet.textSync('COMMANDO', { font: 'ANSI Shadow' })
   )
 );
 console.log(chalk.gray('  v2.0.0 - Modern deployment tool\n'));
@@ -260,12 +260,12 @@ console.log(chalk.gray('  v2.0.0 - Modern deployment tool\n'));
 
 **Output:**
 ```
-███████╗ ██████╗ ██████╗  ██████╗ ███████╗
-██╔════╝██╔═══██╗██╔══██╗██╔════╝ ██╔════╝
-█████╗  ██║   ██║██████╔╝██║  ███╗█████╗
-██╔══╝  ██║   ██║██╔══██╗██║   ██║██╔══╝
-██║     ╚██████╔╝██║  ██║╚██████╔╝███████╗
-╚═╝      ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+ ██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███╗   ██╗██████╗  ██████╗
+██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔═══██╗
+██║     ██║   ██║██╔████╔██║██╔████╔██║███████║██╔██╗ ██║██║  ██║██║   ██║
+██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══██║██║╚██╗██║██║  ██║██║   ██║
+╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║  ██║██║ ╚████║██████╔╝╚██████╔╝
+ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝
   v2.0.0 - Modern deployment tool
 ```
 
@@ -295,7 +295,7 @@ notifier.notify();
    ╭──────────────────────────────────────────────────╮
    │                                                  │
    │   Update available: 2.0.0 → 2.1.0                │
-   │   Run `forge update` to update                  │
+   │   Run `cmdo update` to update                  │
    │                                                  │
    ╰──────────────────────────────────────────────────╯
 ```
@@ -389,11 +389,11 @@ render(<App />);
 
 ```json
 {
-  "name": "forge",
+  "name": "commando",
   "version": "2.0.0-prototype",
   "type": "module",
   "bin": {
-    "forge": "./forge"
+    "cmdo": "./cmdo"
   },
   "dependencies": {
     "commander": "^12.0.0",
@@ -568,7 +568,7 @@ async function listModules() {
 
   console.log(chalk.bold('\nInstalled Modules:\n'));
   console.log(table.toString());
-  console.log(chalk.gray('\nRun ') + chalk.cyan('forge module update') + chalk.gray(' to update modules\n'));
+  console.log(chalk.gray('\nRun ') + chalk.cyan('cmdo module update') + chalk.gray(' to update modules\n'));
 }
 ```
 
@@ -584,7 +584,7 @@ Installed Modules:
 │ custom              │ 1.0.0    │ github:user/repo │ ✓ Up to date    │
 └─────────────────────┴──────────┴──────────────────┴─────────────────┘
 
-Run forge module update to update modules
+Run cmdo module update to update modules
 ```
 
 ---
@@ -592,7 +592,7 @@ Run forge module update to update modules
 ## Example: Update Notifier
 
 ```typescript
-// forge entry point
+// cmdo entry point
 import updateNotifier from 'update-notifier';
 import pkg from './package.json' assert { type: 'json' };
 
@@ -604,7 +604,7 @@ updateNotifier({
   isGlobal: true,
   message: boxen(
     'Update available: ' + chalk.gray('{currentVersion}') + ' → ' + chalk.green('{latestVersion}') + '\n' +
-    'Run ' + chalk.cyan('forge update') + ' to update',
+    'Run ' + chalk.cyan('cmdo update') + ' to update',
     {
       padding: 1,
       margin: 1,
@@ -711,7 +711,7 @@ bun pm audit
 
 ## Summary: The Awesome Experience
 
-**When you run `forge deploy`:**
+**When you run `cmdo deploy`:**
 
 1. 📢 ASCII banner on first run
 2. ✓ Update notification if available

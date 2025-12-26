@@ -1,6 +1,6 @@
 # XDG Base Directory Compliance
 
-**Status**: Implemented in v2 prototype
+**Status**: Deprecated - Commando uses ~/.commando instead
 
 ---
 
@@ -13,23 +13,23 @@ The [XDG Base Directory Specification](https://specifications.freedesktop.org/ba
 ```bash
 # User configuration files (like /etc for your user)
 ~/.config/
-  └── nvim/, git/, forge/
+  └── nvim/, git/, commando/
 
 # User data files (application data, plugins, themes)
 ~/.local/share/
-  └── applications/, fonts/, forge/
+  └── applications/, fonts/, commando/
 
 # User executables (should be in $PATH)
 ~/.local/bin/
-  └── mise, uv, forge
+  └── mise, uv, cmdo
 
 # User state data (logs, history, recent files)
 ~/.local/state/
-  └── forge/
+  └── commando/
 
 # User cache (safe to delete anytime)
 ~/.cache/
-  └── forge/, uv/
+  └── commando/, uv/
 ```
 
 ### Environment Variables
@@ -60,7 +60,7 @@ $XDG_BIN_HOME     → non-standard, but ~/.local/bin is convention
 
 ---
 
-## Why Forge Uses XDG
+## Why Commando Uses XDG
 
 Following XDG provides several benefits:
 
@@ -72,17 +72,17 @@ Following XDG provides several benefits:
 
 ---
 
-## Forge Directory Layout
+## Commando Directory Layout
 
 ### System-Wide Installation
 
 ```bash
 # Executables (in PATH)
 ~/.local/bin/
-└── forge                          # Main executable
+└── cmdo                            # Main executable
 
 # Application data
-~/.local/share/forge/
+~/.commando/
 ├── modules/                        # Shared modules
 │   ├── aws/
 │   ├── kubernetes/
@@ -94,16 +94,16 @@ Following XDG provides several benefits:
     └── core.ts                     # Framework libraries
 
 # User configuration (optional)
-~/.config/forge/
+~/.config/commando/
 └── config.ts                       # Global user config
 
 # Cache (safe to delete anytime)
-~/.cache/forge/
+~/.cache/commando/
 ├── module-cache/                   # Downloaded modules
 └── bun-cache/                      # Bun build artifacts
 
 # State (logs, history)
-~/.local/state/forge/
+~/.local/state/commando/
 ├── update-check.json               # Last update check
 └── command-history.json            # Command usage stats
 ```
@@ -112,38 +112,38 @@ Following XDG provides several benefits:
 
 ```bash
 project/
-├── .forge/                        # Project config (prototype)
+├── .commando/                      # Project config (prototype)
 │   ├── config.yml                  # Module list and settings
 │   ├── website.ts                  # Command implementations
 │   ├── state.json                  # Project state (git-tracked)
 │   └── state.local.json            # User state (gitignored)
 └── ...
 
-# In final version, will be .forge/ instead of .forge/
+# In final version, will be .commando/ instead of .commando/
 ```
 
 ---
 
 ## Environment Variables
 
-Forge respects XDG environment variables with standard fallbacks:
+Commando respects XDG environment variables with standard fallbacks:
 
 ```bash
 # Override data directory
 export XDG_DATA_HOME="$HOME/my-data"
-# Forge uses: $XDG_DATA_HOME/forge
+# Commando uses: $XDG_DATA_HOME/commando
 
 # Override config directory
 export XDG_CONFIG_HOME="$HOME/my-config"
-# Forge uses: $XDG_CONFIG_HOME/forge
+# Commando uses: $XDG_CONFIG_HOME/commando
 
 # Override cache directory
 export XDG_CACHE_HOME="$HOME/my-cache"
-# Forge uses: $XDG_CACHE_HOME/forge
+# Commando uses: $XDG_CACHE_HOME/commando
 
 # Override state directory
 export XDG_STATE_HOME="$HOME/my-state"
-# Forge uses: $XDG_STATE_HOME/forge
+# Commando uses: $XDG_STATE_HOME/commando
 ```
 
 **Defaults** (when env vars not set):
@@ -177,14 +177,14 @@ function getXDGStateHome(): string {
   return process.env.XDG_STATE_HOME || join(homedir(), '.local', 'state');
 }
 
-export function getForgePaths() {
+export function getCommandoPaths() {
   return {
-    data: join(getXDGDataHome(), 'forge'),
-    config: join(getXDGConfigHome(), 'forge'),
-    cache: join(getXDGCacheHome(), 'forge'),
-    state: join(getXDGStateHome(), 'forge'),
-    modules: join(getXDGDataHome(), 'forge', 'modules'),
-    runtime: join(getXDGDataHome(), 'forge', 'runtime'),
+    data: join(getXDGDataHome(), 'commando'),
+    config: join(getXDGConfigHome(), 'commando'),
+    cache: join(getXDGCacheHome(), 'commando'),
+    state: join(getXDGStateHome(), 'commando'),
+    modules: join(getXDGDataHome(), 'commando', 'modules'),
+    runtime: join(getXDGDataHome(), 'commando', 'runtime'),
   };
 }
 ```
@@ -193,15 +193,15 @@ export function getForgePaths() {
 
 Modules are searched in order:
 
-1. **Project modules**: `<project>/.forge/modules/<name>/`
-2. **User modules**: `~/.local/share/forge/modules/<name>/`
+1. **Project modules**: `<project>/.commando/modules/<name>/`
+2. **User modules**: `~/.commando/modules/<name>/`
 3. **System modules**: (future - for system-wide installs)
 
 ```typescript
 export function findModulePath(moduleName: string, projectRoot: string): string | null {
-  const paths = getForgePaths();
+  const paths = getCommandoPaths();
   const candidates = [
-    join(projectRoot, '.forge', 'modules', moduleName),
+    join(projectRoot, '.commando', 'modules', moduleName),
     join(paths.modules, moduleName),
   ];
 
@@ -219,30 +219,30 @@ export function findModulePath(moduleName: string, projectRoot: string): string 
 
 ## Bun Installation (XDG-Compliant)
 
-### Install Bun to Forge Runtime Directory
+### Install Bun to Commando Runtime Directory
 
 ```bash
 # Set Bun install location
-export BUN_INSTALL="$HOME/.local/share/forge/runtime"
+export BUN_INSTALL="$HOME/.commando/runtime"
 
 # Install Bun
 curl -fsSL https://bun.sh/install | bash
 
 # Result:
-# ~/.local/share/forge/runtime/bin/bun
+# ~/.commando/runtime/bin/bun
 ```
 
 ### Add to PATH
 
 **Option 1: Symlink** (recommended)
 ```bash
-ln -s ~/.local/share/forge/runtime/bin/bun ~/.local/bin/bun
+ln -s ~/.commando/runtime/bin/bun ~/.local/bin/bun
 ```
 
 **Option 2: Add to PATH**
 ```bash
 # In ~/.bashrc or ~/.zshrc
-export PATH="$HOME/.local/share/forge/runtime/bin:$PATH"
+export PATH="$HOME/.commando/runtime/bin:$PATH"
 ```
 
 ---
@@ -255,7 +255,7 @@ export PATH="$HOME/.local/share/forge/runtime/bin:$PATH"
 |------|-----------|------|--------|-------|
 | **mise** | `~/.local/bin/mise` | `~/.local/share/mise/` | `~/.config/mise/` | ✅ Full XDG |
 | **uv** | `~/.local/bin/uv` | `~/.local/share/uv/` | `~/.config/uv/` | ✅ Full XDG |
-| **forge v2** | `~/.local/bin/forge` | `~/.local/share/forge/` | `~/.config/forge/` | ✅ Full XDG |
+| **commando** | `~/.local/bin/cmdo` | `~/.commando/` | `~/.config/commando/` | ⚠️ Hybrid |
 | **cargo** | `~/.cargo/bin/*` | `~/.cargo/` | `~/.cargo/config.toml` | ⚠️ Partial (uses ~/.cargo) |
 | **neovim** | `/usr/bin/nvim` | `~/.local/share/nvim/` | `~/.config/nvim/` | ✅ Full XDG |
 
@@ -270,28 +270,28 @@ export PATH="$HOME/.local/share/forge/runtime/bin:$PATH"
 
 ---
 
-## Benefits for Forge Users
+## Benefits for Commando Users
 
 ### 1. Clean Installation
 
 ```bash
-# All forge files in one place
-ls ~/.local/share/forge/
+# All commando files in one place
+ls ~/.commando/
 # modules/  runtime/  lib/
 
 # Easy to back up or remove
-cp -r ~/.local/share/forge/ /backup/
-rm -rf ~/.local/share/forge/
+cp -r ~/.commando/ /backup/
+rm -rf ~/.commando/
 ```
 
 ### 2. Cache Management
 
 ```bash
 # Clear cache safely
-rm -rf ~/.cache/forge/
+rm -rf ~/.cache/commando/
 
 # Cache rebuilds automatically on next run
-forge update
+cmdo update
 ```
 
 ### 3. Portable Configuration
@@ -300,17 +300,17 @@ forge update
 # Use different config in container
 docker run -e XDG_CONFIG_HOME=/container-config myimage
 
-# Forge uses: /container-config/forge/
+# Commando uses: /container-config/commando/
 ```
 
 ### 4. Clear Separation
 
 ```bash
 # Back up user config
-cp -r ~/.config/forge/ /backup/config/
+cp -r ~/.config/commando/ /backup/config/
 
 # Back up user data (modules, etc.)
-cp -r ~/.local/share/forge/ /backup/data/
+cp -r ~/.commando/ /backup/data/
 
 # Skip cache and state (not important)
 ```
@@ -329,10 +329,10 @@ project/.forge/                     # Project config
 ### New Paths (v2 - Bun)
 
 ```bash
-~/.local/share/forge/              # Application data
-~/.local/bin/forge                 # Executable
-~/.config/forge/                   # User config (optional)
-project/.forge/                    # Project config (prototype)
+~/.commando/                       # Application data
+~/.local/bin/cmdo                  # Executable
+~/.config/commando/                # User config (optional)
+project/.commando/                 # Project config (prototype)
 ```
 
 **No migration needed** - v2 uses completely different locations.
@@ -346,11 +346,11 @@ project/.forge/                    # Project config (prototype)
 Currently optional, but could be used for:
 
 ```typescript
-// ~/.config/forge/config.ts
+// ~/.config/commando/config.ts
 export default {
   // Global module aliases
   modules: {
-    aws: 'https://github.com/user/forge-aws-enhanced'
+    aws: 'https://github.com/user/commando-aws-enhanced'
   },
 
   // Default flags
@@ -370,7 +370,7 @@ export default {
 ### State Tracking
 
 ```bash
-# ~/.local/state/forge/update-check.json
+# ~/.local/state/commando/update-check.json
 {
   "lastCheck": "2025-10-29T12:00:00Z",
   "currentVersion": "2.0.0",
@@ -378,7 +378,7 @@ export default {
   "updateAvailable": true
 }
 
-# ~/.local/state/forge/command-history.json
+# ~/.local/state/commando/command-history.json
 {
   "commands": {
     "sync": { "count": 45, "lastUsed": "2025-10-29T11:30:00Z" },
@@ -399,14 +399,14 @@ export default {
 
 ## Summary
 
-Forge follows XDG standards for a cleaner, more maintainable installation:
+Commando follows XDG standards for a cleaner, more maintainable installation:
 
 - ✅ Executable in `~/.local/bin/` (standard location, likely in PATH)
-- ✅ Data in `~/.local/share/forge/` (modules, runtime)
-- ✅ Config in `~/.config/forge/` (optional user config)
-- ✅ Cache in `~/.cache/forge/` (safe to delete)
-- ✅ State in `~/.local/state/forge/` (logs, history)
+- ✅ Data in `~/.commando/` (modules, runtime)
+- ✅ Config in `~/.config/commando/` (optional user config)
+- ✅ Cache in `~/.cache/commando/` (safe to delete)
+- ✅ State in `~/.local/state/commando/` (logs, history)
 - ✅ Respects `XDG_*` environment variables
 - ✅ Mirrors FHS (Filesystem Hierarchy Standard) at user level
 
-**This makes forge a good citizen of modern Unix systems.** 🎯
+**This makes commando a good citizen of modern Unix systems.**

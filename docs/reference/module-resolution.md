@@ -1,6 +1,6 @@
-# Module Resolution in Forge
+# Module Resolution in Commando
 
-**Purpose:** How Forge enables modules in `.forge/` to import packages from the shared forge home.
+**Purpose:** How Commando enables modules in `.commando/` to import packages from the shared commando home.
 
 **Updated:** 2025-11-01
 
@@ -8,11 +8,11 @@
 
 ## Overview
 
-Forge uses a **shared dependency model** where packages are installed once in `~/.local/share/forge/node_modules/` and made available to all projects. This avoids duplicating dependencies across projects while maintaining isolation.
+Commando uses a **shared dependency model** where packages are installed once in `~/.commando/node_modules/` and made available to all projects. This avoids duplicating dependencies across projects while maintaining isolation.
 
 ### The Challenge
 
-When a Forge module (e.g., `.forge/moo.ts`) needs to import a package:
+When a Commando module (e.g., `.commando/moo.ts`) needs to import a package:
 
 ```typescript
 import cowsay from "cowsay";
@@ -21,9 +21,9 @@ import cowsay from "cowsay";
 Bun's default behavior is to look for `cowsay` in:
 1. Project's `node_modules/` directory
 2. Parent directories walking up to root
-3. **Not** in forge home by default
+3. **Not** in commando home by default
 
-We need to tell Bun to also search `~/.local/share/forge/node_modules/`.
+We need to tell Bun to also search `~/.commando/node_modules/`.
 
 ---
 
@@ -31,14 +31,14 @@ We need to tell Bun to also search `~/.local/share/forge/node_modules/`.
 
 ### Implementation
 
-Forge sets the `NODE_PATH` environment variable before executing Bun:
+Commando sets the `NODE_PATH` environment variable before executing Bun:
 
 ```bash
-export NODE_PATH="$FORGE_HOME/node_modules"
-bun run .forge/module.ts
+export NODE_PATH="$COMMANDO_HOME/node_modules"
+bun run .commando/module.ts
 ```
 
-This instructs Bun to include forge home's `node_modules` in its module resolution search path.
+This instructs Bun to include commando home's `node_modules` in its module resolution search path.
 
 ### Why NODE_PATH?
 
@@ -56,10 +56,10 @@ When Bun resolves `import cowsay from "cowsay"`, it searches:
 2. Relative/absolute paths (if path-like)
 3. `node_modules/` in current directory
 4. `node_modules/` in parent directories (walking up)
-5. **Directories in NODE_PATH** ← Forge home added here
+5. **Directories in NODE_PATH** ← Commando home added here
 6. Global installation directories
 
-By setting `NODE_PATH="$FORGE_HOME/node_modules"`, forge home becomes part of the search path.
+By setting `NODE_PATH="$COMMANDO_HOME/node_modules"`, commando home becomes part of the search path.
 
 ### Source
 
@@ -73,13 +73,13 @@ Bun implements Node.js's module resolution algorithm, including NODE_PATH suppor
 
 ## Alternative: Shared tsconfig.json (Advanced)
 
-For cases requiring explicit configuration or enhanced IDE support, Forge can use a shared `tsconfig.json` in forge home.
+For cases requiring explicit configuration or enhanced IDE support, Commando can use a shared `tsconfig.json` in commando home.
 
 ### Implementation
 
 **Setup (one-time):**
 
-Create `~/.local/share/forge/tsconfig.json`:
+Create `~/.commando/tsconfig.json`:
 
 ```json
 {
@@ -87,7 +87,7 @@ Create `~/.local/share/forge/tsconfig.json`:
     "baseUrl": ".",
     "paths": {
       "*": [
-        "~/.local/share/forge/node_modules/*",
+        "~/.commando/node_modules/*",
         "./node_modules/*",
         "*"
       ]
@@ -104,7 +104,7 @@ Create `~/.local/share/forge/tsconfig.json`:
 **Usage:**
 
 ```bash
-bun run --tsconfig-override="$FORGE_HOME/tsconfig.json" .forge/module.ts
+bun run --tsconfig-override="$COMMANDO_HOME/tsconfig.json" .commando/module.ts
 ```
 
 ### When to Use
@@ -134,7 +134,7 @@ Use the tsconfig approach when:
 When using `--tsconfig-override` with a tsconfig outside the project directory, Bun shows:
 
 ```
-Internal error: directory mismatch for directory "~/.local/share/forge/tsconfig.json", fd 3.
+Internal error: directory mismatch for directory "~/.commando/tsconfig.json", fd 3.
 You don't need to do anything, but this indicates a bug.
 ```
 
@@ -149,7 +149,7 @@ Based on comprehensive testing, these approaches **do not** affect module resolu
 ### ❌ BUN_INSTALL_GLOBAL_DIR
 
 ```bash
-BUN_INSTALL_GLOBAL_DIR="$FORGE_HOME"  # Only affects `bun install -g`, not resolution
+BUN_INSTALL_GLOBAL_DIR="$COMMANDO_HOME"  # Only affects `bun install -g`, not resolution
 ```
 
 This environment variable only controls where `bun install -g` places packages, not where Bun looks during module resolution.
@@ -158,7 +158,7 @@ This environment variable only controls where `bun install -g` places packages, 
 
 ```toml
 [install]
-globalDir = "/path/to/forge"  # Only affects install, not resolution
+globalDir = "/path/to/commando"  # Only affects install, not resolution
 ```
 
 Similar to `BUN_INSTALL_GLOBAL_DIR`, this only affects package installation location.
@@ -168,44 +168,44 @@ Similar to `BUN_INSTALL_GLOBAL_DIR`, this only affects package installation loca
 While technically works, this defeats the purpose of a shared configuration:
 
 ```bash
-# Creates .forge/tsconfig.json in every project
+# Creates .commando/tsconfig.json in every project
 # Not recommended - adds files to each project
 ```
 
-Forge specifically avoids adding configuration files to `.forge/` directories.
+Commando specifically avoids adding configuration files to `.commando/` directories.
 
 ---
 
-## Implementation in Forge
+## Implementation in Commando
 
-### Wrapper Script (bin/forge-bootstrap)
+### Wrapper Script (bin/cmdo-bootstrap)
 
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Determine forge home location
-export FORGE_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/forge"
+# Determine commando home location
+export COMMANDO_HOME="${COMMANDO_HOME:-$HOME/.commando}"
 
 # Set NODE_PATH for module resolution
-export NODE_PATH="$FORGE_HOME/node_modules"
+export NODE_PATH="$COMMANDO_HOME/node_modules"
 
 # Optional: Add project-local node_modules if it exists (for overrides)
-if [[ -d ".forge/node_modules" ]]; then
-  export NODE_PATH=".forge/node_modules:$NODE_PATH"
+if [[ -d ".commando/node_modules" ]]; then
+  export NODE_PATH=".commando/node_modules:$NODE_PATH"
 fi
 
-# Execute forge CLI
-exec bun run "$FORGE_BIN_DIR/cli.ts" "$@"
+# Execute commando CLI
+exec bun run "$COMMANDO_BIN_DIR/cli.ts" "$@"
 ```
 
 ### Debug Logging
 
-When `--debug` flag is used, Forge logs the NODE_PATH value:
+When `--debug` flag is used, Commando logs the NODE_PATH value:
 
 ```bash
-if [[ "$FORGE_DEBUG" == "1" ]]; then
-  echo "DEBUG: FORGE_HOME=$FORGE_HOME"
+if [[ "$COMMANDO_DEBUG" == "1" ]]; then
+  echo "DEBUG: COMMANDO_HOME=$COMMANDO_HOME"
   echo "DEBUG: NODE_PATH=$NODE_PATH"
 fi
 ```
@@ -218,8 +218,8 @@ fi
 
 ```bash
 cd examples/deps
-export NODE_PATH="$HOME/.local/share/forge/node_modules"
-bun run .forge/moo2.ts
+export NODE_PATH="$HOME/.commando/node_modules"
+bun run .commando/moo2.ts
 ```
 
 Expected output: Cowsay ASCII art (imports work)
@@ -228,7 +228,7 @@ Expected output: Cowsay ASCII art (imports work)
 
 ```bash
 cd examples/deps
-bun run --tsconfig-override="$HOME/.local/share/forge/tsconfig.json" .forge/moo2.ts
+bun run --tsconfig-override="$HOME/.commando/tsconfig.json" .commando/moo2.ts
 ```
 
 Expected output: Cowsay ASCII art + harmless warning
@@ -249,7 +249,7 @@ try {
 ```
 
 ```bash
-NODE_PATH="$HOME/.local/share/forge/node_modules" bun run test-resolution.ts
+NODE_PATH="$HOME/.commando/node_modules" bun run test-resolution.ts
 ```
 
 ---
@@ -259,10 +259,10 @@ NODE_PATH="$HOME/.local/share/forge/node_modules" bun run test-resolution.ts
 When both local and shared packages exist, Bun uses this priority:
 
 1. **Project's node_modules/** (if exists)
-2. **NODE_PATH directories** (forge home)
+2. **NODE_PATH directories** (commando home)
 3. **Parent directory node_modules/** (walking up)
 
-This means project-local packages override forge home packages, allowing selective overrides when needed.
+This means project-local packages override commando home packages, allowing selective overrides when needed.
 
 ---
 
@@ -271,11 +271,11 @@ This means project-local packages override forge home packages, allowing selecti
 NODE_PATH supports multiple directories (colon-separated on Unix):
 
 ```bash
-# Local overrides forge home
-export NODE_PATH=".forge/node_modules:$FORGE_HOME/node_modules"
+# Local overrides commando home
+export NODE_PATH=".commando/node_modules:$COMMANDO_HOME/node_modules"
 
 # Or multiple shared locations
-export NODE_PATH="/opt/shared/node_modules:$FORGE_HOME/node_modules"
+export NODE_PATH="/opt/shared/node_modules:$COMMANDO_HOME/node_modules"
 ```
 
 First match wins.
@@ -306,14 +306,14 @@ else
   SEP=":"
 fi
 
-export NODE_PATH="${local_modules}${SEP}${FORGE_HOME}/node_modules"
+export NODE_PATH="${local_modules}${SEP}${COMMANDO_HOME}/node_modules"
 ```
 
 ---
 
 ## Why Not Symlinks?
 
-Previous iterations considered symlinking `.forge/node_modules` → `$FORGE_HOME/node_modules`.
+Previous iterations considered symlinking `.commando/node_modules` → `$COMMANDO_HOME/node_modules`.
 
 **Why we don't use symlinks:**
 
@@ -343,7 +343,7 @@ Symlinks work but add unnecessary complexity when NODE_PATH handles it elegantly
 ❌ **NODE_PATH not supported**
 ✅ **Import maps** (different approach)
 
-**Conclusion:** NODE_PATH works across Bun and Node.js. If Forge ever supports Deno, we'd need import maps.
+**Conclusion:** NODE_PATH works across Bun and Node.js. If Commando ever supports Deno, we'd need import maps.
 
 ---
 
@@ -367,8 +367,8 @@ Even though NODE_PATH is environment-based, document it in your project README:
 ```markdown
 ## Dependencies
 
-This project uses Forge's shared dependency model.
-Packages are installed to `~/.local/share/forge/node_modules/`
+This project uses Commando's shared dependency model.
+Packages are installed to `~/.commando/node_modules/`
 and made available via NODE_PATH.
 ```
 
@@ -380,8 +380,8 @@ If imports fail, check:
 # Is NODE_PATH set?
 echo $NODE_PATH
 
-# Does package exist in forge home?
-ls -la ~/.local/share/forge/node_modules/package-name
+# Does package exist in commando home?
+ls -la ~/.commando/node_modules/package-name
 
 # Can Bun resolve it?
 bun run -e 'console.log(Bun.resolveSync("package-name", process.cwd()))'
@@ -397,7 +397,7 @@ bun run -e 'console.log(Bun.resolveSync("package-name", process.cwd()))'
 - [Bun Install Configuration](https://bun.sh/docs/install/cache)
 - [Node.js Module Resolution](https://nodejs.org/api/modules.html)
 
-### Forge Documentation
+### Commando Documentation
 
 - `docs/reference/bun-env-vars.md` - Bun environment variables
 - `tmp/bun-module-resolution.md` - Detailed Bun resolution research
@@ -418,10 +418,10 @@ All tests confirm NODE_PATH and --tsconfig-override work reliably.
 
 ## Summary
 
-**Primary solution:** Set `NODE_PATH="$FORGE_HOME/node_modules"` in wrapper
+**Primary solution:** Set `NODE_PATH="$COMMANDO_HOME/node_modules"` in wrapper
 
-**Alternative:** Use `--tsconfig-override="$FORGE_HOME/tsconfig.json"` for explicit config
+**Alternative:** Use `--tsconfig-override="$COMMANDO_HOME/tsconfig.json"` for explicit config
 
-**Result:** Modules in `.forge/` can import from forge home without per-project configuration or symlinks
+**Result:** Modules in `.commando/` can import from commando home without per-project configuration or symlinks
 
 **Recommendation:** Use NODE_PATH unless you have specific needs for explicit configuration

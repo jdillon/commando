@@ -2996,11 +2996,11 @@ dependencies:
 
 **Final Word:** Both runtimes are excellent modern alternatives to Node.js. Bun optimizes for speed and compatibility. Deno optimizes for security and control. Choose based on your priorities and constraints.
 
-## For Forge Specifically
+## For Commando Specifically
 
 **Your Key Challenges:**
-1. **Module resolution control** - Need to control where imports resolve (test fixtures, forge home, etc.)
-2. **Private git repos** - Currently using `git+ssh://` for forge-standard
+1. **Module resolution control** - Need to control where imports resolve (test fixtures, commando home, etc.)
+2. **Private git repos** - Currently using `git+ssh://` for commando-standard
 3. **Shell scripting** - Love Bun's built-in `$` syntax
 
 **Deno Solves:**
@@ -3025,7 +3025,7 @@ dependencies:
 
 The experiments outlined in `RESEARCH-deno-evaluation.md` will give you real-world data to make this decision. Pay special attention to:
 1. Testing import maps with scopes (Phase 3 POC)
-2. Setting up forge-standard with HTTPS + token
+2. Setting up commando-standard with HTTPS + token
 3. Comparing token management vs SSH key workflow
 
-**Good night, and happy reading! 🚀**
+**Good night, and happy reading!**

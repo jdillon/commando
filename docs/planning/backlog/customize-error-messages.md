@@ -9,7 +9,7 @@
 
 ## Overview
 
-Commander.js provides `outputError()` callback in `configureOutput()` that allows customizing error message text. This could be used to make error messages more consistent with Forge's style or potentially support internationalization.
+Commander.js provides `outputError()` callback in `configureOutput()` that allows customizing error message text. This could be used to make error messages more consistent with Commando's style or potentially support internationalization.
 
 ## Current State
 
@@ -33,7 +33,7 @@ error: option '--log-format <format>' argument 'xml' is invalid. Allowed choices
 
 ### Option 1: Style Consistency Only
 
-**Goal**: Make Commander errors match Forge's `ERROR:` convention
+**Goal**: Make Commander errors match Commando's `ERROR:` convention
 
 **Implementation**:
 ```typescript

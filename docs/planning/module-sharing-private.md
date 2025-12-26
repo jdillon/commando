@@ -1,6 +1,6 @@
 # Module Sharing Without npmjs
 
-**Goal**: Share forge modules privately without publishing to public npmjs registry
+**Goal**: Share commando modules privately without publishing to public npmjs registry
 
 ---
 
@@ -22,28 +22,28 @@ Bun (and npm) support installing packages directly from git repos!
 
 ```bash
 # Install from GitHub
-bun add github:user/forge-module-aws
+bun add github:user/commando-module-aws
 
 # Install from GitLab
-bun add gitlab:user/forge-module-aws
+bun add gitlab:user/commando-module-aws
 
 # Install from any git URL
-bun add git+https://github.com/user/forge-module-aws.git
+bun add git+https://github.com/user/commando-module-aws.git
 
 # Install from private repo (uses SSH)
 bun add git+ssh://git@github.com/user/private-module.git
 
 # Install specific version/branch/tag
-bun add github:user/forge-module-aws#v1.2.3
-bun add github:user/forge-module-aws#main
-bun add github:user/forge-module-aws#feature-branch
+bun add github:user/commando-module-aws#v1.2.3
+bun add github:user/commando-module-aws#main
+bun add github:user/commando-module-aws#feature-branch
 ```
 
 ### How It Works
 
 **1. Create module as git repo:**
 ```
-forge-module-aws/
+commando-module-aws/
 ├── package.json      # Standard npm package.json
 ├── module.ts         # Your module code
 ├── README.md
@@ -53,7 +53,7 @@ forge-module-aws/
 **2. package.json:**
 ```json
 {
-  "name": "@mycompany/forge-module-aws",
+  "name": "@mycompany/commando-module-aws",
   "version": "1.2.3",
   "main": "module.ts",
   "type": "module",
@@ -74,32 +74,32 @@ git push origin main --tags
 
 **4. Install from git:**
 ```bash
-cd ~/.local/share/forge
-bun add github:mycompany/forge-module-aws#v1.2.3
+cd ~/.local/share/commando
+bun add github:mycompany/commando-module-aws#v1.2.3
 ```
 
 **5. Bun creates entry in package.json:**
 ```json
 {
   "dependencies": {
-    "@mycompany/forge-module-aws": "github:mycompany/forge-module-aws#v1.2.3"
+    "@mycompany/commando-module-aws": "github:mycompany/commando-module-aws#v1.2.3"
   }
 }
 ```
 
 ---
 
-## forge module add Wrapper
+## cmdo module add Wrapper
 
-Make it even simpler with `forge module add`:
+Make it even simpler with `cmdo module add`:
 
 ```bash
 # User-friendly command
-forge module add github:mycompany/forge-module-aws
+cmdo module add github:mycompany/commando-module-aws
 
 # Behind the scenes
-cd ~/.local/share/forge
-bun add github:mycompany/forge-module-aws
+cd ~/.local/share/commando
+bun add github:mycompany/commando-module-aws
 ```
 
 ---
@@ -162,8 +162,8 @@ bun add github:user/module#main
 ```json
 {
   "dependencies": {
-    "forge-module-aws": "github:mycompany/forge-module-aws#v1.2.3",
-    "forge-module-k8s": "github:mycompany/forge-module-k8s#v2.0.0"
+    "commando-module-aws": "github:mycompany/commando-module-aws#v1.2.3",
+    "commando-module-k8s": "github:mycompany/commando-module-k8s#v2.0.0"
   }
 }
 ```
@@ -172,13 +172,13 @@ bun add github:user/module#main
 
 ```bash
 # Check for updates (need to check git tags manually)
-git ls-remote --tags https://github.com/mycompany/forge-module-aws
+git ls-remote --tags https://github.com/mycompany/commando-module-aws
 
 # Update to new version
-bun add github:mycompany/forge-module-aws#v1.3.0
+bun add github:mycompany/commando-module-aws#v1.3.0
 
 # Or let bun update handle it
-bun update forge-module-aws
+bun update commando-module-aws
 ```
 
 ---
@@ -244,7 +244,7 @@ npm publish --registry http://localhost:4873
 **Setup in package.json:**
 ```json
 {
-  "name": "@mycompany/forge-module-aws",
+  "name": "@mycompany/commando-module-aws",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   }
@@ -286,7 +286,7 @@ Similar to GitHub Packages, but on GitLab.
 ### For Official/Shared Modules:
 **GitHub/GitLab with git tags**
 ```bash
-forge module add github:mycompany/forge-module-aws#v1.2.3
+cmdo module add github:mycompany/commando-module-aws#v1.2.3
 ```
 
 **Pros:**
@@ -297,7 +297,7 @@ forge module add github:mycompany/forge-module-aws#v1.2.3
 ### For Active Development:
 **Local workspaces during development**
 ```bash
-# In ~/.local/share/forge/package.json
+# In ~/.local/share/commando/package.json
 {
   "workspaces": ["modules/aws"]
 }
@@ -307,7 +307,7 @@ cd modules/aws
 bun link
 
 # In project
-bun link @mycompany/forge-module-aws
+bun link @mycompany/commando-module-aws
 ```
 
 ### For Large Teams (Optional):
@@ -315,42 +315,42 @@ bun link @mycompany/forge-module-aws
 
 ---
 
-## forge module Command Design
+## cmdo module Command Design
 
 ### Add Module
 
 ```bash
 # From git
-forge module add github:mycompany/forge-module-aws
+cmdo module add github:mycompany/commando-module-aws
 
 # Specific version
-forge module add github:mycompany/forge-module-aws@v1.2.3
+cmdo module add github:mycompany/commando-module-aws@v1.2.3
 
 # From URL
-forge module add https://github.com/mycompany/forge-module-aws.git
+cmdo module add https://github.com/mycompany/commando-module-aws.git
 
 # Local development
-forge module add ./path/to/local/module
+cmdo module add ./path/to/local/module
 
-# Behind the scenes: cd ~/.local/share/forge && bun add <spec>
+# Behind the scenes: cd ~/.local/share/commando && bun add <spec>
 ```
 
 ### List Modules
 
 ```bash
-forge module list
+cmdo module list
 
 # Output:
 # Installed modules:
-#   aws (v1.2.3) - github:mycompany/forge-module-aws
-#   k8s (v2.0.0) - github:mycompany/forge-module-k8s
+#   aws (v1.2.3) - github:mycompany/commando-module-aws
+#   k8s (v2.0.0) - github:mycompany/commando-module-k8s
 ```
 
 ### Update Modules
 
 ```bash
 # Check for updates
-forge module outdated
+cmdo module outdated
 
 # Output:
 # Updates available:
@@ -358,20 +358,20 @@ forge module outdated
 #   k8s: v2.0.0 (latest)
 
 # Update specific
-forge module update aws
+cmdo module update aws
 
 # Update all
-forge module update
+cmdo module update
 ```
 
 ### Search (Future)
 
 ```bash
 # Search GitHub org
-forge module search aws --org mycompany
+cmdo module search aws --org mycompany
 
 # List from GitHub org
-forge module browse --org mycompany
+cmdo module browse --org mycompany
 ```
 
 ---
@@ -381,25 +381,25 @@ forge module browse --org mycompany
 Create a central registry doc in your company repo:
 
 ```markdown
-# Forge Modules
+# Commando Modules
 
-Available forge modules for our team:
+Available commando modules for our team:
 
 ## Infrastructure
 
-- **forge-module-aws** - AWS deployment helpers
-  - Install: `forge module add github:mycompany/forge-module-aws`
+- **commando-module-aws** - AWS deployment helpers
+  - Install: `cmdo module add github:mycompany/commando-module-aws`
   - Latest: v1.2.3
-  - Docs: https://github.com/mycompany/forge-module-aws
+  - Docs: https://github.com/mycompany/commando-module-aws
 
-- **forge-module-k8s** - Kubernetes deployment
-  - Install: `forge module add github:mycompany/forge-module-k8s`
+- **commando-module-k8s** - Kubernetes deployment
+  - Install: `cmdo module add github:mycompany/commando-module-k8s`
   - Latest: v2.0.0
 
 ## CI/CD
 
-- **forge-module-github-actions** - GitHub Actions helpers
-  - Install: `forge module add github:mycompany/forge-module-github-actions`
+- **commando-module-github-actions** - GitHub Actions helpers
+  - Install: `cmdo module add github:mycompany/commando-module-github-actions`
 
 ...
 ```
@@ -411,12 +411,12 @@ Available forge modules for our team:
 ### 1. Create Module Repo
 
 ```bash
-mkdir forge-module-aws
-cd forge-module-aws
+mkdir commando-module-aws
+cd commando-module-aws
 
 cat > package.json <<EOF
 {
-  "name": "@mycompany/forge-module-aws",
+  "name": "@mycompany/commando-module-aws",
   "version": "1.0.0",
   "main": "module.ts",
   "type": "module"
@@ -440,29 +440,29 @@ git init
 git add .
 git commit -m "Initial module"
 git tag v1.0.0
-git remote add origin git@github.com:mycompany/forge-module-aws.git
+git remote add origin git@github.com:mycompany/commando-module-aws.git
 git push origin main --tags
 ```
 
-### 2. Install in Forge
+### 2. Install in Commando
 
 ```bash
-# Install forge module globally
-cd ~/.local/share/forge
-bun add github:mycompany/forge-module-aws#v1.0.0
+# Install commando module globally
+cd ~/.local/share/commando
+bun add github:mycompany/commando-module-aws#v1.0.0
 
 # Or use wrapper
-forge module add github:mycompany/forge-module-aws
+cmdo module add github:mycompany/commando-module-aws
 ```
 
 ### 3. Use in Project
 
 ```typescript
-// project/.forge/config.ts
-import type { ForgeConfig } from '@forge/core';
+// project/.commando/config.ts
+import type { CommandoConfig } from '@commando/core';
 
 export default {
-  modules: ['@mycompany/forge-module-aws'],
+  modules: ['@mycompany/commando-module-aws'],
 
   commands: {
     'deploy': {
@@ -473,7 +473,7 @@ export default {
       }
     }
   }
-} satisfies ForgeConfig;
+} satisfies CommandoConfig;
 ```
 
 ### 4. Update Later
@@ -483,8 +483,8 @@ export default {
 git tag v1.1.0
 git push origin --tags
 
-# Update in forge
-forge module update @mycompany/forge-module-aws
+# Update in commando
+cmdo module update @mycompany/commando-module-aws
 ```
 
 ---
@@ -504,7 +504,7 @@ forge module update @mycompany/forge-module-aws
 
 **Start with git URLs:**
 ```bash
-forge module add github:mycompany/forge-module-aws#v1.2.3
+cmdo module add github:mycompany/commando-module-aws#v1.2.3
 ```
 
 **Pros:**
@@ -526,7 +526,7 @@ forge module add github:mycompany/forge-module-aws#v1.2.3
 ### Core Changes Needed
 
 1. **Module loading** - Support loading from `node_modules/@mycompany/`
-2. **forge module add** - Wrapper around `bun add`
+2. **cmdo module add** - Wrapper around `bun add`
 3. **Module discovery** - Search git repos or registry
 4. **Version management** - Check git tags or registry
 
@@ -540,11 +540,11 @@ forge module add github:mycompany/forge-module-aws#v1.2.3
 
 ## Next Session Continuation Points
 
-1. **Implement `forge module` commands**
+1. **Implement `cmdo module` commands**
    - `add`, `remove`, `list`, `update`, `outdated`
 
 2. **Test with real module**
-   - Create forge-module-aws as example
+   - Create commando-module-aws as example
    - Install from git
    - Verify it works
 
@@ -557,7 +557,3 @@ forge module add github:mycompany/forge-module-aws#v1.2.3
    - Template repo
    - Best practices
    - Testing strategy
-
----
-
-Ready to continue from here! 🚀

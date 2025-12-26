@@ -15,7 +15,7 @@
 bun add listr2
 ```
 
-**Current version in forge**: `^8.0.0`
+**Current version in commando**: `^8.0.0`
 
 ---
 
@@ -189,13 +189,13 @@ const tasks = new Listr([
 
 ---
 
-## Common Pattern in Forge
+## Common Pattern in Commando
 
 ```typescript
 import { Listr } from 'listr2';
 import chalk from 'chalk';
 
-export const publish: ForgeCommand = {
+export const publish: CommandoCommand = {
   description: 'Publish website',
 
   execute: async (options, args, context) => {

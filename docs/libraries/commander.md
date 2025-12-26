@@ -15,7 +15,7 @@
 bun add commander
 ```
 
-**Current version in forge**: `14.0.2`
+**Current version in commando**: `14.0.2`
 
 ---
 
@@ -27,7 +27,7 @@ import { Command } from 'commander';
 const program = new Command();
 
 program
-  .name('forge')
+  .name('cmdo')
   .description('Modern CLI framework')
   .version('2.0.0');
 
@@ -70,23 +70,23 @@ program
 
 ---
 
-## Forge Integration Pattern
+## Commando Integration Pattern
 
-Forge uses Commander to build commands from config:
+Commando uses Commander to build commands from config:
 
 ```typescript
 // lib/core.ts
 export function buildCommanderCommand(
   name: string,
-  forgeCmd: ForgeCommand,
-  context: ForgeContext
+  cmdoCmd: CommandoCommand,
+  context: CommandoContext
 ): Command {
   const cmd = new Command(name);
-  cmd.description(forgeCmd.description);
+  cmd.description(cmdoCmd.description);
 
   // Let command customize if needed
-  if (forgeCmd.defineCommand) {
-    forgeCmd.defineCommand(cmd);
+  if (cmdoCmd.defineCommand) {
+    cmdoCmd.defineCommand(cmd);
   }
 
   // Install action handler
@@ -94,7 +94,7 @@ export function buildCommanderCommand(
     const options = args[args.length - 2];
     const positionalArgs = args.slice(0, -2);
 
-    await forgeCmd.execute(options, positionalArgs, context);
+    await cmdoCmd.execute(options, positionalArgs, context);
   });
 
   return cmd;
@@ -103,11 +103,11 @@ export function buildCommanderCommand(
 
 ---
 
-## Defining Commands in Forge
+## Defining Commands in Commando
 
 ### Simple (No Options)
 ```typescript
-export const version: ForgeCommand = {
+export const version: CommandoCommand = {
   description: 'Show version',
   execute: async (options, args) => {
     console.log('v2.0.0');
@@ -117,7 +117,7 @@ export const version: ForgeCommand = {
 
 ### With Options
 ```typescript
-export const build: ForgeCommand = {
+export const build: CommandoCommand = {
   description: 'Build website',
 
   defineCommand: (cmd) => {
@@ -137,7 +137,7 @@ export const build: ForgeCommand = {
 
 ### With Arguments
 ```typescript
-export const deploy: ForgeCommand = {
+export const deploy: CommandoCommand = {
   description: 'Deploy to environment',
 
   defineCommand: (cmd) => {
@@ -160,8 +160,8 @@ export const deploy: ForgeCommand = {
 Commander generates help automatically:
 
 ```bash
-$ forge deploy --help
-Usage: forge deploy [options] <environment>
+$ cmdo deploy --help
+Usage: cmdo deploy [options] <environment>
 
 Deploy to environment
 
@@ -235,7 +235,7 @@ cmd
     console.log(`Processing: ${files.join(', ')}`);
   });
 
-// Usage: forge process file1.txt file2.txt file3.txt
+// Usage: cmdo process file1.txt file2.txt file3.txt
 ```
 
 ---
@@ -261,7 +261,7 @@ cache
     console.log('Cache status...');
   });
 
-// Usage: forge cache clear
+// Usage: cmdo cache clear
 ```
 
 ---

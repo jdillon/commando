@@ -1,6 +1,6 @@
 # Testing Guide
 
-This guide covers the test infrastructure and patterns for writing tests in Forge.
+This guide covers the test infrastructure and patterns for writing tests in Commando.
 
 ## Quick Reference
 
@@ -60,7 +60,7 @@ cat build/test-logs/cli-help-test-ts/should-display-help-with--help-stderr.log
 
 ## Test Extension
 
-Forge provides a lightweight extension for Bun's `describe` and `test` functions that automatically injects a `TestContext` parameter with:
+Commando provides a lightweight extension for Bun's `describe` and `test` functions that automatically injects a `TestContext` parameter with:
 - `fileName`: Current test file name (e.g., "cli-help.test.ts")
 - `testName`: Current test name
 - `describePath`: Array of describe block names
@@ -122,7 +122,7 @@ describe('CLI Help Output', () => {
     // logs.logBaseName = "should-display-help-with--help"
 
     const result = await runCommandWithLogs({
-      command: './bin/forge',
+      command: './bin/cmdo',
       args: ['--help'],
       env: { ...process.env },
       logDir: logs.logDir,
@@ -133,7 +133,7 @@ describe('CLI Help Output', () => {
 
     // Read from log file
     const output = await Bun.file(result.stdoutLog).text();
-    expect(output).toContain('Usage: forge');
+    expect(output).toContain('Usage: cmdo');
   });
 });
 ```
@@ -160,7 +160,7 @@ describe('Outer', () => {
 
 ## Test Runner
 
-The `runForge()` function executes the local development version of the CLI (`lib/cli.ts`) in tests, eliminating the need to run `bun reinstall` between test iterations.
+The `runCommando()` function executes the local development version of the CLI (`lib/cli.ts`) in tests, eliminating the need to run `bun reinstall` between test iterations.
 
 ### Usage
 
@@ -168,7 +168,7 @@ The `runForge()` function executes the local development version of the CLI (`li
 import { describe, test } from './lib/testx';
 import { expect } from 'bun:test';
 import { setupTestLogs, TEST_DIRS } from './lib/utils';
-import { runForge } from './lib/runner';
+import { runCommando } from './lib/runner';
 import { join } from 'path';
 
 describe('CLI Tests', () => {
@@ -176,7 +176,7 @@ describe('CLI Tests', () => {
     const logs = await setupTestLogs(ctx);
     const projectRoot = join(TEST_DIRS.fixtures, 'test-project');
 
-    const result = await runForge({
+    const result = await runCommando({
       args: ['--root', projectRoot, '--help'],
       logDir: logs.logDir,
       logBaseName: logs.logBaseName,
@@ -192,7 +192,7 @@ describe('CLI Tests', () => {
 ### Configuration Options
 
 ```typescript
-interface RunForgeConfig {
+interface RunCommandoConfig {
   args: string[];              // CLI arguments
   env?: Record<string, string>; // Environment variables
   cwd?: string;                 // Working directory (default: process.cwd())
@@ -205,7 +205,7 @@ interface RunForgeConfig {
 ### How It Works
 
 - Executes local `lib/cli.ts` directly (not the installed version)
-- Sets up `NODE_PATH` to point to forge home node_modules (like production wrapper)
+- Sets up `NODE_PATH` to point to commando home node_modules (like production wrapper)
 - Captures stdout/stderr to log files
 - Returns exit code and log file paths
 - No need to reinstall between test runs during development
@@ -300,7 +300,7 @@ tests/
    - Injects TestContext
 
 2. **tests/lib/runner.ts**
-   - `runForge()` function to execute local CLI in tests
+   - `runCommando()` function to execute local CLI in tests
    - Sets up NODE_PATH like production wrapper
    - Captures output to log files
    - Eliminates need for `bun reinstall` during development

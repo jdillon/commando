@@ -433,9 +433,9 @@ Popular Ink components:
 
 ---
 
-## Ink vs Existing Forge Tools
+## Ink vs Existing Commando Tools
 
-### Current Forge stack:
+### Current Commando stack:
 - **chalk**: Colors and styling
 - **ora**: Spinners
 - **boxen**: Boxes around text
@@ -474,10 +474,10 @@ program
   });
 ```
 
-### Forge-specific pattern
+### Commando-specific pattern
 
 ```typescript
-export const myCommand: ForgeCommand = {
+export const myCommand: CommandoCommand = {
   description: 'Interactive deployment',
   execute: async (options, args, context) => {
     // Use Ink for interactive parts

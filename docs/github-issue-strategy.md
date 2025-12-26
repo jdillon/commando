@@ -704,7 +704,7 @@ If you can't use AI assistance, follow the manual steps in the sections below.
 
 1. **Create Project** (via UI or CLI)
    ```bash
-   gh project create --title "Forge Module System" --owner jdillon
+   gh project create --title "Commando Module System" --owner jdillon
    ```
 
 2. **Choose Template**: Board (Kanban-style)
@@ -889,7 +889,7 @@ gh_add_subissue() {
     }"
 }
 
-# Usage: gh_add_subissue 2 12 jdillon/forge
+# Usage: gh_add_subissue 2 12 jdillon/commando
 ```
 
 **Method 3: Third-Party Extension**
@@ -1027,7 +1027,7 @@ Epic Issue
 - [ ] Create install.sh script
   - [ ] Check prerequisites
   - [ ] Create meta project
-  - [ ] Install forge
+  - [ ] Install commando
   - [ ] Create wrapper script
 - [ ] Test installation flow
 - [ ] Verify wrapper script works
@@ -1102,7 +1102,7 @@ gh issue close 2
 gh project list --owner jdillon
 
 # Add issue to project
-gh project item-add <project-id> --owner jdillon --url https://github.com/jdillon/forge/issues/2
+gh project item-add <project-id> --owner jdillon --url https://github.com/jdillon/commando/issues/2
 
 # View project (opens in browser)
 gh project view <project-id> --owner jdillon --web
@@ -1145,7 +1145,7 @@ gh project item-edit \
   --field-id <status-field-id> \
   --single-select-option-id <option-id>
 
-# Example (for issue #10 on Forge Roadmap project):
+# Example (for issue #10 on Commando Roadmap project):
 gh project item-edit \
   --id PVTI_lAHNTpLOARt9es4IJgNB \
   --project-id PVT_kwHNTpLOARt9eg \

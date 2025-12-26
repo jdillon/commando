@@ -1,4 +1,4 @@
-# Forge Documentation
+# Commando Documentation
 
 **Status**: `module-system` branch - 74 tests passing
 
@@ -41,8 +41,8 @@
 - **CLI**: Commander.js
 - **Logging**: Pino (structured JSON + pretty mode)
 - **UI**: chalk, ora, listr2, boxen, cli-table3
-- **Config**: YAML (.forge/config.yml)
-- **Paths**: XDG-compliant (~/.local/share/forge/)
+- **Config**: YAML (.commando/config.yml)
+- **Paths**: XDG-compliant (~/.commando/)
 
 ---
 
@@ -50,4 +50,4 @@
 
 *"It's for me mostly, so I like awesome."*
 
-Forge prioritizes delightful UX: beautiful output, clear errors, fast startup, type safety.
+Commando prioritizes delightful UX: beautiful output, clear errors, fast startup, type safety.

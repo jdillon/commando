@@ -1,6 +1,6 @@
 # Features
 
-Documentation for key Forge features.
+Documentation for key Commando features.
 
 ---
 
@@ -15,7 +15,7 @@ Documentation for key Forge features.
 
 ## How Features Work Together
 
-1. **List modules** in `.forge/config.yml`
+1. **List modules** in `.commando/config.yml`
 2. **Export commands** from module files (auto-discovery)
 3. **Add `__module__`** to customize group name (optional)
 4. **Framework groups** commands automatically (subcommand groups)
@@ -26,19 +26,19 @@ Documentation for key Forge features.
 ## Example
 
 ```yaml
-# .forge/config.yml
+# .commando/config.yml
 modules:
   - ./website
 ```
 
 ```typescript
-// .forge/website.ts
+// .commando/website.ts
 export const __module__ = {
   group: 'website',
   description: 'Website deployment'
 };
 
-export const deploy: ForgeCommand = {
+export const deploy: CommandoCommand = {
   description: 'Deploy website',
 
   defineCommand: (cmd) => {
@@ -54,7 +54,7 @@ export const deploy: ForgeCommand = {
 };
 ```
 
-**Result**: `forge website deploy staging --dry-run`
+**Result**: `cmdo website deploy staging --dry-run`
 
 ---
 

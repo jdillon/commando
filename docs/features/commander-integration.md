@@ -1,16 +1,16 @@
 # Commander Integration
 
-Forge uses Commander.js for rich CLI features while keeping command definitions simple.
+Commando uses Commander.js for rich CLI features while keeping command definitions simple.
 
 ---
 
 ## Architecture
 
-**Forge commands** (simple) → **Framework bridge** → **Commander** (rich CLI)
+**Commando commands** (simple) → **Framework bridge** → **Commander** (rich CLI)
 
 ```
 ┌──────────────────┐
-│ ForgeCommand     │  Simple command definition
+│ CommandoCommand  │  Simple command definition
 │ - description    │
 │ - execute()      │
 └────────┬─────────┘
@@ -36,7 +36,7 @@ Forge uses Commander.js for rich CLI features while keeping command definitions 
 ### 1. Define Command (Simple)
 
 ```typescript
-export const deploy: ForgeCommand = {
+export const deploy: CommandoCommand = {
   description: 'Deploy website',
   execute: async (options, args, context) => {
     console.log('Deploying...');
@@ -50,22 +50,22 @@ export const deploy: ForgeCommand = {
 // lib/core.ts
 function buildCommanderCommand(
   name: string,
-  forgeCmd: ForgeCommand,
-  context: ForgeContext
+  cmdoCmd: CommandoCommand,
+  context: CommandoContext
 ): Command {
   const cmd = new Command(name);
-  cmd.description(forgeCmd.description);
+  cmd.description(cmdoCmd.description);
 
   // Let command customize if needed
-  if (forgeCmd.defineCommand) {
-    forgeCmd.defineCommand(cmd);
+  if (cmdoCmd.defineCommand) {
+    cmdoCmd.defineCommand(cmd);
   }
 
   // Install action handler
   cmd.action(async (...args) => {
     const options = args[args.length - 2];
     const positionalArgs = args.slice(0, -2);
-    await forgeCmd.execute(options, positionalArgs, context);
+    await cmdoCmd.execute(options, positionalArgs, context);
   });
 
   return cmd;
@@ -74,7 +74,7 @@ function buildCommanderCommand(
 
 ### 3. Commander Parses
 
-User runs: `forge deploy staging --skip-tests`
+User runs: `cmdo deploy staging --skip-tests`
 
 Commander:
 - Matches `deploy` command
@@ -82,7 +82,7 @@ Commander:
 - Parses `--skip-tests` as flag
 - Invokes action handler
 
-### 4. Forge Command Executes
+### 4. Commando Command Executes
 
 ```typescript
 execute: async (options, args, context) => {
@@ -99,7 +99,7 @@ execute: async (options, args, context) => {
 Use `defineCommand()` for Commander-specific options:
 
 ```typescript
-export const deploy: ForgeCommand = {
+export const deploy: CommandoCommand = {
   description: 'Deploy website',
 
   defineCommand: (cmd) => {
@@ -124,12 +124,12 @@ export const deploy: ForgeCommand = {
 ### Auto-Generated Help
 
 ```bash
-forge deploy --help
+cmdo deploy --help
 ```
 
 Output:
 ```
-Usage: forge deploy [options] <environment>
+Usage: cmdo deploy [options] <environment>
 
 Deploy website
 
@@ -145,7 +145,7 @@ Options:
 ### Validation
 
 ```bash
-forge deploy  # Missing required argument
+cmdo deploy  # Missing required argument
 # Error: missing required argument 'environment'
 ```
 
@@ -167,13 +167,13 @@ defineCommand: (cmd: Command) => {
 Framework adds global flags automatically:
 
 ```bash
-forge --version              # Show version
-forge --root /path/to/proj   # Override project root
-forge -d                     # Debug mode (verbose logging)
-forge -q                     # Quiet mode
-forge -s                     # Silent mode
-forge --no-color             # Disable colors
-forge --log-format json      # JSON logs
+cmdo --version              # Show version
+cmdo --root /path/to/proj   # Override project root
+cmdo -d                     # Debug mode (verbose logging)
+cmdo -q                     # Quiet mode
+cmdo -s                     # Silent mode
+cmdo --no-color             # Disable colors
+cmdo --log-format json      # JSON logs
 ```
 
 These are configured in `lib/cli.ts` before commands load.
@@ -186,7 +186,7 @@ Groups are Commander subcommands:
 
 ```typescript
 // Framework creates:
-const program = new Command('forge');
+const program = new Command('cmdo');
 
 const websiteCmd = new Command('website');
 websiteCmd.addCommand(buildCommand('build', ...));
@@ -195,7 +195,7 @@ websiteCmd.addCommand(buildCommand('deploy', ...));
 program.addCommand(websiteCmd);
 ```
 
-**Result**: `forge website build`, `forge website deploy`
+**Result**: `cmdo website build`, `cmdo website deploy`
 
 ---
 
@@ -225,7 +225,7 @@ export const version = {
 
 ### With Options
 ```typescript
-export const build: ForgeCommand = {
+export const build: CommandoCommand = {
   description: 'Build website',
 
   defineCommand: (cmd) => {
@@ -244,7 +244,7 @@ export const build: ForgeCommand = {
 
 ### With Arguments
 ```typescript
-export const deploy: ForgeCommand = {
+export const deploy: CommandoCommand = {
   description: 'Deploy to environment',
 
   defineCommand: (cmd) => {
@@ -266,7 +266,7 @@ export const deploy: ForgeCommand = {
 ✅ **Rich features available** - Full Commander power when needed
 ✅ **Auto-help** - Generated from definitions
 ✅ **Type-safe** - TypeScript validates everything
-✅ **Separation** - Forge commands don't know about Commander
+✅ **Separation** - Commando commands don't know about Commander
 
 ---
 

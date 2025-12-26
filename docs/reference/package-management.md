@@ -1,4 +1,4 @@
-# Package Management Strategy for Forge
+# Package Management Strategy for Commando
 
 **Key Insight**: Use Bun's package manager for modules, not just npm packages!
 
@@ -10,16 +10,16 @@ Instead of git-cloning modules like we planned, **use Bun's package manager**:
 
 ```bash
 # Old plan (git-based):
-git clone https://github.com/user/forge-module-aws ~/.local/share/forge/modules/aws
+git clone https://github.com/user/commando-module-aws ~/.commando/modules/aws
 
 # New plan (npm-based):
-cd ~/.local/share/forge
-bun add @forge-modules/aws
+cd ~/.commando
+bun add @commando-modules/aws
 
 # Or even simpler (from project):
 cd my-project
-forge module add aws
-# → Installs to ~/.local/share/forge/node_modules/@forge-modules/aws
+cmdo module add aws
+# → Installs to ~/.commando/node_modules/@commando-modules/aws
 ```
 
 **Why this is brilliant:**
@@ -27,7 +27,7 @@ forge module add aws
 - ✅ Dependency resolution (modules can depend on other modules)
 - ✅ Lock files (reproducible installs)
 - ✅ Security auditing (`bun pm audit`)
-- ✅ Updates (`bun update @forge-modules/aws`)
+- ✅ Updates (`bun update @commando-modules/aws`)
 - ✅ Private registries (for your company modules)
 
 ---
@@ -39,12 +39,12 @@ forge module add aws
 **Publish modules to npm:**
 ```bash
 # Module author publishes
-cd forge-module-aws
+cd commando-module-aws
 bun publish
 
 # Users install
-forge module add aws
-# → bun add @forge-modules/aws
+cmdo module add aws
+# → bun add @commando-modules/aws
 ```
 
 **Pros:**
@@ -55,7 +55,7 @@ forge module add aws
 
 **Cons:**
 - ⚠️ npm supply chain risks (need vetting)
-- ⚠️ Namespace squatting (@forge-modules/...)
+- ⚠️ Namespace squatting (@commando-modules/...)
 
 ---
 
@@ -63,8 +63,8 @@ forge module add aws
 
 **Install directly from git:**
 ```bash
-forge module add https://github.com/user/forge-module-aws
-# → bun add github:user/forge-module-aws
+cmdo module add https://github.com/user/commando-module-aws
+# → bun add github:user/commando-module-aws
 ```
 
 **Supports:**
@@ -86,20 +86,20 @@ forge module add https://github.com/user/forge-module-aws
 
 ### Option 3: Hybrid (Recommended)
 
-**Official modules** → npm (@forge-modules/...)
+**Official modules** → npm (@commando-modules/...)
 **Community modules** → git URLs
 **Private modules** → Private npm registry or git
 
 ```bash
 # Official (vetted)
-forge module add aws
-# → bun add @forge-modules/aws
+cmdo module add aws
+# → bun add @commando-modules/aws
 
 # Community (git)
-forge module add https://github.com/someuser/forge-module-custom
+cmdo module add https://github.com/someuser/commando-module-custom
 
 # Private (company registry)
-forge module add @mycompany/forge-module-internal
+cmdo module add @mycompany/commando-module-internal
 # → Uses private npm registry
 ```
 
@@ -127,7 +127,7 @@ bun add picocolors pino ora
 
 **Use case:** Develop multiple modules together
 ```
-~/.local/share/forge/
+~/.commando/
 ├── package.json
 ├── node_modules/
 └── modules/
@@ -189,18 +189,18 @@ bun pm ls --all
 ### Install Module
 
 ```bash
-forge module add aws
-forge module add github:user/forge-module-custom
-forge module add https://github.com/user/repo.git#v1.2.3
+cmdo module add aws
+cmdo module add github:user/commando-module-custom
+cmdo module add https://github.com/user/repo.git#v1.2.3
 ```
 
 **Implementation:**
 ```typescript
 // lib/module-manager.ts
 export async function installModule(spec: string) {
-  const paths = getForgePaths();
+  const paths = getCommandoPaths();
 
-  // Change to forge installation directory
+  // Change to commando installation directory
   process.chdir(paths.data);
 
   // Use Bun to install
@@ -209,7 +209,7 @@ export async function installModule(spec: string) {
     await $`bun add ${spec}`;
   } else {
     // npm package
-    await $`bun add @forge-modules/${spec}`;
+    await $`bun add @commando-modules/${spec}`;
   }
 
   console.log(`✓ Installed module: ${spec}`);
@@ -219,7 +219,7 @@ export async function installModule(spec: string) {
 ### List Modules
 
 ```bash
-forge module list
+cmdo module list
 ```
 
 **Shows:**
@@ -239,23 +239,23 @@ Available commands:
 
 ```bash
 # Update all modules
-forge module update
+cmdo module update
 
 # Update specific module
-forge module update aws
+cmdo module update aws
 
 # Check for updates
-forge module outdated
+cmdo module outdated
 ```
 
 **Implementation:**
 ```typescript
 export async function updateModules(moduleName?: string) {
-  const paths = getForgePaths();
+  const paths = getCommandoPaths();
   process.chdir(paths.data);
 
   if (moduleName) {
-    await $`bun update @forge-modules/${moduleName}`;
+    await $`bun update @commando-modules/${moduleName}`;
   } else {
     await $`bun update`;
   }
@@ -267,7 +267,7 @@ export async function updateModules(moduleName?: string) {
 ### Audit Security
 
 ```bash
-forge module audit
+cmdo module audit
 ```
 
 **Shows vulnerabilities in installed modules:**
@@ -282,13 +282,13 @@ Found 2 vulnerabilities:
   Low: ReDoS in semver@5.7.0
     Fix: bun update semver
 
-Run 'forge module update' to fix.
+Run 'cmdo module update' to fix.
 ```
 
 ### Remove Module
 
 ```bash
-forge module remove aws
+cmdo module remove aws
 ```
 
 ---
@@ -298,7 +298,7 @@ forge module remove aws
 ### Published Module Format
 
 ```
-@forge-modules/aws/
+@commando-modules/aws/
 ├── package.json
 ├── module.ts          # Main export
 ├── commands/
@@ -313,26 +313,26 @@ forge module remove aws
 **package.json:**
 ```json
 {
-  "name": "@forge-modules/aws",
+  "name": "@commando-modules/aws",
   "version": "2.1.0",
   "type": "module",
   "main": "module.ts",
   "exports": {
     ".": "./module.ts"
   },
-  "keywords": ["forge", "forge-module", "aws"],
+  "keywords": ["commando", "commando-module", "aws"],
   "dependencies": {
     "picocolors": "^1.0.0"
   },
   "peerDependencies": {
-    "@forge/core": "^2.0.0"
+    "@commando/core": "^2.0.0"
   }
 }
 ```
 
 **module.ts:**
 ```typescript
-import type { ForgeConfig } from '@forge/core';
+import type { CommandoConfig } from '@commando/core';
 import { $ } from 'bun';
 
 export default {
@@ -353,7 +353,7 @@ export default {
       }
     }
   }
-} satisfies Partial<ForgeConfig>;
+} satisfies Partial<CommandoConfig>;
 ```
 
 ---
@@ -364,23 +364,23 @@ export default {
 
 ```bash
 # Only update patch versions (1.2.x)
-forge module update --patch
+cmdo module update --patch
 
 # Check what would update first
-forge module outdated
+cmdo module outdated
 ```
 
 ### Strategy 2: Review Before Update
 
 ```bash
 # Show what would change
-forge module update --dry-run
+cmdo module update --dry-run
 
 # Review changelog
-forge module changelog aws
+cmdo module changelog aws
 
 # Then update
-forge module update aws
+cmdo module update aws
 ```
 
 ### Strategy 3: Lock Major Versions
@@ -388,8 +388,8 @@ forge module update aws
 ```json
 {
   "dependencies": {
-    "@forge-modules/aws": "^2.1.0",  // Allow 2.x.x
-    "@forge-modules/k8s": "~1.5.0"   // Allow 1.5.x only
+    "@commando-modules/aws": "^2.1.0",  // Allow 2.x.x
+    "@commando-modules/k8s": "~1.5.0"   // Allow 1.5.x only
   }
 }
 ```
@@ -398,11 +398,11 @@ forge module update aws
 
 ```bash
 # Add to cron or CI
-forge module audit --json > /tmp/audit.json
+cmdo module audit --json > /tmp/audit.json
 
 # Alert if vulnerabilities found
 if [ -s /tmp/audit.json ]; then
-  notify "Security vulnerabilities in forge modules!"
+  notify "Security vulnerabilities in commando modules!"
 fi
 ```
 
@@ -419,7 +419,7 @@ For company-internal modules:
 echo "registry = \"https://npm.company.com\"" >> ~/.bunfig.toml
 
 # Or per-project
-cat > ~/.local/share/forge/.bunfig.toml <<EOF
+cat > ~/.commando/.bunfig.toml <<EOF
 [install]
 scopes = {
   "@mycompany" = { url = "https://npm.company.com" }
@@ -437,7 +437,7 @@ bun publish --registry https://npm.company.com
 ### Install Private Module
 
 ```bash
-forge module add @mycompany/forge-module-internal
+cmdo module add @mycompany/commando-module-internal
 # → Uses private registry
 ```
 
@@ -448,14 +448,14 @@ forge module add @mycompany/forge-module-internal
 ### Official Registry (Website)
 
 ```
-https://forge-modules.dev
+https://commando-modules.dev
 ```
 
 **Lists vetted modules:**
-- @forge-modules/aws
-- @forge-modules/kubernetes
-- @forge-modules/terraform
-- @forge-modules/docker
+- @commando-modules/aws
+- @commando-modules/kubernetes
+- @commando-modules/terraform
+- @commando-modules/docker
 
 **Each with:**
 - Version history
@@ -467,8 +467,8 @@ https://forge-modules.dev
 ### Search
 
 ```bash
-forge module search aws
-forge module search kubernetes
+cmdo module search aws
+cmdo module search kubernetes
 ```
 
 **Implementation:**
@@ -476,7 +476,7 @@ forge module search kubernetes
 export async function searchModules(query: string) {
   // Search npm registry
   const response = await fetch(
-    `https://registry.npmjs.org/-/v1/search?text=keywords:forge-module+${query}`
+    `https://registry.npmjs.org/-/v1/search?text=keywords:commando-module+${query}`
   );
 
   const results = await response.json();
@@ -497,9 +497,9 @@ export async function searchModules(query: string) {
 Modules have their own `node_modules`:
 
 ```
-~/.local/share/forge/
+~/.commando/
 └── node_modules/
-    ├── @forge-modules/
+    ├── @commando-modules/
     │   ├── aws/
     │   │   ├── module.ts
     │   │   └── node_modules/
@@ -523,19 +523,19 @@ Modules have their own `node_modules`:
 ### Phase 1: Manual Install (Now)
 ```bash
 # Just add dependencies manually
-cd ~/.local/share/forge
+cd ~/.commando
 bun add picocolors
 ```
 
 ### Phase 2: Module Command (Soon)
 ```bash
-forge module add aws
+cmdo module add aws
 # → Calls bun add under the hood
 ```
 
 ### Phase 3: Module Registry (Later)
-- Publish official @forge-modules/aws
-- Build forge-modules.dev website
+- Publish official @commando-modules/aws
+- Build commando-modules.dev website
 - Community contributions
 
 ---
@@ -558,9 +558,9 @@ forge module add aws
 
 ## Trust Model
 
-### Official Modules (@forge-modules/*)
+### Official Modules (@commando-modules/*)
 
-**Vetted and maintained by forge team:**
+**Vetted and maintained by commando team:**
 - ✅ Code review required
 - ✅ Security audit before publish
 - ✅ Locked down npm publish access
@@ -569,7 +569,7 @@ forge module add aws
 ### Community Modules (git URLs)
 
 **Use at your own risk:**
-- ⚠️ Not vetted by forge team
+- ⚠️ Not vetted by commando team
 - ⚠️ Review code before use
 - ⚠️ Pin to specific git SHA
 
@@ -585,22 +585,22 @@ forge module add aws
 ## Implementation Checklist
 
 ### Core Framework
-- [ ] Add `getForgePaths().modules` = `node_modules/@forge-modules`
+- [ ] Add `getCommandoPaths().modules` = `node_modules/@commando-modules`
 - [ ] Module search path: project > user > system
-- [ ] Load modules from `node_modules/@forge-modules/*`
+- [ ] Load modules from `node_modules/@commando-modules/*`
 
 ### CLI Commands
-- [ ] `forge module add <name|url>`
-- [ ] `forge module remove <name>`
-- [ ] `forge module list`
-- [ ] `forge module update [name]`
-- [ ] `forge module audit`
-- [ ] `forge module search <query>`
-- [ ] `forge module outdated`
+- [ ] `cmdo module add <name|url>`
+- [ ] `cmdo module remove <name>`
+- [ ] `cmdo module list`
+- [ ] `cmdo module update [name]`
+- [ ] `cmdo module audit`
+- [ ] `cmdo module search <query>`
+- [ ] `cmdo module outdated`
 
 ### Module Publishing
-- [ ] Create @forge-modules npm organization
-- [ ] Publish first official module (@forge-modules/aws)
+- [ ] Create @commando-modules npm organization
+- [ ] Publish first official module (@commando-modules/aws)
 - [ ] Module authoring guide
 - [ ] Module submission process
 
@@ -618,23 +618,23 @@ forge module add aws
 
 ```bash
 # Initial setup
-git clone https://github.com/jdillon/forge ~/.local/share/forge
-cd ~/.local/share/forge
-bun install  # Installs forge core deps
+git clone https://github.com/jdillon/commando ~/.commando
+cd ~/.commando
+bun install  # Installs commando core deps
 
 # Add modules
-forge module add aws
-forge module add kubernetes
+cmdo module add aws
+cmdo module add kubernetes
 
 # Use in project
 cd ~/my-project
-forge aws:sync my-bucket
-forge k8s:deploy staging
+cmdo aws:sync my-bucket
+cmdo k8s:deploy staging
 
 # Update modules (monthly)
-forge module outdated
-forge module audit
-forge module update
+cmdo module outdated
+cmdo module audit
+cmdo module update
 
 # Everything safe and up to date! ✓
 ```
@@ -643,15 +643,15 @@ forge module update
 
 ```bash
 # Create module
-mkdir forge-module-aws
-cd forge-module-aws
+mkdir commando-module-aws
+cd commando-module-aws
 
 cat > package.json <<EOF
 {
-  "name": "@forge-modules/aws",
+  "name": "@commando-modules/aws",
   "version": "1.0.0",
   "main": "module.ts",
-  "keywords": ["forge", "forge-module", "aws"]
+  "keywords": ["commando", "commando-module", "aws"]
 }
 EOF
 
@@ -667,7 +667,7 @@ EOF
 bun publish
 
 # Users can now:
-# forge module add aws
+# cmdo module add aws
 ```
 
 ---
@@ -676,18 +676,14 @@ bun publish
 
 | Aspect | Bash + Git Modules | Bun + npm Modules |
 |--------|-------------------|-------------------|
-| Install | `git clone ...` | `forge module add aws` |
-| Update | Manual `git pull` | `forge module update` |
+| Install | `git clone ...` | `cmdo module add aws` |
+| Update | Manual `git pull` | `cmdo module update` |
 | Versions | Git SHAs | Semantic versions |
 | Dependencies | None | Automatic |
-| Security | Manual review | `forge module audit` |
+| Security | Manual review | `cmdo module audit` |
 | Private modules | SSH complexity | npm registry |
-| Discovery | README lists | `forge module search` |
+| Discovery | README lists | `cmdo module search` |
 
 **Bun's package manager turns modules into a first-class feature.**
 
 This is actually **better** than most plugin systems (including Bash, Vim, etc.)!
-
----
-
-Ready to build this? 🚀

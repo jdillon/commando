@@ -1,10 +1,10 @@
 # CLI Option Handling Specification
 
-This document specifies how Forge CLI option and argument parsing should work.
+This document specifies how Commando CLI option and argument parsing should work.
 
 ## Specification vs Implementation
 
-**This specification defines the canonical behavior** - the "way" Forge CLI should work. The implementation uses Commander.js, which may be slightly more permissive in certain areas for better UX. This is acceptable as long as:
+**This specification defines the canonical behavior** - the "way" Commando CLI should work. The implementation uses Commander.js, which may be slightly more permissive in certain areas for better UX. This is acceptable as long as:
 
 1. The implementation doesn't require custom argv parsing hacks
 2. The implementation doesn't violate other parts of this spec
@@ -164,8 +164,8 @@ When a command group is invoked without specifying a subcommand:
 
 Example:
 ```bash
-$ forge hello
-Usage: forge hello [options] [command]
+$ cmdo hello
+Usage: cmdo hello [options] [command]
 
 Hello group
 
@@ -215,7 +215,7 @@ example deploy production    # Valid
 
 ### Success (0)
 - Explicit help request: `--help`, `-h`
-- Implicit help request: command group without subcommand (e.g., `forge hello`)
+- Implicit help request: command group without subcommand (e.g., `cmdo hello`)
 - Explicit version request: `--version`, `-V`
 - Command executed successfully
 

@@ -15,11 +15,11 @@ export const __module__ = {
   description: 'Website deployment tools'
 };
 
-export const build: ForgeCommand = { ... };
-export const deploy: ForgeCommand = { ... };
+export const build: CommandoCommand = { ... };
+export const deploy: CommandoCommand = { ... };
 ```
 
-**Result**: Commands under `forge web build`, not `forge website build`
+**Result**: Commands under `cmdo web build`, not `cmdo website build`
 
 ---
 
@@ -32,7 +32,7 @@ Without `__module__`, group name derives from filename:
 export const build = { ... };
 ```
 
-**Result**: `forge website build` (group = "website")
+**Result**: `cmdo website build` (group = "website")
 
 ---
 
@@ -46,13 +46,13 @@ export const __module__ = {
   group: false  // No grouping
 };
 
-export const version: ForgeCommand = { ... };
-export const config: ForgeCommand = { ... };
+export const version: CommandoCommand = { ... };
+export const config: CommandoCommand = { ... };
 ```
 
 **Result**:
-- `forge version` (not `forge utils version`)
-- `forge config` (not `forge utils config`)
+- `cmdo version` (not `cmdo utils version`)
+- `cmdo config` (not `cmdo utils config`)
 
 ---
 
@@ -78,7 +78,7 @@ export const __module__ = {
 };
 
 export const build = { ... };
-// Usage: forge website build
+// Usage: cmdo website build
 ```
 
 ### Top-Level Utilities
@@ -90,7 +90,7 @@ export const __module__ = {
 
 export const version = { ... };
 export const help = { ... };
-// Usage: forge version, forge help
+// Usage: cmdo version, cmdo help
 ```
 
 ### Add Description
@@ -107,7 +107,7 @@ export default {
 };
 ```
 
-When user runs `forge examples --help`, they see the description.
+When user runs `cmdo examples --help`, they see the description.
 
 ---
 
@@ -116,7 +116,7 @@ When user runs `forge examples --help`, they see the description.
 Modules declared in config.yml use their metadata:
 
 ```yaml
-# .forge/config.yml
+# .commando/config.yml
 modules:
   - ./website        # Uses __module__ if present, else "website"
   - ./examples       # Uses __module__ if present, else "examples"

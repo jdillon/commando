@@ -8,13 +8,13 @@ Commands are organized under groups for clear namespacing.
 
 ```bash
 # Grouped commands
-forge website build
-forge website deploy
-forge examples hello
+cmdo website build
+cmdo website deploy
+cmdo examples hello
 
 # Top-level commands (no group)
-forge version
-forge help
+cmdo version
+cmdo help
 ```
 
 ---
@@ -31,7 +31,7 @@ forge help
 
 ### Config
 ```yaml
-# .forge/config.yml
+# .commando/config.yml
 modules:
   - ./website
   - ./examples
@@ -57,11 +57,11 @@ export const version = { ... };
 
 ### Result
 ```bash
-forge website build      # From website.ts
-forge website deploy     # From website.ts
-forge examples hello     # From examples.ts
-forge examples deploy    # From examples.ts (separate namespace!)
-forge version            # From utils.ts (top-level)
+cmdo website build      # From website.ts
+cmdo website deploy     # From website.ts
+cmdo examples hello     # From examples.ts
+cmdo examples deploy    # From examples.ts (separate namespace!)
+cmdo version            # From utils.ts (top-level)
 ```
 
 ---
@@ -71,13 +71,13 @@ forge version            # From utils.ts (top-level)
 Each group has its own help:
 
 ```bash
-forge website --help
+cmdo website --help
 # Shows:
 #   Commands:
 #     build    Build website
 #     deploy   Deploy website
 
-forge examples --help
+cmdo examples --help
 # Shows:
 #   Commands:
 #     hello    Say hello
@@ -92,10 +92,10 @@ Multiple modules can have same command name:
 
 ```typescript
 // website.ts
-export const deploy = { ... };  // forge website deploy
+export const deploy = { ... };  // cmdo website deploy
 
 // examples.ts
-export const deploy = { ... };  // forge examples deploy
+export const deploy = { ... };  // cmdo examples deploy
 ```
 
 No conflicts - they're in different namespaces.
@@ -108,7 +108,7 @@ Under the hood, each group is a Commander subcommand:
 
 ```typescript
 // Framework creates this structure:
-const program = new Command('forge');
+const program = new Command('cmdo');
 
 const websiteCmd = new Command('website')
   .description('Website commands');
@@ -135,7 +135,7 @@ export const __module__ = {
 export const build = { ... };
 ```
 
-**Result**: `forge website build` (not `forge website-deployment build`)
+**Result**: `cmdo website build` (not `cmdo website-deployment build`)
 
 ---
 
@@ -152,8 +152,8 @@ export const config = { ... };
 ```
 
 **Result**:
-- `forge version` (not `forge utils version`)
-- `forge config` (not `forge utils config`)
+- `cmdo version` (not `cmdo utils version`)
+- `cmdo config` (not `cmdo utils config`)
 
 ---
 
@@ -161,7 +161,7 @@ export const config = { ... };
 
 ✅ **Clear organization** - Related commands grouped together
 ✅ **Namespace separation** - Avoid name conflicts
-✅ **Discoverable** - `forge --help` shows groups, `forge <group> --help` shows commands
+✅ **Discoverable** - `cmdo --help` shows groups, `cmdo <group> --help` shows commands
 ✅ **Automatic** - Group name from filename, override if needed
 ✅ **Optional** - Can still have top-level commands
 

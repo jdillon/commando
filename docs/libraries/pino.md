@@ -16,7 +16,7 @@ bun add pino
 bun add -D pino-pretty
 ```
 
-**Current version in forge**: `^8.19.0` (pino), `^11.0.0` (pino-pretty)
+**Current version in commando**: `^8.19.0` (pino), `^11.0.0` (pino-pretty)
 
 ---
 
@@ -33,7 +33,7 @@ log.error({ err: error }, 'Request failed');
 
 ---
 
-## Forge Logger Setup
+## Commando Logger Setup
 
 ```typescript
 // lib/logger.ts
@@ -126,15 +126,15 @@ childLog.info('Starting');  // Includes env:staging automatically
 
 ---
 
-## Common Patterns in Forge
+## Common Patterns in Commando
 
 ### Command Logging
 ```typescript
-import { createLogger } from '@forge/logger';
+import { createLogger } from '@commando/logger';
 
 const log = createLogger('deploy');
 
-export const deploy: ForgeCommand = {
+export const deploy: CommandoCommand = {
   description: 'Deploy',
   execute: async (options, args) => {
     log.info({ options, env: args[0] }, 'Starting deploy');
@@ -169,7 +169,7 @@ log.info({
 
 ```bash
 # Environment variable
-LOG_LEVEL=debug forge deploy
+LOG_LEVEL=debug cmdo deploy
 
 # Or programmatically
 log.level = 'debug';
@@ -183,7 +183,7 @@ log.level = 'debug';
 import pino from 'pino';
 
 const log = pino(
-  pino.destination('/var/log/forge.log')
+  pino.destination('/var/log/commando.log')
 );
 ```
 

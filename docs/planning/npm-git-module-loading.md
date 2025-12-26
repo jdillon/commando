@@ -10,7 +10,7 @@
 
 ## Overview
 
-Enable Forge to load modules from npm packages and git repositories, not just local `.forge/` directories.
+Enable Commando to load modules from npm packages and git repositories, not just local `.commando/` directories.
 
 ---
 
@@ -23,7 +23,7 @@ Enable Forge to load modules from npm packages and git repositories, not just lo
 - Standard pattern for modern development tools
 
 **Current limitation**:
-- Modules must be in project's `.forge/` directory
+- Modules must be in project's `.commando/` directory
 - No version management
 - Manual copying required
 - No dependency resolution
@@ -51,7 +51,7 @@ Enable Forge to load modules from npm packages and git repositories, not just lo
 
 1. **Local filesystem** (current, keep for compatibility)
    ```
-   .forge/
+   .commando/
    └── commands/
        └── mycommand.ts
    ```
@@ -59,19 +59,19 @@ Enable Forge to load modules from npm packages and git repositories, not just lo
 2. **npm packages**
    ```json
    {
-     "forgeModules": {
-       "@myorg/forge-aws": "^1.2.0",
-       "forge-terraform": "~2.0.1"
+     "commandoModules": {
+       "@myorg/commando-aws": "^1.2.0",
+       "commando-terraform": "~2.0.1"
      }
    }
    ```
 
 3. **git repositories**
    ```yaml
-   # .forge/config.yml
+   # .commando/config.yml
    modules:
-     - github:jdillon/forge-website#v1.0.0
-     - gitlab:myorg/forge-custom#main
+     - github:jdillon/commando-website#v1.0.0
+     - gitlab:myorg/commando-custom#main
      - git+ssh://git@private.com/repo.git#feature-branch
    ```
 
@@ -83,9 +83,9 @@ Enable Forge to load modules from npm packages and git repositories, not just lo
 ├───────────────────────────────────────────┤
 │  1. Check config.yml for module sources   │
 │  2. Resolve each source type:             │
-│     • Local: .forge/                     │
+│     • Local: .commando/                  │
 │     • npm: node_modules/@org/pkg          │
-│     • git: .forge/cache/git/...          │
+│     • git: .commando/cache/git/...       │
 │  3. Load modules from resolved locations  │
 │  4. Register commands in Commander        │
 └───────────────────────────────────────────┘
@@ -93,7 +93,7 @@ Enable Forge to load modules from npm packages and git repositories, not just lo
 ┌───────────────────┐  ┌────────────────────┐  ┌─────────────────┐
 │  Local Resolver   │  │   npm Resolver     │  │  Git Resolver   │
 ├───────────────────┤  ├────────────────────┤  ├─────────────────┤
-│ • Read .forge/   │  │ • Read package.json│  │ • Parse git URL │
+│ • Read .commando/│  │ • Read package.json│  │ • Parse git URL │
 │ • Load *.ts files │  │ • Install if needed│  │ • Clone/fetch   │
 │ • Immediate       │  │ • Load from        │  │ • Checkout ref  │
 │                   │  │   node_modules/    │  │ • Cache locally │
@@ -103,9 +103,9 @@ Enable Forge to load modules from npm packages and git repositories, not just lo
 ### Module Resolution Order
 
 **Priority** (first match wins):
-1. Local `.forge/` (highest priority, for overrides/development)
+1. Local `.commando/` (highest priority, for overrides/development)
 2. npm packages in `node_modules/`
-3. Git repositories in `.forge/cache/git/`
+3. Git repositories in `.commando/cache/git/`
 
 **Rationale**: Local modules can override installed ones for testing/development
 
@@ -115,27 +115,27 @@ Enable Forge to load modules from npm packages and git repositories, not just lo
 ```json
 {
   "name": "my-project",
-  "forgeModules": {
-    "@myorg/forge-aws": "^1.2.0",
-    "forge-terraform": "~2.0.1"
+  "commandoModules": {
+    "@myorg/commando-aws": "^1.2.0",
+    "commando-terraform": "~2.0.1"
   },
-  "forgeModulesGit": [
-    "github:jdillon/forge-website#v1.0.0",
-    "gitlab:myorg/forge-custom#main"
+  "commandoModulesGit": [
+    "github:jdillon/commando-website#v1.0.0",
+    "gitlab:myorg/commando-custom#main"
   ]
 }
 ```
 
-#### Option 2: .forge/config.yml (current config file)
+#### Option 2: .commando/config.yml (current config file)
 ```yaml
 modules:
   # npm packages
-  - npm:@myorg/forge-aws@^1.2.0
-  - npm:forge-terraform@~2.0.1
+  - npm:@myorg/commando-aws@^1.2.0
+  - npm:commando-terraform@~2.0.1
 
   # git repos
-  - github:jdillon/forge-website#v1.0.0
-  - gitlab:myorg/forge-custom#main
+  - github:jdillon/commando-website#v1.0.0
+  - gitlab:myorg/commando-custom#main
   - git+ssh://git@private.com/repo.git#feature
 
   # local (for compatibility)
@@ -144,20 +144,20 @@ modules:
 
 #### Option 3: Hybrid (recommended)
 - Use `package.json` for npm packages (standard node workflow)
-- Use `.forge/config.yml` for git sources (keeps forge config together)
+- Use `.commando/config.yml` for git sources (keeps commando config together)
 
 ### npm Package Structure
 
-**Forge module as npm package**:
+**Commando module as npm package**:
 
 ```
-@myorg/forge-aws/
+@myorg/commando-aws/
 ├── package.json
 │   {
-│     "name": "@myorg/forge-aws",
+│     "name": "@myorg/commando-aws",
 │     "version": "1.2.0",
 │     "main": "dist/index.js",
-│     "forge": {
+│     "commando": {
 │       "group": "aws",
 │       "description": "AWS deployment commands"
 │     }
@@ -169,15 +169,15 @@ modules:
 └── README.md
 ```
 
-**Discovery**: Look for `forge` field in package.json
+**Discovery**: Look for `commando` field in package.json
 
 ### Git Repository Structure
 
-**Forge module as git repo**:
+**Commando module as git repo**:
 
 ```
-forge-website/
-├── .forgemodule          # Marker file (indicates this is a forge module)
+commando-website/
+├── .commandomodule       # Marker file (indicates this is a commando module)
 ├── package.json           # Standard metadata
 ├── commands/
 │   ├── deploy.ts
@@ -185,7 +185,7 @@ forge-website/
 └── README.md
 ```
 
-**Discovery**: Check for `.forgemodule` marker or `forge` in package.json
+**Discovery**: Check for `.commandomodule` marker or `commando` in package.json
 
 ---
 
@@ -202,7 +202,7 @@ forge-website/
    ```
 
 2. **Implement resolvers**:
-   - `LocalResolver`: Already works (`.forge/` loading)
+   - `LocalResolver`: Already works (`.commando/` loading)
    - `NpmResolver`: Load from `node_modules/`
    - `GitResolver`: Clone/fetch git repos
 
@@ -210,32 +210,32 @@ forge-website/
 
 ### Phase 2: npm Package Support
 
-1. **Parse package.json**: Read `forgeModules` field
+1. **Parse package.json**: Read `commandoModules` field
 2. **Install packages**: Run `bun install` if packages missing
-3. **Discover modules**: Scan `node_modules/` for forge-compatible packages
+3. **Discover modules**: Scan `node_modules/` for commando-compatible packages
 4. **Load and register**: Use existing module loading logic
 
 ### Phase 3: Git Repository Support
 
 1. **Parse git URLs**: Support github:, gitlab:, git+ssh:, git+https:
 2. **Clone/fetch**: Use `simple-git` or shell out to `git clone`
-3. **Cache**: Store in `.forge/cache/git/<hash>/`
+3. **Cache**: Store in `.commando/cache/git/<hash>/`
 4. **Checkout ref**: Support branches, tags, commit SHAs
-5. **Update strategy**: `forge module update` re-fetches
+5. **Update strategy**: `cmdo module update` re-fetches
 
 ### Phase 4: Version Management
 
-1. **Lock file**: Create `.forge/modules.lock` (like package-lock.json)
+1. **Lock file**: Create `.commando/modules.lock` (like package-lock.json)
 2. **Version resolution**: Handle semver ranges
-3. **Update command**: `forge module update [name]`
-4. **Prune command**: `forge module prune` (remove unused)
+3. **Update command**: `cmdo module update [name]`
+4. **Prune command**: `cmdo module prune` (remove unused)
 
 ---
 
 ## Open Questions
 
 1. **npm install integration**:
-   - Should `forge` run `bun install` automatically?
+   - Should `cmdo` run `bun install` automatically?
    - Or require user to run it separately?
    - What about CI/CD environments?
 
@@ -246,7 +246,7 @@ forge-website/
 
 3. **Caching strategy**:
    - Cache git repos permanently or temporary?
-   - Where to store cache (`.forge/cache/` or `~/.cache/forge/`)?
+   - Where to store cache (`.commando/cache/` or `~/.cache/commando/`)?
    - How to invalidate cache?
 
 4. **Module namespace conflicts**:

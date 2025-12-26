@@ -6,7 +6,7 @@ Commands are automatically discovered from module exports - no manual registrati
 
 ## How It Works
 
-1. List modules in `.forge/config.yml`
+1. List modules in `.commando/config.yml`
 2. Export commands from those modules
 3. Framework discovers and registers them automatically
 
@@ -15,7 +15,7 @@ Commands are automatically discovered from module exports - no manual registrati
 ## Config
 
 ```yaml
-# .forge/config.yml
+# .commando/config.yml
 modules:
   - ./website
   - ./examples
@@ -30,14 +30,14 @@ That's it! No command mapping needed.
 ### Named Exports
 ```typescript
 // website.ts
-export const build: ForgeCommand = {
+export const build: CommandoCommand = {
   description: 'Build website',
   execute: async (options, args, context) => {
     // implementation
   }
 };
 
-export const deploy: ForgeCommand = {
+export const deploy: CommandoCommand = {
   description: 'Deploy website',
   execute: async () => { ... }
 };
@@ -65,7 +65,7 @@ export default {
 ### Both (Mix and Match)
 ```typescript
 // commands.ts
-export const build: ForgeCommand = { ... };
+export const build: CommandoCommand = { ... };
 
 export default {
   build,  // Re-export
@@ -79,12 +79,12 @@ export default {
 
 The framework checks each module for:
 
-1. **Named exports** - Any export that looks like a ForgeCommand (has `description` and `execute`)
+1. **Named exports** - Any export that looks like a CommandoCommand (has `description` and `execute`)
 2. **Default export** - If it's an object, treat keys as command names
 
 **Detection**:
 ```typescript
-function isForgeCommand(obj: any): boolean {
+function isCommandoCommand(obj: any): boolean {
   return obj
     && typeof obj === 'object'
     && typeof obj.description === 'string'
@@ -120,7 +120,7 @@ function isForgeCommand(obj: any): boolean {
 
 ✅ **Zero boilerplate** - Export a command, it works
 ✅ **Flexible** - Named exports, default export, or both
-✅ **Type-safe** - TypeScript validates ForgeCommand structure
+✅ **Type-safe** - TypeScript validates CommandoCommand structure
 ✅ **Simple** - config.yml is just a module list
 
 ---

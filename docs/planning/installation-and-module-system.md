@@ -1,4 +1,4 @@
-# Forge Module System - Specification
+# Commando Module System - Specification
 
 **Version**: 1.0.0-draft
 **Date**: 2025-11-01
@@ -23,7 +23,7 @@
 
 ## Overview
 
-This specification defines the installation, upgrade, and module system for Forge. The system enables:
+This specification defines the installation, upgrade, and module system for Commando. The system enables:
 
 - **Simple installation** via one-line install script
 - **Shared module storage** using a meta-project pattern
@@ -73,18 +73,18 @@ This specification defines the installation, upgrade, and module system for Forg
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  User runs: forge website deploy                        │
+│  User runs: cmdo website deploy                         │
 └────────────┬────────────────────────────────────────────┘
              │
              ▼
 ┌─────────────────────────────────────────────────────────┐
-│  ~/.local/bin/forge                                      │
+│  ~/.local/bin/cmdo                                       │
 │  (Bash wrapper script)                                   │
 └────────────┬────────────────────────────────────────────┘
              │
              ▼
 ┌─────────────────────────────────────────────────────────┐
-│  ~/.local/share/forge/node_modules/@planet57/forge/     │
+│  ~/.local/share/commando/node_modules/@planet57/commando/│
 │  (Real CLI implementation)                               │
 │  - Bootstrap & argument parsing                          │
 │  - Project discovery                                     │
@@ -94,8 +94,8 @@ This specification defines the installation, upgrade, and module system for Forg
              ▼
 ┌─────────────────────────────────────────────────────────┐
 │  Module Resolution                                       │
-│  1. Local: .forge/website.ts                           │
-│  2. Shared: ~/.local/share/forge/node_modules/...       │
+│  1. Local: .commando/website.ts                        │
+│  2. Shared: ~/.local/share/commando/node_modules/...    │
 │  3. Project: <project>/node_modules/... (optional)      │
 └────────────┬────────────────────────────────────────────┘
              │
@@ -108,18 +108,18 @@ This specification defines the installation, upgrade, and module system for Forg
 
 ### Key Components
 
-1. **Wrapper Script** (`~/.local/bin/forge`)
+1. **Wrapper Script** (`~/.local/bin/cmdo`)
    - Lightweight bash script
    - Delegates to real CLI
    - Potential for env setup, version checking, etc.
 
-2. **Meta Project** (`~/.local/share/forge/`)
+2. **Meta Project** (`~/.local/share/commando/`)
    - Standard Bun project (package.json + node_modules)
-   - Shared location for forge core and modules
+   - Shared location for commando core and modules
    - Managed via `bun add/update/remove`
 
-3. **Real CLI** (`~/.local/share/forge/node_modules/@planet57/forge/`)
-   - Actual forge implementation
+3. **Real CLI** (`~/.local/share/commando/node_modules/@planet57/commando/`)
+   - Actual commando implementation
    - All business logic
    - Can be updated independently
 
@@ -136,7 +136,7 @@ This specification defines the installation, upgrade, and module system for Forg
 
 **One-line install**:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/jdillon/forge/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jdillon/commando/main/install.sh | bash
 ```
 
 ### Install Script Responsibilities
@@ -155,30 +155,30 @@ The `install.sh` script:
 
 2. **Create meta project**
    ```bash
-   mkdir -p ~/.local/share/forge
-   cd ~/.local/share/forge
-   echo '{"name":"forge-meta","version":"1.0.0"}' > package.json
+   mkdir -p ~/.local/share/commando
+   cd ~/.local/share/commando
+   echo '{"name":"commando-meta","version":"1.0.0"}' > package.json
    ```
 
-3. **Install forge**
+3. **Install commando**
    ```bash
-   bun add github:jdillon/forge#module-system
+   bun add github:jdillon/commando#module-system
    ```
 
 4. **Create wrapper script**
    ```bash
    mkdir -p ~/.local/bin
-   cat > ~/.local/bin/forge << 'EOF'
+   cat > ~/.local/bin/cmdo << 'EOF'
    #!/usr/bin/env bash
-   # Forge wrapper
-   exec bun ~/.local/share/forge/node_modules/@planet57/forge/cli.ts "$@"
+   # Commando wrapper
+   exec bun ~/.local/share/commando/node_modules/@planet57/commando/cli.ts "$@"
    EOF
-   chmod +x ~/.local/bin/forge
+   chmod +x ~/.local/bin/cmdo
    ```
 
 5. **Verify installation**
    ```bash
-   ~/.local/bin/forge --version
+   ~/.local/bin/cmdo --version
    ```
 
 6. **Provide PATH instructions** (if needed)
@@ -190,13 +190,13 @@ The `install.sh` script:
 ```
 ~/.local/
 ├── bin/
-│   └── forge                              # Wrapper script
+│   └── cmdo                               # Wrapper script
 └── share/
-    └── forge/
+    └── commando/
         ├── package.json                   # Meta project
         ├── bun.lock                       # Bun lockfile
         └── node_modules/
-            └── @planet57/forge/           # Forge core
+            └── @planet57/commando/        # Commando core
                 ├── package.json
                 ├── cli.ts                 # Entry point
                 └── lib/
@@ -208,7 +208,7 @@ The `install.sh` script:
 ### Prerequisites
 
 - **Bun** (required): JavaScript runtime and package manager
-  - User must install Bun before running forge install script
+  - User must install Bun before running commando install script
   - Installation methods:
     - Homebrew: `brew install oven-sh/bun/bun`
     - Direct: `curl -fsSL https://bun.sh/install | bash`
@@ -225,13 +225,15 @@ The `install.sh` script:
 
 ---
 
+---
+
 ## Module System
 
 ### Module Types
 
 #### 0. Built-in Commands
 
-**Location**: `lib/builtin/` within forge core package
+**Location**: `lib/builtin/` within commando core package
 
 **Example**:
 ```typescript
@@ -240,26 +242,26 @@ export const __module__ = {
   group: false  // Top-level commands, no grouping
 };
 
-export const upgrade: ForgeCommand = {
-  description: 'Upgrade forge to latest version',
+export const upgrade: CommandoCommand = {
+  description: 'Upgrade commando to latest version',
   execute: async () => { /* ... */ }
 };
 
-export const version: ForgeCommand = {
-  description: 'Show forge version',
+export const version: CommandoCommand = {
+  description: 'Show commando version',
   execute: async () => { /* ... */ }
 };
 
-export const help: ForgeCommand = {
+export const help: CommandoCommand = {
   description: 'Show help information',
   execute: async () => { /* ... */ }
 };
 ```
 
 **Result**:
-- `forge upgrade` (not `forge core upgrade`)
-- `forge version`
-- `forge help`
+- `cmdo upgrade` (not `cmdo core upgrade`)
+- `cmdo version`
+- `cmdo help`
 
 **Use case**: Core functionality always available (upgrade, version, help)
 
@@ -268,20 +270,20 @@ export const help: ForgeCommand = {
 **Implementation flexibility**: If all commands in one file becomes unwieldy, can split into:
 ```
 lib/builtin/
-├── upgrade.ts    # forge upgrade
-├── version.ts    # forge version
-└── help.ts       # forge help
+├── upgrade.ts    # cmdo upgrade
+├── version.ts    # cmdo version
+└── help.ts       # cmdo help
 ```
 Each with `__module__: { group: false }`. Will determine best approach during implementation.
 
 #### 1. Local Modules (Project-Specific)
 
-**Location**: `.forge/*.ts` in project directory
+**Location**: `.commando/*.ts` in project directory
 
 **Example**:
 ```
 myproject/
-└── .forge/
+└── .commando/
     ├── config.yml
     ├── helper.ts          # Local module
     └── deploy.ts          # Local module
@@ -298,11 +300,11 @@ modules:
 
 #### 2. Shared Modules (Git Repositories)
 
-**Location**: `~/.local/share/forge/node_modules/` after installation
+**Location**: `~/.local/share/commando/node_modules/` after installation
 
 **Example repository**:
 ```
-forge-standard/
+commando-standard/
 ├── package.json
 ├── aws.ts              # Module file
 ├── terraform.ts        # Module file
@@ -312,7 +314,7 @@ forge-standard/
 **package.json**:
 ```json
 {
-  "name": "@planet57/forge-standard",
+  "name": "@planet57/commando-standard",
   "version": "1.0.0",
   "type": "module",
   "exports": {
@@ -326,18 +328,18 @@ forge-standard/
 **Config**:
 ```yaml
 dependencies:
-  - github:planet57/forge-standard#main
+  - github:planet57/commando-standard#main
 
 modules:
-  - @planet57/forge-standard/aws
-  - @planet57/forge-standard/terraform
+  - @planet57/commando-standard/aws
+  - @planet57/commando-standard/terraform
 ```
 
 **Use case**: Reusable modules across multiple projects
 
 #### 3. npm Packages (Future)
 
-**Location**: `~/.local/share/forge/node_modules/` after installation
+**Location**: `~/.local/share/commando/node_modules/` after installation
 
 **Config**:
 ```yaml
@@ -345,7 +347,7 @@ dependencies:
   - "@aws-sdk/client-s3@^3.0.0"
 
 modules:
-  - @planet57/forge-aws
+  - @planet57/commando-aws
 ```
 
 **Use case**: Published packages from GitHub/GitLab package registries
@@ -358,27 +360,27 @@ modules:
 
 All configuration uses YAML (not JSON) for readability and comments.
 
-### Location: `.forge/config.yml`
+### Location: `.commando/config.yml`
 
 Project-specific configuration file.
 
 ### Structure
 
 ```yaml
-# .forge/config.yml
+# .commando/config.yml
 
 # Dependencies: Module packages to install
 dependencies:
-  - github:planet57/forge-standard#main
-  - github:acme/forge-aws#v1.0.0
+  - github:planet57/commando-standard#main
+  - github:acme/commando-aws#v1.0.0
   - "@aws-sdk/client-s3@^3.0.0"
 
 # Modules: What to load (local or from dependencies)
 modules:
-  - helper                           # Local: .forge/helper.ts
-  - @planet57/forge-standard/aws     # From dependency
-  - @planet57/forge-standard/terraform
-  - @acme/forge-aws                  # Whole package
+  - helper                              # Local: .commando/helper.ts
+  - @planet57/commando-standard/aws     # From dependency
+  - @planet57/commando-standard/terraform
+  - @acme/commando-aws                  # Whole package
 
 # Optional: State configuration
 state:
@@ -415,7 +417,7 @@ dependencies:
 **Local modules**:
 ```yaml
 modules:
-  - helper                 # Loads .forge/helper.ts
+  - helper                 # Loads .commando/helper.ts
   - ./path/to/module       # Relative path
 ```
 
@@ -437,27 +439,27 @@ Following XDG Base Directory Specification where practical:
 ```
 ~/.local/
 ├── bin/                              # User binaries
-│   └── forge                         # Wrapper script
+│   └── cmdo                          # Wrapper script
 ├── share/                            # Application data
-│   └── forge/                        # Forge meta project
+│   └── commando/                     # Commando meta project
 │       ├── package.json
 │       ├── bun.lock
 │       └── node_modules/
-│           ├── @planet57/forge/      # Core
-│           └── @planet57/forge-standard/  # Shared modules
+│           ├── @planet57/commando/   # Core
+│           └── @planet57/commando-standard/  # Shared modules
 ├── state/                            # Application state
-│   └── forge/
+│   └── commando/
 │       └── state.json                # User state
 └── cache/                            # Cached data
-    └── forge/
+    └── commando/
         └── (future use)
 
 ~/.config/                            # Configuration
-└── forge/
+└── commando/
     └── config.yml                    # User-wide config (optional)
 
 <project>/
-└── .forge/
+└── .commando/
     ├── .gitignore                    # Ignore local files
     ├── config.yml                    # Project config (committed to git)
     ├── config.local.yml              # Project-local user config (gitignored)
@@ -466,9 +468,9 @@ Following XDG Base Directory Specification where practical:
     └── deploy.ts
 ```
 
-### .forge/.gitignore
+### .commando/.gitignore
 
-The `.forge/.gitignore` file should contain:
+The `.commando/.gitignore` file should contain:
 
 ```gitignore
 config.local.yml
@@ -483,17 +485,17 @@ This ensures:
 
 ### Configuration Hierarchy
 
-Forge supports three levels of configuration with merge precedence:
+Commando supports three levels of configuration with merge precedence:
 
-1. **User-wide config**: `~/.config/forge/config.yml`
+1. **User-wide config**: `~/.config/commando/config.yml`
    - System-wide defaults for all projects
    - Example: Default logging level, update preferences
 
-2. **Project config**: `<project>/.forge/config.yml`
+2. **Project config**: `<project>/.commando/config.yml`
    - Committed to git, shared with team
    - Defines modules, dependencies, project settings
 
-3. **Project-local config**: `<project>/.forge/config.local.yml`
+3. **Project-local config**: `<project>/.commando/config.local.yml`
    - Gitignored, user-specific overrides
    - Example: Local development paths, personal preferences
 
@@ -501,24 +503,24 @@ Forge supports three levels of configuration with merge precedence:
 
 **Example**:
 ```yaml
-# .forge/config.yml (committed)
+# .commando/config.yml (committed)
 modules:
   - helper
   - website
 
-# .forge/config.local.yml (gitignored)
+# .commando/config.local.yml (gitignored)
 logging:
   level: debug  # Override for local development
 ```
 
 ### Why Not Bun's Global?
 
-We use `~/.local/share/forge/` instead of `~/.bun/install/global/` because:
+We use `~/.local/share/commando/` instead of `~/.bun/install/global/` because:
 
-1. **Separation of concerns** - Forge modules separate from Bun's global packages
+1. **Separation of concerns** - Commando modules separate from Bun's global packages
 2. **XDG compliance** - Follows standard directory layout
-3. **User control** - User can `cd ~/.local/share/forge && bun add ...` directly
-4. **Clean uninstall** - Remove `~/.local/share/forge/` and `~/.local/bin/forge`
+3. **User control** - User can `cd ~/.local/share/commando && bun add ...` directly
+4. **Clean uninstall** - Remove `~/.local/share/commando/` and `~/.local/bin/cmdo`
 
 ---
 
@@ -526,16 +528,16 @@ We use `~/.local/share/forge/` instead of `~/.bun/install/global/` because:
 
 ### Resolution Algorithm
 
-When loading a module, forge checks locations in priority order:
+When loading a module, commando checks locations in priority order:
 
 ```typescript
 async function resolveModule(name: string): Promise<ModulePath> {
   const projectRoot = findProjectRoot();
-  const sharedPath = '~/.local/share/forge/node_modules';
+  const sharedPath = '~/.local/share/commando/node_modules';
 
-  // 1. Local module in .forge/
+  // 1. Local module in .commando/
   if (!name.includes('/') && !name.startsWith('@')) {
-    const localPath = resolve(projectRoot, '.forge', `${name}.ts`);
+    const localPath = resolve(projectRoot, '.commando', `${name}.ts`);
     if (exists(localPath)) {
       return { type: 'local', path: localPath };
     }
@@ -561,12 +563,12 @@ async function resolveModule(name: string): Promise<ModulePath> {
 
 **Using Bun's require.resolve**:
 ```typescript
-const sharedPath = path.join(os.homedir(), '.local/share/forge/node_modules');
+const sharedPath = path.join(os.homedir(), '.local/share/commando/node_modules');
 
 try {
   const modulePath = require.resolve(name, {
     paths: [
-      path.join(projectRoot, '.forge'),
+      path.join(projectRoot, '.commando'),
       sharedPath,
       path.join(projectRoot, 'node_modules')
     ]
@@ -599,68 +601,68 @@ registerCommandGroup(metadata.group, commands);
 
 ## Upgrade Workflow
 
-### Forge Core Upgrade
+### Commando Core Upgrade
 
 **User command**:
 ```bash
-forge upgrade
+cmdo upgrade
 ```
 
 **Implementation**:
 ```typescript
-export const upgrade: ForgeCommand = {
-  description: 'Upgrade forge to latest version',
+export const upgrade: CommandoCommand = {
+  description: 'Upgrade commando to latest version',
   execute: async () => {
-    const forgeHome = path.join(os.homedir(), '.local/share/forge');
+    const commandoHome = path.join(os.homedir(), '.local/share/commando');
 
     // Run bun update in meta project
-    await execa('bun', ['update', '@planet57/forge'], {
-      cwd: forgeHome,
+    await execa('bun', ['update', '@planet57/commando'], {
+      cwd: commandoHome,
       stdio: 'inherit'
     });
 
-    console.log('✅ Forge upgraded successfully');
+    console.log('Commando upgraded successfully');
     console.log('   Restart your shell or run: hash -r');
   }
 };
 ```
 
 **Why this works**:
-- Wrapper script at `~/.local/bin/forge` doesn't change
-- Only `node_modules/@planet57/forge/` content updates
+- Wrapper script at `~/.local/bin/cmdo` doesn't change
+- Only `node_modules/@planet57/commando/` content updates
 - No file locking issues (wrapper delegates to updated code)
 
 ### Module Upgrades
 
 **User command**:
 ```bash
-forge module update              # Update all modules
-forge module update forge-standard  # Update specific module
+cmdo module update                 # Update all modules
+cmdo module update commando-standard  # Update specific module
 ```
 
 **Implementation**:
 ```typescript
-export const moduleUpdate: ForgeCommand = {
-  description: 'Update forge modules',
+export const moduleUpdate: CommandoCommand = {
+  description: 'Update commando modules',
   execute: async (options, args) => {
-    const forgeHome = path.join(os.homedir(), '.local/share/forge');
+    const commandoHome = path.join(os.homedir(), '.local/share/commando');
     const moduleName = args[0];
 
     if (moduleName) {
       // Update specific module
       await execa('bun', ['update', moduleName], {
-        cwd: forgeHome,
+        cwd: commandoHome,
         stdio: 'inherit'
       });
     } else {
       // Update all modules
       await execa('bun', ['update'], {
-        cwd: forgeHome,
+        cwd: commandoHome,
         stdio: 'inherit'
       });
     }
 
-    console.log('✅ Modules updated');
+    console.log('Modules updated');
   }
 };
 ```
@@ -669,19 +671,19 @@ export const moduleUpdate: ForgeCommand = {
 
 **Configurable check frequency**:
 ```yaml
-# .forge/config.yml or ~/.config/forge/config.yml
+# .commando/config.yml or ~/.config/commando/config.yml
 updates:
   check: daily  # daily, weekly, never
   notify: true
 ```
 
-**On forge run**:
+**On commando run**:
 ```typescript
 // Check for updates (if enabled and cache expired)
 if (await shouldCheckForUpdates()) {
   const updates = await checkForUpdates();
   if (updates.core || updates.modules.length > 0) {
-    console.warn('⚠️  Updates available! Run: forge upgrade');
+    console.warn('Updates available! Run: cmdo upgrade');
   }
 }
 ```
@@ -698,25 +700,25 @@ if (await shouldCheckForUpdates()) {
 
 **Issue**: [#10 Phase 1: Basic Installation & Local Modules](https://github.com/jdillon/forge-bash/issues/10)
 
-**Goal**: Get forge installable with local modules working
+**Goal**: Get commando installable with local modules working
 
 **Tasks**:
 - [ ] Create `install.sh` script
 - [ ] Add package.json with proper metadata
-  - `name`: `@planet57/forge`
+  - `name`: `@planet57/commando`
   - `bin`: Entry point
   - `exports`: Module exports
 - [ ] Test installation flow
-  - From git: `bun add github:jdillon/forge#module-system`
+  - From git: `bun add github:jdillon/commando#module-system`
   - Via install script
 - [ ] Verify wrapper script works
 - [ ] Document installation process
 - [ ] Keep existing local module loading
 
 **Success criteria**:
-- Can install forge via install.sh
-- `forge --version` works
-- Local modules (`.forge/*.ts`) still work
+- Can install commando via install.sh
+- `cmdo --version` works
+- Local modules (`.commando/*.ts`) still work
 
 **No changes to**:
 - Current module loading
@@ -732,7 +734,7 @@ if (await shouldCheckForUpdates()) {
 
 **Tasks**:
 - [ ] Parse `dependencies:` section from config.yml
-- [ ] Install dependencies to `~/.local/share/forge/node_modules/`
+- [ ] Install dependencies to `~/.local/share/commando/node_modules/`
   - Run `bun add` from meta project directory
   - Handle git URLs
   - Handle npm packages
@@ -800,11 +802,11 @@ import { S3Client } from '@aws-sdk/client-s3';
 **Example**:
 ```yaml
 dependencies:
-  - github:planet57/forge-standard#main
+  - github:planet57/commando-standard#main
 
 modules:
-  - @planet57/forge-standard/aws
-  - @planet57/forge-standard/terraform
+  - @planet57/commando-standard/aws
+  - @planet57/commando-standard/terraform
 ```
 
 ---
@@ -813,14 +815,14 @@ modules:
 
 **Issue**: [#13 Phase 4: Upgrade Commands](https://github.com/jdillon/forge-bash/issues/13)
 
-**Goal**: Easy upgrades for forge and modules
+**Goal**: Easy upgrades for commando and modules
 
 **Tasks**:
-- [ ] Implement `forge upgrade` command
-  - Update forge core
+- [ ] Implement `cmdo upgrade` command
+  - Update commando core
   - Verify update worked
   - Handle failures gracefully
-- [ ] Implement `forge module update` command
+- [ ] Implement `cmdo module update` command
   - Update all modules
   - Update specific module
   - Show what changed
@@ -829,11 +831,11 @@ modules:
   - Show changelog (if available)
 - [ ] Rollback mechanism (optional)
   - Save previous version
-  - `forge rollback` command
+  - `cmdo rollback` command
 
 **Success criteria**:
-- `forge upgrade` updates forge
-- `forge module update` updates modules
+- `cmdo upgrade` updates commando
+- `cmdo module update` updates modules
 - User-friendly error messages
 
 ---
@@ -847,8 +849,8 @@ modules:
 **Tasks**:
 - [ ] Module template/starter kit
 - [ ] Example shared modules
-  - forge-standard (help, version, etc.)
-  - forge-example (showcase features)
+  - commando-standard (help, version, etc.)
+  - commando-example (showcase features)
 - [ ] Complete documentation
   - Installation guide
   - Module authoring guide
@@ -882,7 +884,7 @@ Not in initial scope, but design supports:
 ### Module Aliasing
 ```yaml
 modules:
-  - name: @planet57/forge-standard/aws
+  - name: @planet57/commando-standard/aws
     as: cloud  # Load as 'cloud' group instead of 'aws'
 ```
 
@@ -894,9 +896,9 @@ modules:
 ```
 
 ### Module Marketplace
-- Central registry of forge modules
-- `forge module search terraform`
-- `forge module info @planet57/forge-aws`
+- Central registry of commando modules
+- `cmdo module search terraform`
+- `cmdo module info @planet57/commando-aws`
 
 ### Automatic Updates
 ```yaml
@@ -931,7 +933,7 @@ Modules execute arbitrary code. Trust model:
 
 **Authentication**:
 - SSH keys: Standard git credentials
-- No credentials stored by forge
+- No credentials stored by commando
 - Bun handles git authentication
 
 ### Dependency Supply Chain
@@ -963,7 +965,7 @@ Modules execute arbitrary code. Trust model:
 2. Create project with config.yml
 3. Install dependencies
 4. Load and execute modules
-5. Upgrade forge
+5. Upgrade commando
 6. Upgrade modules
 
 ### Test Fixtures
@@ -979,11 +981,11 @@ Location: `tests/fixtures/`
 ## Open Questions
 
 ### Resolved
-- ✅ Custom node_modules location: Use meta project pattern
-- ✅ Module resolution: Programmatic, no env vars
-- ✅ Git subdirectories: Not supported, use package exports
-- ✅ Bootstrap pattern: Use wrapper script, not bootstrap delegation
-- ✅ Install location: `~/.local/bin/forge` not `~/.bun/bin/`
+- Custom node_modules location: Use meta project pattern
+- Module resolution: Programmatic, no env vars
+- Git subdirectories: Not supported, use package exports
+- Bootstrap pattern: Use wrapper script, not bootstrap delegation
+- Install location: `~/.local/bin/cmdo` not `~/.bun/bin/`
 
 ### To Resolve During Implementation
 1. **Exact wrapper script implementation** - bash vs bun script?
@@ -1005,11 +1007,11 @@ Location: `tests/fixtures/`
 
 ### User Experience Goals
 
-- ✅ "Just works" on first try
-- ✅ Updates are painless
-- ✅ No mysterious errors
-- ✅ Faster than manual package management
-- ✅ Feels native to Node.js/Bun ecosystem
+- "Just works" on first try
+- Updates are painless
+- No mysterious errors
+- Faster than manual package management
+- Feels native to Node.js/Bun ecosystem
 
 ---
 
@@ -1031,12 +1033,12 @@ Location: `tests/fixtures/`
 
 ### Glossary
 
-- **Meta project** - Bun project at `~/.local/share/forge/` managing forge core and shared modules
-- **Local module** - Project-specific TypeScript file in `.forge/`
+- **Meta project** - Bun project at `~/.local/share/commando/` managing commando core and shared modules
+- **Local module** - Project-specific TypeScript file in `.commando/`
 - **Shared module** - Reusable module installed to meta project
-- **Wrapper script** - Lightweight script at `~/.local/bin/forge` that delegates to real CLI
+- **Wrapper script** - Lightweight script at `~/.local/bin/cmdo` that delegates to real CLI
 - **Bootstrap** - Initial setup and delegation (we use wrapper instead)
-- **Command group** - Set of related commands under namespace (e.g., `forge website build`)
+- **Command group** - Set of related commands under namespace (e.g., `cmdo website build`)
 
 ---
 

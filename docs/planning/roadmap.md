@@ -1,14 +1,14 @@
-# Forge Roadmap
+# Commando Roadmap
 
 **Last Updated**: 2025-10-30
 **Primary Tracking**: [GitHub Project Board](https://github.com/users/jdillon/projects/3)
-**Repository**: https://github.com/jdillon/forge
+**Repository**: https://github.com/jdillon/commando
 
 ---
 
 ## Overview
 
-Forge is a modern CLI framework for deployments built with TypeScript/Bun. This roadmap tracks planned features from conception through implementation.
+Commando is a modern CLI framework for deployments built with TypeScript/Bun. This roadmap tracks planned features from conception through implementation.
 
 **Current Status**: Working prototype (v2.0.0)
 - ✅ Core framework complete (39 tests passing)
@@ -50,7 +50,7 @@ Forge is a modern CLI framework for deployments built with TypeScript/Bun. This 
 ## v2.1 - Module Ecosystem
 
 **Target**: Q1 2025 (March 31, 2025)
-**Focus**: Make Forge modules shareable and discoverable
+**Focus**: Make Commando modules shareable and discoverable
 
 ### High Priority
 
@@ -60,7 +60,7 @@ Forge is a modern CLI framework for deployments built with TypeScript/Bun. This 
 Enable users to install, list, update, and remove modules from private registries (npm, GitLab packages).
 
 **Key Features**:
-- Commands: `forge module add/list/update/remove`
+- Commands: `cmdo module add/list/update/remove`
 - Registry support: npm, GitLab packages
 - Authentication for private registries
 - Local module cache
@@ -78,7 +78,7 @@ Generate and install shell completion for bash/zsh/fish.
 **Key Features**:
 - Auto-complete commands, subcommands, flags
 - Support bash, zsh, fish
-- Installation: `forge completion install`
+- Installation: `cmdo completion install`
 
 **Dependencies**: omelette package (already installed)
 
@@ -89,8 +89,8 @@ Generate and install shell completion for bash/zsh/fish.
 
 Support commands at top level, not just subcommands.
 
-**Current**: `forge website deploy`
-**Desired**: `forge deploy` or `forge website:deploy`
+**Current**: `cmdo website deploy`
+**Desired**: `cmdo deploy` or `cmdo website:deploy`
 
 ---
 

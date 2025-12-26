@@ -16,7 +16,7 @@ import { Command } from 'commander';
 const program = new Command();
 
 program
-  .name('forge')
+  .name('cmdo')
   .description('Modern CLI framework')
   .version('2.0.0');
 
@@ -42,8 +42,8 @@ program.parse();
 
 **Auto-generated help:**
 ```bash
-$ forge --help
-Usage: forge [options] [command]
+$ cmdo --help
+Usage: cmdo [options] [command]
 
 Modern CLI framework
 
@@ -56,8 +56,8 @@ Commands:
   deploy [options] <environment>  Deploy to environment
   help [command]             display help for command
 
-$ forge sync --help
-Usage: forge sync [options]
+$ cmdo sync --help
+Usage: cmdo sync [options]
 
 Sync to S3
 
@@ -92,7 +92,7 @@ Options:
 import { cli } from 'cleye';
 
 const argv = cli({
-  name: 'forge',
+  name: 'cmdo',
   version: '2.0.0',
 
   flags: {
@@ -144,7 +144,7 @@ const argv = cli({
 import { Command } from 'cliffy';
 
 await new Command()
-  .name('forge')
+  .name('cmdo')
   .version('2.0.0')
   .command('sync', 'Sync to S3')
     .option('-d, --dry-run', 'Preview')
@@ -175,7 +175,7 @@ await new Command()
 ```typescript
 import cac from 'cac';
 
-const cli = cac('forge');
+const cli = cac('cmdo');
 
 cli
   .command('sync', 'Sync to S3')
@@ -265,7 +265,7 @@ bun add omelette
 ```typescript
 import omelette from 'omelette';
 
-const completion = omelette('forge <command> <subcommand>');
+const completion = omelette('cmdo <command> <subcommand>');
 
 completion.on('command', ({ reply }) => {
   reply(['sync', 'deploy', 'publish', 'module']);
@@ -280,15 +280,15 @@ completion.init();
 
 **Setup:**
 ```bash
-forge completion >> ~/.bashrc
+cmdo completion >> ~/.bashrc
 # or
-forge completion >> ~/.zshrc
+cmdo completion >> ~/.zshrc
 ```
 
 **Usage:**
 ```bash
-forge <TAB>       # → sync, deploy, publish, module
-forge sync --<TAB> # → --dry-run, --bucket
+cmdo <TAB>       # → sync, deploy, publish, module
+cmdo sync --<TAB> # → --dry-run, --bucket
 ```
 
 ---
@@ -299,9 +299,9 @@ Fig provides IDE-like autocomplete for terminal (macOS only).
 
 **Create completion spec:**
 ```typescript
-// .fig/forge.ts
+// .fig/cmdo.ts
 const completionSpec = {
-  name: "forge",
+  name: "cmdo",
   description: "Modern CLI framework",
   subcommands: [
     {
@@ -343,7 +343,7 @@ program
 ## Example: Full Commander Setup
 
 ```typescript
-// forge
+// cmdo
 #!/usr/bin/env bun
 import { Command } from 'commander';
 import { $ } from 'bun';
@@ -352,7 +352,7 @@ import pc from 'picocolors';
 const program = new Command();
 
 program
-  .name('forge')
+  .name('cmdo')
   .description('Modern CLI framework for deployments')
   .version('2.0.0');
 
@@ -395,8 +395,8 @@ website
     console.log(pc.blue('Publishing website...'));
 
     // Run other commands
-    await website.parseAsync(['node', 'forge', 'build'], { from: 'user' });
-    await website.parseAsync(['node', 'forge', 'sync', ...(options.dryRun ? ['--dry-run'] : [])], { from: 'user' });
+    await website.parseAsync(['node', 'cmdo', 'build'], { from: 'user' });
+    await website.parseAsync(['node', 'cmdo', 'sync', ...(options.dryRun ? ['--dry-run'] : [])], { from: 'user' });
 
     console.log(pc.green('✓') + ' Published!');
   });
@@ -412,7 +412,7 @@ module
   .option('-g, --global', 'Install globally')
   .action(async (name, options) => {
     console.log(`Installing module: ${name}`);
-    await $`bun add @forge-modules/${name}`;
+    await $`bun add @commando-modules/${name}`;
     console.log(pc.green('✓') + ' Installed');
   });
 
@@ -429,7 +429,7 @@ module
   .description('Update modules')
   .action(async (name) => {
     if (name) {
-      await $`bun update @forge-modules/${name}`;
+      await $`bun update @commando-modules/${name}`;
     } else {
       await $`bun update`;
     }
@@ -443,7 +443,7 @@ program
   .action(() => {
     // Generate completion script
     console.log('# Add to ~/.bashrc or ~/.zshrc:');
-    console.log('eval "$(forge completion)"');
+    console.log('eval "$(cmdo completion)"');
   });
 
 // Parse
@@ -452,8 +452,8 @@ await program.parseAsync(process.argv);
 
 **Usage:**
 ```bash
-$ forge --help
-Usage: forge [options] [command]
+$ cmdo --help
+Usage: cmdo [options] [command]
 
 Modern CLI framework for deployments
 
@@ -469,8 +469,8 @@ Commands:
   completion         Generate shell completion
   help [command]     display help for command
 
-$ forge website --help
-Usage: forge website [options] [command]
+$ cmdo website --help
+Usage: cmdo website [options] [command]
 
 Website deployment commands
 
@@ -479,7 +479,7 @@ Commands:
   publish [options]  Full publish (build + sync + invalidate)
   help [command]     display help for command
 
-$ forge module add aws
+$ cmdo module add aws
 Installing module: aws
 ✓ Installed
 ```
@@ -540,13 +540,13 @@ log.fatal('Fatal error');    // 60
 
 ```bash
 # JSON logs for production (parseable)
-NODE_ENV=production forge deploy > logs.json
+NODE_ENV=production cmdo deploy > logs.json
 
 # Pretty logs for development
-forge deploy
+cmdo deploy
 
 # Pipe to analysis
-forge deploy | jq 'select(.level >= 50)'  # Errors only
+cmdo deploy | jq 'select(.level >= 50)'  # Errors only
 ```
 
 ---
@@ -555,7 +555,7 @@ forge deploy | jq 'select(.level >= 50)'  # Errors only
 
 ```json
 {
-  "name": "forge",
+  "name": "commando",
   "version": "2.0.0-prototype",
   "type": "module",
   "dependencies": {

@@ -15,7 +15,7 @@
 bun add ora
 ```
 
-**Current version in forge**: `^8.0.0`
+**Current version in commando**: `^8.0.0`
 
 ---
 
@@ -110,7 +110,7 @@ await ora(async () => {
 
 ---
 
-## Common Patterns in Forge
+## Common Patterns in Commando
 
 ### Simple Operation
 ```typescript
@@ -143,7 +143,7 @@ spinner.succeed(chalk.green('Deploy complete!'));
 
 ### With Logging
 ```typescript
-import { createLogger } from '@forge/logger';
+import { createLogger } from '@commando/logger';
 const log = createLogger('deploy');
 
 const spinner = ora('Deploying...').start();

@@ -1,4 +1,4 @@
-# Dependency Policy for Forge
+# Dependency Policy for Commando
 
 **Philosophy**: Minimize dependencies, vet thoroughly, prefer small packages over frameworks.
 
@@ -231,7 +231,7 @@ const proceed = input?.toLowerCase() === 'y';
 ### Minimal Approach (Recommended)
 ```json
 {
-  "name": "forge",
+  "name": "commando",
   "version": "2.0.0-prototype",
   "type": "module",
   "dependencies": {
@@ -248,7 +248,7 @@ const proceed = input?.toLowerCase() === 'y';
 ### Enhanced Approach (If You Want Features)
 ```json
 {
-  "name": "forge",
+  "name": "commando",
   "version": "2.0.0-prototype",
   "type": "module",
   "dependencies": {
