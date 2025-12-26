@@ -39,19 +39,19 @@ export type ColorMode = 'auto' | 'always' | 'never';
 // ============================================================================
 // Forward declarations
 // ============================================================================
-export interface Forge {
-  config: ForgeConfig;
+export interface Commando {
+  config: CommandoConfig;
   state: any; // StateManager
   globalOptions: Record<string, any>;
 }
 
 /**
  * Context passed to command execute functions
- * Provides access to forge instance, config, settings, and state
+ * Provides access to commando instance, config, settings, and state
  */
-export interface ForgeContext {
-  forge: Forge;                      // Main forge instance
-  config: ForgeConfig;               // Merged layered config
+export interface CommandoContext {
+  commando: Commando;                // Main commando instance
+  config: CommandoConfig;            // Merged layered config
   settings: Record<string, any>;     // Command-specific settings
   state: any;                        // StateManager instance (avoid circular dep for now)
   groupName?: string;                // Which group this command is in
@@ -64,7 +64,7 @@ export interface ForgeContext {
 /**
  * Command interface that modules export
  */
-export interface ForgeCommand {
+export interface CommandoCommand {
   description: string;
   usage?: string;
 
@@ -75,28 +75,28 @@ export interface ForgeCommand {
   // Execute with parsed options from Commander
   // options: parsed flags/options object from Commander
   // args: positional arguments array (always present, may be empty)
-  // context: forge instance, config, and command-specific settings
-  execute: (options: any, args: string[], context: ForgeContext) => Promise<void>;
+  // context: commando instance, config, and command-specific settings
+  execute: (options: any, args: string[], context: CommandoContext) => Promise<void>;
 }
 
 /**
  * Module metadata for customizing group behavior
  * Export as __module__ from your module
  */
-export interface ForgeModuleMetadata {
+export interface CommandoModuleMetadata {
   group?: string | false;  // Custom group name, or false for top-level
   description?: string;     // Group description for help
 }
 
 /**
- * Forge configuration
+ * Commando configuration
  * Contains all runtime configuration: bootstrap options, project info, and config file contents
  */
-export interface ForgeConfig {
+export interface CommandoConfig {
   // Project information
   projectPresent: boolean;
   projectRoot?: FilePath;
-  forgeDir?: FilePath;
+  commandoDir?: FilePath;
   userDir: FilePath;
 
   // Bootstrap options (from CLI args)
@@ -108,7 +108,7 @@ export interface ForgeConfig {
   colorMode: ColorMode;
   isRestarted: boolean;
 
-  // From .forge/config.yml (if project present)
+  // From .commando/config.yml (if project present)
   modules?: string[];
   dependencies?: string[];
   settings?: Record<string, Record<string, any>>;
@@ -123,7 +123,7 @@ export interface ForgeConfig {
  * All paths are resolved to absolute paths (no ./ or ../ segments)
  */
 export interface ProjectConfig {
-  projectRoot: FilePath;  // Fully resolved project root directory
-  forgeDir: FilePath;     // Fully resolved .forge/ directory
-  userDir: FilePath;      // Fully resolved user's working directory
+  projectRoot: FilePath;   // Fully resolved project root directory
+  commandoDir: FilePath;   // Fully resolved .commando/ directory
+  userDir: FilePath;       // Fully resolved user's working directory
 }

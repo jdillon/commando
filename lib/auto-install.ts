@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { syncDependencies, isInstalled } from './forge-home';
+import { syncDependencies, isInstalled } from './commando-home';
 import { createLogger } from './logging';
-import type { ForgeConfig } from './types';
+import type { CommandoConfig } from './types';
 
 /**
  * Magic exit code to signal wrapper that restart is needed
@@ -27,14 +27,14 @@ export const RESTART_EXIT_CODE = 42;
  * Sync dependencies and handle restart if needed
  *
  * @param config - Forge configuration
- * @param forgeDir - Project .forge/ directory path
+ * @param commandoDir - Project .commando/ directory path
  * @param isRestarted - True if this is a restarted process (from --forge-restarted flag)
  * @returns True if process should exit for restart
  * @throws Error if dependencies missing on restarted process
  */
 export async function autoInstallDependencies(
-  config: ForgeConfig,
-  forgeDir: string,
+  config: CommandoConfig,
+  commandoDir: string,
   isRestarted: boolean = false,
 ): Promise<boolean> {
   const log = createLogger('auto-install');

@@ -17,7 +17,7 @@ import process from "node:process";
 import { resolve, join, dirname } from "node:path";
 import { existsSync } from "node:fs";
 import { cosmiconfig } from "cosmiconfig";
-import type { FilePath, ColorMode, ForgeConfig } from "./types";
+import type { FilePath, ColorMode, CommandoConfig } from "./types";
 import { createBootstrapLogger } from "./logging/bootstrap";
 
 const log = createBootstrapLogger("config-resolver");
@@ -61,7 +61,7 @@ async function bunTypescriptLoader(filepath: string): Promise<any> {
 /**
  * Discover project root by walking up directory tree
  *
- * Searches for .forge/ directory starting from startDir and moving up
+ * Searches for .commando/ directory starting from startDir and moving up
  * until it finds one or reaches the filesystem root.
  *
  * @param startDir - Directory to start searching from (defaults to cwd)
@@ -75,10 +75,10 @@ async function discoverProject(startDir?: FilePath): Promise<FilePath | null> {
 
   // Walk up to root
   while (dir !== '/' && dir !== '.') {
-    const forgeDir = join(dir, '.forge');
+    const commandoDir = join(dir, '.commando');
     log.debug(`Checking directory: ${dir}`);
 
-    if (existsSync(forgeDir)) {
+    if (existsSync(commandoDir)) {
       log.debug(`Project discovered at: ${dir}`);
       return dir;
     }
@@ -97,11 +97,11 @@ async function discoverProject(startDir?: FilePath): Promise<FilePath | null> {
  *
  * Checks in order:
  * 1. Explicit rootPath parameter (from --root flag)
- * 2. FORGE_PROJECT environment variable
+ * 2. COMMANDO_PROJECT environment variable
  *
  * @param rootPath - Explicit root path from CLI flag
  * @returns Project root directory, or null if not explicitly set
- * @throws Error if FORGE_PROJECT is set but invalid
+ * @throws Error if COMMANDO_PROJECT is set but invalid
  */
 function getExplicitProjectRoot(rootPath?: FilePath): FilePath | null {
   // CLI flag takes precedence
@@ -111,17 +111,17 @@ function getExplicitProjectRoot(rootPath?: FilePath): FilePath | null {
   }
 
   // Env var override
-  if (process.env.FORGE_PROJECT) {
-    const envPath = process.env.FORGE_PROJECT;
-    log.debug(`Checking FORGE_PROJECT env var: ${envPath}`);
+  if (process.env.COMMANDO_PROJECT) {
+    const envPath = process.env.COMMANDO_PROJECT;
+    log.debug(`Checking COMMANDO_PROJECT env var: ${envPath}`);
 
-    if (existsSync(join(envPath, '.forge'))) {
-      log.debug(`Using project root from FORGE_PROJECT env var: ${envPath}`);
+    if (existsSync(join(envPath, '.commando'))) {
+      log.debug(`Using project root from COMMANDO_PROJECT env var: ${envPath}`);
       return envPath;
     }
 
-    log.debug(`FORGE_PROJECT env var points to invalid directory (no .forge/): ${envPath}`);
-    throw new Error(`FORGE_PROJECT=${envPath} but .forge/ not found`);
+    log.debug(`COMMANDO_PROJECT env var points to invalid directory (no .commando/): ${envPath}`);
+    throw new Error(`COMMANDO_PROJECT=${envPath} but .commando/ not found`);
   }
 
   log.debug('No explicit project root provided');
@@ -132,7 +132,7 @@ function getExplicitProjectRoot(rootPath?: FilePath): FilePath | null {
  * Find project root using all available methods
  *
  * Tries in order:
- * 1. Explicit root (--root flag or FORGE_PROJECT env var)
+ * 1. Explicit root (--root flag or COMMANDO_PROJECT env var)
  * 2. Discovery (walk up from start directory)
  *
  * @param options - Discovery options
@@ -160,19 +160,19 @@ async function findProjectRoot(options: {
  * Resolve full configuration from bootstrap config
  *
  * Steps:
- * 1. Discover project root (.forge directory)
- * 2. Load .forge/config.yml if project exists
- * 3. DEFERRED: Merge with user config (~/.forge/config) and defaults
+ * 1. Discover project root (.commando directory)
+ * 2. Load .commando/config.yml if project exists
+ * 3. DEFERRED: Merge with user config (~/.commando/config) and defaults
  * 4. DEFERRED: Apply ENV var overrides beyond existing FORGE_* vars
- * 5. Return ForgeConfig
+ * 5. Return CommandoConfig
  *
  * @param bootstrapConfig - Bootstrap options from CLI args
- * @returns ForgeConfig with all data needed for Forge initialization
+ * @returns CommandoConfig with all data needed for Forge initialization
  * @throws Error on critical failures (e.g., YAML parse error)
  */
 export async function resolveConfig(
   bootstrapConfig: BootstrapConfig,
-): Promise<ForgeConfig> {
+): Promise<CommandoConfig> {
   log.debug("Starting config resolution");
   log.debug(`userDir: ${bootstrapConfig.userDir}`);
   log.debug(`root: ${bootstrapConfig.root}`);
@@ -186,7 +186,7 @@ export async function resolveConfig(
   log.debug(`Project root: ${projectRoot || "(none)"}`);
 
   // 2. Load project config if present
-  let forgeConfig: Partial<ForgeConfig> = {};
+  let forgeConfig: Partial<CommandoConfig> = {};
 
   if (projectRoot) {
     try {
@@ -201,19 +201,19 @@ export async function resolveConfig(
 
       log.debug(`Configuring cosmiconfig to search for: ${searchPlaces.join(', ')}`);
 
-      const explorer = cosmiconfig("forge", {
+      const explorer = cosmiconfig("commando", {
         searchPlaces,
         loaders: {
           ".ts": bunTypescriptLoader,
         },
       });
 
-      // Search in .forge directory
-      const forgeDir = resolve(projectRoot, ".forge");
-      log.debug(`Searching for config in: ${forgeDir}`);
+      // Search in .commando directory
+      const commandoDir = resolve(projectRoot, ".commando");
+      log.debug(`Searching for config in: ${commandoDir}`);
 
       const configLoadStart = Date.now();
-      const result = await explorer.search(forgeDir);
+      const result = await explorer.search(commandoDir);
       const configLoadDuration = Date.now() - configLoadStart;
 
       log.debug(`Config search completed in ${configLoadDuration}ms`);
@@ -223,13 +223,13 @@ export async function resolveConfig(
         const configKeys = Object.keys(forgeConfig);
         log.debug(`Loaded config from ${result.filepath} (${configKeys.length} keys: ${configKeys.join(', ')})`);
       } else {
-        log.debug(`No config file found in ${forgeDir} (using defaults)`);
+        log.debug(`No config file found in ${commandoDir} (using defaults)`);
       }
     } catch (err: any) {
       // Config parse error - throw to let CLI error handler deal with it
       log.debug(`Config load failed: ${err.message}`);
       throw new Error(
-        `Failed to load .forge/config: ${err.message}`,
+        `Failed to load .commando/config: ${err.message}`,
         { cause: err },
       );
     }
@@ -238,25 +238,25 @@ export async function resolveConfig(
   // 3. DEFERRED: Full config merge strategy
   // TODO: Implement layered config merge:
   //   - Defaults
-  //   - User config (~/.forge/config)
-  //   - Project config (.forge/config)
-  //   - Local overrides (.forge/config.local)
+  //   - User config (~/.commando/config)
+  //   - Project config (.commando/config)
+  //   - Local overrides (.commando/config.local)
   //   - ENV vars (FORGE_*)
-  // For now: Just use .forge/config directly
+  // For now: Just use .commando/config directly
 
   // 4. DEFERRED: Extended ENV var support
   // TODO: Support ENV var overrides for config values
   //   - FORGE_INSTALL_MODE=manual
   //   - FORGE_OFFLINE=true
   //   - etc.
-  // Current: Only FORGE_PROJECT, FORGE_HOME supported
+  // Current: Only COMMANDO_PROJECT, FORGE_HOME supported
 
-  // 5. Build ForgeConfig
-  const config: ForgeConfig = {
+  // 5. Build CommandoConfig
+  const config: CommandoConfig = {
     // Project info
     projectPresent: !!projectRoot,
     projectRoot: projectRoot ? resolve(projectRoot) : undefined,
-    forgeDir: projectRoot ? resolve(projectRoot, ".forge") : undefined,
+    commandoDir: projectRoot ? resolve(projectRoot, ".commando") : undefined,
     userDir: resolve(bootstrapConfig.userDir),
 
     // Bootstrap options
@@ -268,7 +268,7 @@ export async function resolveConfig(
     colorMode: bootstrapConfig.colorMode,
     isRestarted: bootstrapConfig.isRestarted,
 
-    // Forge config (from .forge/config.yml)
+    // Forge config (from .commando/config.yml)
     modules: forgeConfig.modules,
     dependencies: forgeConfig.dependencies,
     settings: forgeConfig.settings,

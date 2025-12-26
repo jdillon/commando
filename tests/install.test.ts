@@ -44,7 +44,7 @@ const bunCacheDir = join(realUserHome, ".bun", "install", "cache");
 
 // Fresh tarball location for install tests
 const testTmpDir = join(projectRoot, "build/test-tmp/install");
-const testTarballFilename = "forge-test.tgz";
+const testTarballFilename = "commando-test.tgz";
 let testTarballPath: string;
 
 /**
@@ -104,11 +104,11 @@ async function runInstall(ctx: TestContext, testHome: string) {
     env: {
       ...process.env,
       HOME: testHome,
-      FORGE_REPO: `file://${testTarballPath}`,
-      FORGE_BRANCH: "",
+      COMMANDO_REPO: `file://${testTarballPath}`,
+      COMMANDO_BRANCH: "",
       BUN_INSTALL_CACHE_DIR: bunCacheDir,
-      // Clear FORGE_HOME so install.sh uses HOME-based default
-      FORGE_HOME: "",
+      // Clear COMMANDO_HOME so install.sh uses HOME-based default
+      COMMANDO_HOME: "",
     },
     logDir: logs.logDir,
     logBaseName: "install",
@@ -150,8 +150,8 @@ async function runUninstall(ctx: TestContext, testHome: string, purge = false) {
     env: {
       ...process.env,
       HOME: testHome,
-      // Clear FORGE_HOME so uninstall.sh uses HOME-based default
-      FORGE_HOME: "",
+      // Clear COMMANDO_HOME so uninstall.sh uses HOME-based default
+      COMMANDO_HOME: "",
     },
     logDir: logs.logDir,
     logBaseName: "uninstall",
@@ -185,16 +185,16 @@ describe('Installation and Uninstallation', () => {
     expect(result.exitCode).toBe(0);
 
     // Check that directories were created
-    const forgeHome = join(testHome, ".forge");
+    const commandoHome = join(testHome, ".commando");
     const binDir = join(testHome, ".local/bin");
-    const forgeSymlink = join(binDir, "forge");
+    const commandoSymlink = join(binDir, "cmdo");
     const bootstrap = join(
-      forgeHome,
-      "node_modules/@planet57/forge/bin/forge",
+      commandoHome,
+      "node_modules/@planet57/commando/bin/cmdo",
     );
 
     // Use stat() to check directories exist
-    const forgeHomeExists = await stat(forgeHome)
+    const commandoHomeExists = await stat(commandoHome)
       .then((s) => s.isDirectory())
       .catch(() => false);
     const binDirExists = await stat(binDir)
@@ -207,14 +207,14 @@ describe('Installation and Uninstallation', () => {
       .catch(() => false);
 
     // Check symlink exists (use lstat to not follow the link)
-    const forgeIsSymlink = await lstat(forgeSymlink)
+    const commandoIsSymlink = await lstat(commandoSymlink)
       .then((s) => s.isSymbolicLink())
       .catch(() => false);
 
-    expect(forgeHomeExists).toBe(true);
+    expect(commandoHomeExists).toBe(true);
     expect(binDirExists).toBe(true);
     expect(bootstrapExists).toBe(true);
-    expect(forgeIsSymlink).toBe(true);
+    expect(commandoIsSymlink).toBe(true);
   }, 60000);
 
   test("creates working bootstrap script", async (ctx) => {
@@ -224,25 +224,25 @@ describe('Installation and Uninstallation', () => {
     // Should succeed
     expect(result.exitCode).toBe(0);
 
-    const forgeCmd = join(testHome, ".local/bin/forge");
+    const commandoCmd = join(testHome, ".local/bin/cmdo");
     const logs = await setupTestLogs(ctx);
 
-    // Run forge --version through bootstrap
+    // Run cmdo --version through bootstrap
     const versionResult = await runCommandWithLogs({
       command: "bash",
-      args: [forgeCmd, "--version"],
+      args: [commandoCmd, "--version"],
       env: { ...process.env, HOME: testHome },
       logDir: logs.logDir,
-      logBaseName: "forge-version",
+      logBaseName: "cmdo-version",
     });
 
     expect(versionResult.exitCode).toBe(0);
 
     // Read version output and check format
     const versionOutput = await Bun.file(
-      join(logs.logDir, "forge-version-stdout.log"),
+      join(logs.logDir, "cmdo-version-stdout.log"),
     ).text();
-    expect(versionOutput.trim()).toMatch(/^forge version \d+\.\d+\.\d+/);
+    expect(versionOutput.trim()).toMatch(/^cmdo version \d+\.\d+\.\d+/);
   }, 60000);
 
   test("creates meta-project package.json", async (ctx) => {
@@ -252,10 +252,10 @@ describe('Installation and Uninstallation', () => {
     // Should succeed
     expect(result.exitCode).toBe(0);
 
-    const packageJson = join(testHome, ".forge/package.json");
+    const packageJson = join(testHome, ".commando/package.json");
     const pkg = await Bun.file(packageJson).json();
 
-    expect(pkg.name).toBe("forge-meta");
+    expect(pkg.name).toBe("commando-meta");
     expect(pkg.private).toBe(true);
   }, 60000);
 
@@ -271,15 +271,15 @@ describe('Installation and Uninstallation', () => {
     expect(result2.exitCode).toBe(0);
 
     // Bootstrap should still work
-    const forgeCmd = join(testHome, ".local/bin/forge");
+    const commandoCmd = join(testHome, ".local/bin/cmdo");
     const logs = await setupTestLogs(ctx);
 
     const versionResult = await runCommandWithLogs({
       command: "bash",
-      args: [forgeCmd, "--version"],
+      args: [commandoCmd, "--version"],
       env: { ...process.env, HOME: testHome },
       logDir: logs.logDir,
-      logBaseName: "forge-version",
+      logBaseName: "cmdo-version",
     });
 
     expect(versionResult.exitCode).toBe(0);
@@ -293,19 +293,19 @@ describe('Installation and Uninstallation', () => {
     expect(installResult.exitCode).toBe(0);
 
     // Verify things exist
-    const forgeHome = join(testHome, ".forge");
-    const forgeCmd = join(testHome, ".local/bin/forge");
+    const commandoHome = join(testHome, ".commando");
+    const commandoCmd = join(testHome, ".local/bin/cmdo");
 
-    expect(await stat(forgeHome).then((s) => s.isDirectory()).catch(() => false)).toBe(true);
-    expect(await lstat(forgeCmd).then((s) => s.isSymbolicLink()).catch(() => false)).toBe(true);
+    expect(await stat(commandoHome).then((s) => s.isDirectory()).catch(() => false)).toBe(true);
+    expect(await lstat(commandoCmd).then((s) => s.isSymbolicLink()).catch(() => false)).toBe(true);
 
     // Uninstall
     const uninstallResult = await runUninstall(ctx, testHome);
     expect(uninstallResult.exitCode).toBe(0);
 
     // Verify things are removed
-    expect(await stat(forgeHome).then(() => true).catch(() => false)).toBe(false);
-    expect(await stat(forgeCmd).then(() => true).catch(() => false)).toBe(false);
+    expect(await stat(commandoHome).then(() => true).catch(() => false)).toBe(false);
+    expect(await stat(commandoCmd).then(() => true).catch(() => false)).toBe(false);
   }, 60000);
 
   test("uninstall preserves config by default", async (ctx) => {
@@ -315,8 +315,8 @@ describe('Installation and Uninstallation', () => {
     await runInstall(ctx, testHome);
 
     // Create fake config directory
-    const forgeHome = join(testHome, ".forge");
-    const configDir = join(forgeHome, "config");
+    const commandoHome = join(testHome, ".commando");
+    const configDir = join(commandoHome, "config");
     await mkdir(configDir, { recursive: true });
     await Bun.write(join(configDir, "config.yml"), "test: true\n");
 
@@ -336,8 +336,8 @@ describe('Installation and Uninstallation', () => {
     await runInstall(ctx, testHome);
 
     // Create fake config directory
-    const forgeHome = join(testHome, ".forge");
-    const configDir = join(forgeHome, "config");
+    const commandoHome = join(testHome, ".commando");
+    const configDir = join(commandoHome, "config");
     await mkdir(configDir, { recursive: true });
     await Bun.write(join(configDir, "config.yml"), "test: true\n");
 
@@ -345,8 +345,8 @@ describe('Installation and Uninstallation', () => {
     const result = await runUninstall(ctx, testHome, true);
     expect(result.exitCode).toBe(0);
 
-    // Config should be removed (entire FORGE_HOME removed with --purge)
-    expect(await stat(forgeHome).then(() => true).catch(() => false)).toBe(false);
+    // Config should be removed (entire COMMANDO_HOME removed with --purge)
+    expect(await stat(commandoHome).then(() => true).catch(() => false)).toBe(false);
   }, 60000);
 
 });

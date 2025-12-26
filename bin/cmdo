@@ -21,8 +21,8 @@ set -euo pipefail
 #
 
 SCRIPT_DIR=""
-FORGE_CLI=""
-# FORGE_HOME is set via environment or defaulted in setup_environment()
+COMMANDO_CLI=""
+# COMMANDO_HOME is set via environment or defaulted in setup_environment()
 
 #
 # Path resolution
@@ -71,34 +71,34 @@ run_homebrew_bootstrap() {
 }
 
 setup_environment() {
-  # Set FORGE_HOME if not already set (e.g., by tests)
-  if [[ -z "${FORGE_HOME:-}" ]]; then
-    FORGE_HOME="${HOME}/.forge"
+  # Set COMMANDO_HOME if not already set (e.g., by tests)
+  if [[ -z "${COMMANDO_HOME:-}" ]]; then
+    COMMANDO_HOME="${HOME}/.commando"
   fi
-  export FORGE_HOME
+  export COMMANDO_HOME
 
   # Set up paths
-  local node_modules="${FORGE_HOME}/node_modules"
-  FORGE_CLI="${node_modules}/@planet57/forge/lib/cli.ts"
+  local node_modules="${COMMANDO_HOME}/node_modules"
+  COMMANDO_CLI="${node_modules}/@planet57/commando/lib/cli.ts"
 
   # Set NODE_PATH for Bun's runtime module resolution
   # export NODE_PATH="${node_modules}"
 }
 
 validate_installation() {
-  if [[ ! -f "${FORGE_CLI}" ]]; then
+  if [[ ! -f "${COMMANDO_CLI}" ]]; then
     local libexec
     if libexec=$(detect_homebrew_install); then
       # Homebrew install detected, run bootstrap
       run_homebrew_bootstrap "${libexec}"
       # Verify bootstrap succeeded
-      if [[ ! -f "${FORGE_CLI}" ]]; then
+      if [[ ! -f "${COMMANDO_CLI}" ]]; then
         echo "ERROR: Homebrew bootstrap failed - forge CLI not found" >&2
         exit 1
       fi
     else
       echo "ERROR: Forge installation is corrupted" >&2
-      echo "Expected: ${FORGE_CLI}" >&2
+      echo "Expected: ${COMMANDO_CLI}" >&2
       exit 1
     fi
   fi
@@ -114,12 +114,12 @@ run_forge() {
 
   # Set restart flag if this is a restart
   if [[ "$is_restarted" == "true" ]]; then
-    export FORGE_RESTARTED=1
+    export COMMANDO_RESTARTED=1
   fi
 
   # Use --preserve-symlinks to prevent Bun from resolving through symlinks
   # This allows user commands symlinked into node_modules to resolve forge correctly
-  bun run --preserve-symlinks "${FORGE_CLI}" "$@"
+  bun run --preserve-symlinks "${COMMANDO_CLI}" "$@"
 }
 
 handle_restart() {
@@ -129,7 +129,7 @@ handle_restart() {
   # Exit code 42 = restart needed (dependencies installed)
   # "I checked it very thoroughly, and that quite definitely is the answer."
   if [[ $exit_code -eq 42 ]]; then
-    # Re-run with FORGE_RESTARTED=1 to prevent infinite loops
+    # Re-run with COMMANDO_RESTARTED=1 to prevent infinite loops
     run_forge "true" "$@"
     return $?
   fi

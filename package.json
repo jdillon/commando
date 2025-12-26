@@ -1,5 +1,5 @@
 {
-  "name": "@planet57/forge",
+  "name": "@planet57/commando",
   "version": "0.1.3",
   "description": "Modern CLI framework for deployments - TypeScript/Bun implementation",
   "author": "Jason Dillon",
@@ -18,7 +18,7 @@
   },
   "files": [
     "lib/**/*.ts",
-    "bin/forge",
+    "bin/cmdo",
     "bin/brew-bootstrap.sh",
     "README.md",
     "LICENSE"
@@ -67,7 +67,7 @@
     "bun": ">=1.0.0"
   },
   "_comments": {
-    "files_bin": "bin/forge is required by install.sh to bootstrap the CLI after installation",
+    "files_bin": "bin/cmdo is required by install.sh to bootstrap the CLI after installation",
     "bun-types": "for VS Code to detect Bun.* I had to include @types/bun, it did not like bun-types by itself"
   }
 }

@@ -13,15 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# bin/forge-dev - Development mode bootstrap
+# bin/cmdo-dev - Development mode bootstrap
 #
 # Uses packaged tarball with isolated dev-home for development.
 # Smart rebuild: only packs/installs when source files change.
 # Avoids recursive directory hell by using tarball instead of directory reference.
 #
 # Usage:
-#   ./bin/forge-dev [command] [args...]
-#   FORGE_REBUILD=1 ./bin/forge-dev [command]  # Force rebuild
+#   ./bin/cmdo-dev [command] [args...]
+#   COMMANDO_REBUILD=1 ./bin/cmdo-dev [command]  # Force rebuild
 #
 set -euo pipefail
 
@@ -30,7 +30,7 @@ set -euo pipefail
 #
 
 PROJECT_ROOT=""
-# FORGE_HOME set in setup_environment() to dev-home/forge
+# COMMANDO_HOME set in setup_environment() to dev-home/forge
 
 #
 # Path resolution
@@ -47,16 +47,16 @@ resolve_paths() {
   local script_dir="$(cd -P "$(dirname "$script_path")" && pwd)"
 
   PROJECT_ROOT="$(cd -P "${script_dir}/.." && pwd)"
-  FORGE_HOME="${PROJECT_ROOT}/dev-home/forge"
+  COMMANDO_HOME="${PROJECT_ROOT}/dev-home/commando"
 }
 
 setup_environment() {
   # Dev mode: use packaged tarball with isolated dev-home
-  export FORGE_HOME
-  export NODE_PATH="${FORGE_HOME}/node_modules"
+  export COMMANDO_HOME
+  export NODE_PATH="${COMMANDO_HOME}/node_modules"
 
   # Ensure dev-home forge structure exists
-  mkdir -p "${FORGE_HOME}"
+  mkdir -p "${COMMANDO_HOME}"
 }
 
 #
@@ -74,7 +74,7 @@ compute_checksum() {
 }
 
 needs_rebuild() {
-  local checksum_file="${FORGE_HOME}/.forge-checksum"
+  local checksum_file="${COMMANDO_HOME}/.commando-checksum"
   local current=$(compute_checksum)
   local previous=$(cat "$checksum_file" 2>/dev/null || echo "")
 
@@ -82,7 +82,7 @@ needs_rebuild() {
 }
 
 save_checksum() {
-  compute_checksum > "${FORGE_HOME}/.forge-checksum"
+  compute_checksum > "${COMMANDO_HOME}/.commando-checksum"
 }
 
 #
@@ -96,7 +96,7 @@ clear_bun_cache() {
 
 build_tarball() {
   echo "  → Building tarball..." >&2
-  local tarball="${PROJECT_ROOT}/build/planet57-forge-dev.tgz"
+  local tarball="${PROJECT_ROOT}/build/planet57-commando-dev.tgz"
 
   # Clean old tarballs to avoid confusion
   rm -f "${tarball}"
@@ -119,25 +119,25 @@ create_config_files() {
   local tarball="$1"
 
   # Create package.json with tarball reference
-  cat > "${FORGE_HOME}/package.json" << EOF
+  cat > "${COMMANDO_HOME}/package.json" << EOF
 {
-  "name": "forge-dev-home",
+  "name": "commando-dev-home",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@planet57/forge": "file:${tarball}"
+    "@planet57/commando": "file:${tarball}"
   }
 }
 EOF
 
   # Create tsconfig.json (simulates what install.sh does) - only if it doesn't exist
-  if [[ ! -f "${FORGE_HOME}/tsconfig.json" ]]; then
-    cat > "${FORGE_HOME}/tsconfig.json" << 'EOF'
+  if [[ ! -f "${COMMANDO_HOME}/tsconfig.json" ]]; then
+    cat > "${COMMANDO_HOME}/tsconfig.json" << 'EOF'
 {
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@forge/*": ["./node_modules/@planet57/forge/lib/*"]
+      "@commando/*": ["./node_modules/@planet57/commando/lib/*"]
     }
   }
 }
@@ -145,8 +145,8 @@ EOF
   fi
 
   # Create bunfig.toml (simulates what install.sh does) - only if it doesn't exist
-  if [[ ! -f "${FORGE_HOME}/bunfig.toml" ]]; then
-    cat > "${FORGE_HOME}/bunfig.toml" << 'EOF'
+  if [[ ! -f "${COMMANDO_HOME}/bunfig.toml" ]]; then
+    cat > "${COMMANDO_HOME}/bunfig.toml" << 'EOF'
 [install]
 exact = true
 dev = false
@@ -161,10 +161,10 @@ install_package() {
   echo "  → Installing to dev-home..." >&2
 
   # Purge old installed package to force fresh install
-  rm -rf "${FORGE_HOME}/node_modules/@planet57/forge"
+  rm -rf "${COMMANDO_HOME}/node_modules/@planet57/commando"
 
   (
-    cd "${FORGE_HOME}"
+    cd "${COMMANDO_HOME}"
     bun install
   )
 }
@@ -172,7 +172,7 @@ install_package() {
 generate_version_info() {
   echo "  → Generating version info..." >&2
 
-  local pkg_dir="${FORGE_HOME}/node_modules/@planet57/forge"
+  local pkg_dir="${COMMANDO_HOME}/node_modules/@planet57/commando"
   local version=$(node -p "require('${pkg_dir}/package.json').version" 2>/dev/null || echo "dev")
 
   # Get git info from project root (not the installed package)
@@ -193,7 +193,7 @@ generate_version_info() {
   local semver="${version}+${date_time}.${hash}"
 
   # Write version.json to forge home
-  cat > "${FORGE_HOME}/version.json" <<EOF
+  cat > "${COMMANDO_HOME}/version.json" <<EOF
 {
   "version": "$version",
   "hash": "$hash",
@@ -210,7 +210,7 @@ EOF
 rebuild_and_install() {
   echo "" >&2
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" >&2
-  echo "  Rebuilding forge (source files changed)" >&2
+  echo "  Rebuilding commando (source files changed)" >&2
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" >&2
 
   clear_bun_cache
@@ -226,13 +226,13 @@ rebuild_and_install() {
 }
 
 #
-# Delegate to bin/forge
+# Delegate to bin/cmdo
 #
 
 run_forge() {
-  # Delegate to bin/forge script (installed mode bootstrap)
-  # It will use our FORGE_HOME environment variable
-  exec "${PROJECT_ROOT}/bin/forge" "$@"
+  # Delegate to bin/cmdo script (installed mode bootstrap)
+  # It will use our COMMANDO_HOME environment variable
+  exec "${PROJECT_ROOT}/bin/cmdo" "$@"
 }
 
 #
@@ -244,13 +244,13 @@ main() {
   resolve_paths
   setup_environment
 
-  # Check if rebuild needed (or forced via FORGE_REBUILD=1)
-  if [[ "${FORGE_REBUILD:-}" == "1" ]] || needs_rebuild; then
+  # Check if rebuild needed (or forced via COMMANDO_REBUILD=1)
+  if [[ "${COMMANDO_REBUILD:-}" == "1" ]] || needs_rebuild; then
     rebuild_and_install
   fi
 
-  # Delegate to bin/forge (will exec, replacing this process)
-  # bin/forge handles restart logic (exit code 42)
+  # Delegate to bin/cmdo (will exec, replacing this process)
+  # bin/cmdo handles restart logic (exit code 42)
   run_forge "$@"
 }
 

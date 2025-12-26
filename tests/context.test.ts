@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Tests for ForgeContext fields
+ * Tests for CommandoContext fields
  */
 
 import { describe, test } from './lib/testx';
@@ -23,7 +23,7 @@ import { setupTestLogs, TEST_DIRS } from './lib/utils';
 import { runForge } from './lib/runner';
 import { join } from 'path';
 
-describe('ForgeContext', () => {
+describe('CommandoContext', () => {
   const fixtureRoot = join(TEST_DIRS.fixtures, 'test-project');
 
   test('should include logLevel, logFormat, and colorMode in context', async (ctx) => {
@@ -42,7 +42,7 @@ describe('ForgeContext', () => {
     const output = (await Bun.file(outputFile).text()).trim();
     const contextData = JSON.parse(output);
 
-    expect(contextData.hasForge).toBe(true);
+    expect(contextData.hasCommando).toBe(true);
     expect(contextData.hasConfig).toBe(true);
     expect(contextData.hasSettings).toBeDefined();
     expect(contextData.hasState).toBeDefined();

@@ -16,29 +16,29 @@
 
 import { resolve, join } from 'path';
 import { existsSync } from 'fs';
-import { getNodeModulesPath } from './forge-home';
+import { getNodeModulesPath } from './commando-home';
 import { createLogger } from './logging';
 
 /**
  * Resolve module path with priority: local → shared
  *
  * @param modulePath - Module name or path from config (e.g., "./website", "@aws-sdk/client-s3")
- * @param forgeDir - Project's .forge/ directory
+ * @param commandoDir - Project's .commando/ directory
  * @returns Absolute path to module file
  * @throws Error if module not found
  */
 export async function resolveModule(
   modulePath: string,
-  forgeDir: string,
+  commandoDir: string,
 ): Promise<string> {
   const log = createLogger('module-resolver');
 
-  log.debug({ modulePath, forgeDir }, 'Starting module resolution');
+  log.debug({ modulePath, commandoDir }, 'Starting module resolution');
 
   // 1. Local modules (relative paths starting with ./ or ../)
   if (modulePath.startsWith('.')) {
     log.debug({ strategy: 'local', modulePath }, 'Using local module strategy');
-    const localPath = resolve(forgeDir, modulePath);
+    const localPath = resolve(commandoDir, modulePath);
     const attemptedPaths: string[] = [];
 
     // Try with and without extensions
@@ -56,7 +56,7 @@ export async function resolveModule(
     log.debug({ attemptedPaths }, 'Local module not found');
     throw new Error(
       `Local module not found: ${modulePath}\n` +
-        `Searched in: ${forgeDir}\n` +
+        `Searched in: ${commandoDir}\n` +
         `Attempted paths:\n  ${attemptedPaths.join('\n  ')}`,
     );
   }
@@ -94,7 +94,7 @@ export async function resolveModule(
   throw new Error(
     `Module not found: ${modulePath}\n` +
       `Searched:\n` +
-      `  - Local: ${forgeDir}\n` +
+      `  - Local: ${commandoDir}\n` +
       `  - Package: ${join(nodeModules, modulePath)}\n` +
       `Attempted paths:\n  ${attemptedPaths.join('\n  ')}\n\n` +
       `Suggestions:\n` +

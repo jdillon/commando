@@ -22,7 +22,7 @@ import { exit, FatalError, ExitNotification } from "./helpers";
 import { exit as runtimeExit } from "./runtime";
 import { initLogging, getGlobalLogger, isLoggingInitialized } from "./logging";
 import { resolveConfig } from "./config-resolver";
-import type { FilePath, ColorMode, ForgeConfig } from "./types";
+import type { FilePath, ColorMode, CommandoConfig } from "./types";
 import pkg from "../package.json";
 import { createBootstrapLogger } from "./logging/bootstrap";
 
@@ -44,7 +44,7 @@ export async function main(): Promise<void> {
   if (cliArgs.includes('--version') || cliArgs.includes('-V')) {
     const { getVersionString } = await import('./version');
     const version = await getVersionString();
-    console.log(`forge version ${version}`);
+    console.log(`commando version ${version}`);
     process.exit(0);
   }
 
@@ -92,7 +92,7 @@ interface BootstrapConfig {
 function bootstrap(cliArgs: string[]): BootstrapConfig {
   const bootProgram = new Command();
 
-  bootProgram.name("forge");
+  bootProgram.name("cmdo");
   addTopLevelOptions(bootProgram)
     .allowUnknownOption(true)
     .allowExcessArguments(true)
@@ -102,7 +102,7 @@ function bootstrap(cliArgs: string[]): BootstrapConfig {
   const opts = bootProgram.opts();
 
   // Check if this is a restarted process
-  const isRestarted = process.env.FORGE_RESTARTED === "1";
+  const isRestarted = process.env.COMMANDO_RESTARTED === "1";
 
   // Determine color mode: NO_COLOR env > --color option > 'auto'
   let colorMode: ColorMode = normalizeColorMode(opts.color);
@@ -137,7 +137,7 @@ function bootstrap(cliArgs: string[]): BootstrapConfig {
  * Initialize logging system with resolved config
  * Determines log level from config options and sets up logger
  */
-function initializeLogging(config: ForgeConfig): void {
+function initializeLogging(config: CommandoConfig): void {
   const logLevel =
     config.logLevel ||
     (config.debug ? "debug" : config.quiet ? "warn" : "info");
@@ -171,7 +171,7 @@ function initializeLogging(config: ForgeConfig): void {
  * Build full CLI with subcommands
  * Strict parsing - Commander validates everything
  */
-async function buildCLI(config: ForgeConfig): Promise<Command> {
+async function buildCLI(config: CommandoConfig): Promise<Command> {
   const program = new Command();
 
   program
@@ -288,7 +288,7 @@ function showCommanderError(message: string): never {
  */
 function addTopLevelOptions(program: Command): Command {
   return program
-    .option("-r, --root <path>", "Project directory (containing .forge/)")
+    .option("-r, --root <path>", "Project directory (containing .commando/)")
     .option("-d, --debug", "Debug output")
     .option("-q, --quiet", "Quiet mode")
     .option("-s, --silent", "Silent mode")

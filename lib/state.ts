@@ -27,15 +27,15 @@ const USER_STATE_FILE = 'state.local.json';
  */
 export class StateManager {
   private projectRoot: string;
-  private forgeDir: string;
+  private commandoDir: string;
 
   constructor(projectRoot: string) {
     this.projectRoot = projectRoot;
-    this.forgeDir = join(projectRoot, '.forge');
+    this.commandoDir = join(projectRoot, '.commando');
   }
 
   private async readJSON(filename: string): Promise<Record<string, any>> {
-    const filepath = join(this.forgeDir, filename);
+    const filepath = join(this.commandoDir, filename);
     if (!existsSync(filepath)) {
       return {};
     }
@@ -48,7 +48,7 @@ export class StateManager {
   }
 
   private async writeJSON(filename: string, data: Record<string, any>): Promise<void> {
-    const filepath = join(this.forgeDir, filename);
+    const filepath = join(this.commandoDir, filename);
     await writeJsonFile(filepath, data);
   }
 

@@ -37,7 +37,7 @@ export interface VersionInfo {
 export async function getVersion(): Promise<VersionInfo> {
   // Inline forge home path logic to avoid importing forge-home.ts
   // (which imports package-manager which requires logging to be initialized)
-  const forgeHome = process.env.FORGE_HOME || join(homedir(), '.forge');
+  const forgeHome = process.env.COMMANDO_HOME || join(homedir(), '.commando');
   const versionFile = join(forgeHome, 'version.json');
 
   try {

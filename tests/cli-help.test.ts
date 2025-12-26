@@ -37,7 +37,7 @@ describe('CLI Help Output', () => {
 
     expect(result.exitCode).toBe(0);
     const output = await Bun.file(result.stdoutLog).text();
-    expect(output).toContain('Usage: forge');
+    expect(output).toContain('Usage: cmdo');
     expect(output).toContain('Modern CLI framework');
     expect(output).toContain('Options:');
     expect(output).toContain('Commands:');
@@ -54,7 +54,7 @@ describe('CLI Help Output', () => {
 
     expect(result.exitCode).toBe(0);
     const output = await Bun.file(result.stdoutLog).text();
-    expect(output).toContain('Usage: forge');
+    expect(output).toContain('Usage: cmdo');
   });
 
   test('should show all core options', async (ctx) => {
@@ -87,7 +87,7 @@ describe('CLI Help Output', () => {
 
     expect(result.exitCode).toBe(0);
     const output = await Bun.file(result.stdoutLog).text();
-    expect(output).toMatch(/forge version \d+\.\d+\.\d+/); // version pattern with "forge version" prefix
+    expect(output).toMatch(/cmdo version \d+\.\d+\.\d+/); // version pattern with "cmdo version" prefix
   });
 
   test('should show version with -V', async (ctx) => {
@@ -101,7 +101,7 @@ describe('CLI Help Output', () => {
 
     expect(result.exitCode).toBe(0);
     const output = await Bun.file(result.stdoutLog).text();
-    expect(output).toMatch(/forge version \d+\.\d+\.\d+/);
+    expect(output).toMatch(/cmdo version \d+\.\d+\.\d+/);
   });
 
   test('should show terse error for unknown options', async (ctx) => {
@@ -117,7 +117,7 @@ describe('CLI Help Output', () => {
     const stderr = await Bun.file(result.stderrLog).text();
     const stdout = await Bun.file(result.stdoutLog).text();
     expect(stderr).toContain('ERROR: unknown option');
-    expect(stderr).toContain("Try 'forge --help' for more information");
+    expect(stderr).toContain("Try 'cmdo --help' for more information");
     // Spec says: terse error only, no help dump
     expect(stdout).toBe('');
   });

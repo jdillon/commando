@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 /**
- * Test commands for verifying Forge functionality
+ * Test commands for verifying Commando functionality
  */
 
-import type { ForgeCommand } from '@planet57/forge/command';
-import { createLogger } from '@planet57/forge/command';
+import type { CommandoCommand } from '@planet57/commando/command';
+import { createLogger } from '@planet57/commando/command';
 
 const log = createLogger('test');
 
 // Command to output context fields as JSON
-export const context: ForgeCommand = {
-  description: 'Output ForgeContext fields as JSON to a file',
+export const context: CommandoCommand = {
+  description: 'Output context fields as JSON to a file',
   usage: '<output-file>',
   async execute(options, args, context) {
     const outputFile = args[0];
     if (!outputFile) {
       console.error('ERROR: output file required');
-      console.error('Usage: forge test context <output-file>');
+      console.error('Usage: cmdo test context <output-file>');
       process.exit(1);
     }
 
     // Output context as JSON for test verification
     const output = {
-      hasForge: !!context.forge,
+      hasCommando: !!context.commando,
       hasConfig: !!context.config,
       hasSettings: !!context.settings,
       hasState: !!context.state,
@@ -54,7 +54,7 @@ export const context: ForgeCommand = {
 };
 
 // Simple echo command for basic testing
-export const echo: ForgeCommand = {
+export const echo: CommandoCommand = {
   description: 'Echo arguments back',
   async execute(options, args, context) {
     console.log(args.join(' '));
@@ -62,7 +62,7 @@ export const echo: ForgeCommand = {
 };
 
 // Command with options for testing option parsing
-export const greet: ForgeCommand = {
+export const greet: CommandoCommand = {
   description: 'Greet someone',
 
   defineCommand: (cmd) =>

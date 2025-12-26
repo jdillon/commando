@@ -1,10 +1,10 @@
 # CLAUDE.md
 
-Project-specific guidance for Forge. See `~/.claude/CLAUDE.md` for global preferences.
+Project-specific guidance for Commando. See `~/.claude/CLAUDE.md` for global preferences.
 
 ## Project Quick Reference
 
-**What**: Forge - Modern CLI framework for deployments (TypeScript/Bun)
+**What**: Commando - Modern CLI framework for deployments (TypeScript/Bun)
 
 **Key Files**:
 
@@ -18,14 +18,14 @@ Project-specific guidance for Forge. See `~/.claude/CLAUDE.md` for global prefer
 
 ---
 
-## ⚠️ FORGE_HOME Architecture (Critical)
+## ⚠️ COMMANDO_HOME Architecture (Critical)
 
 **DO NOT redesign this without explicit approval.**
 
-Forge requires `FORGE_HOME=~/.forge` with this structure:
+Commando requires `COMMANDO_HOME=~/.commando` with this structure:
 
 ```
-~/.forge/
+~/.commando/
 ├── config/      # User configuration
 ├── state/       # Runtime state
 ├── cache/       # Cached data
@@ -37,15 +37,15 @@ Forge requires `FORGE_HOME=~/.forge` with this structure:
 
 **Current reality:**
 
-- Forge is designed as a single-user install
-- The tool expects and requires `~/.forge` to exist with proper structure
+- Commando is designed as a single-user install
+- The tool expects and requires `~/.commando` to exist with proper structure
 - This is a mismatch with Homebrew's Cellar-based approach
 
 **Homebrew strategy:**
 
 - Use brew as an **installation/update mechanism only**
-- Formula must bootstrap `~/.forge` structure during install
-- Brew installs the package, but forge runs from `~/.forge`
+- Formula must bootstrap `~/.commando` structure during install
+- Brew installs the package, but cmdo runs from `~/.commando`
 - This is intentional - don't "fix" it to be more Homebrew-native
 
 **Future consideration:** May refactor to separate install dir from user data, but not now.
@@ -85,7 +85,7 @@ See `bd onboard` for more information.
 - Bootstrap flow → `lib/cli.ts`
 - Module loading → `lib/core.ts`
 - Command patterns → `docs/command-patterns.md`
-- Examples → `examples/website/.forge/`
+- Examples → `examples/website/.commando/`
 
 **Testing**:
 

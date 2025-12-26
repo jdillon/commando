@@ -15,14 +15,14 @@
  */
 
 import process from 'node:process';
-import { getForgeHomePath } from './forge-home';
+import { getCommandoHomePath } from './commando-home';
 import { getVersion } from './version';
-import type { ForgeCommand, ForgeModuleMetadata } from './types';
+import type { CommandoCommand, CommandoModuleMetadata } from './types';
 
 /**
  * Module metadata - top-level commands (no group)
  */
-export const __module__: ForgeModuleMetadata = {
+export const __module__: CommandoModuleMetadata = {
   group: false,
   description: 'Built-in commands',
 };
@@ -30,7 +30,7 @@ export const __module__: ForgeModuleMetadata = {
 /**
  * Show detailed version information.
  */
-export const version: ForgeCommand = {
+export const version: CommandoCommand = {
   description: 'Show detailed version information',
   execute: async () => {
     const info = await getVersion();
@@ -44,28 +44,28 @@ export const version: ForgeCommand = {
     console.log(`  Built:      ${info.timestamp}`);
     console.log(`  Dirty:      ${info.dirty ? 'yes (uncommitted changes)' : 'no'}`);
     console.log();
-    console.log(`Install location: ${getForgeHomePath()}`);
+    console.log(`Install location: ${getCommandoHomePath()}`);
   },
 };
 
 /**
  * Launch a shell in the forge home directory.
  */
-export const cd: ForgeCommand = {
+export const cd: CommandoCommand = {
   description: 'Launch a shell in the forge home directory',
   execute: async () => {
-    const forgeHome = getForgeHomePath();
+    const commandoHome = getCommandoHomePath();
 
     // Detect shell (use $SHELL env var, fallback to /bin/sh)
     const shell = process.env.SHELL || '/bin/sh';
 
     // Spawn interactive shell in forge home
     const proc = Bun.spawn([shell], {
-      cwd: forgeHome,
+      cwd: commandoHome,
       stdio: ['inherit', 'inherit', 'inherit'],
       env: {
         ...process.env,
-        FORGE_HOME: forgeHome,
+        COMMANDO_HOME: commandoHome,
       },
     });
 

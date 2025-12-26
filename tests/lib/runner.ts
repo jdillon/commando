@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 /**
- * Test runner for executing forge CLI in tests
+ * Test runner for executing commando CLI in tests
  *
- * Defaults to dev mode (bin/forge-dev) for reliable testing.
+ * Defaults to dev mode (bin/cmdo-dev) for reliable testing.
  */
 
 import { spawn } from 'child_process';
@@ -27,14 +27,14 @@ import { createLogger } from './logger';
 
 const log = createLogger('test-runner');
 
-// Project root for accessing bin/forge-dev
+// Project root for accessing bin/cmdo-dev
 const PROJECT_ROOT = resolve(import.meta.dir, '../..');
 
 /**
- * Configuration for running forge in tests
+ * Configuration for running commando in tests
  */
 export interface RunForgeConfig {
-  /** CLI arguments to pass to forge */
+  /** CLI arguments to pass to commando */
   args: string[];
   /** Environment variables (merged with process.env) */
   env?: Record<string, string>;
@@ -51,7 +51,7 @@ export interface RunForgeConfig {
 }
 
 /**
- * Result from running forge
+ * Result from running commando
  */
 export interface RunForgeResult {
   /** Exit code from the command */
@@ -63,13 +63,13 @@ export interface RunForgeResult {
 }
 
 /**
- * Run local forge CLI with test configuration
+ * Run local commando CLI with test configuration
  *
  * @example
  * ```typescript
  * const result = await runForge({
  *   args: ['--root', fixtureRoot, 'test', 'context', outputFile],
- *   env: { FORGE_DEBUG: '1' },
+ *   env: { COMMANDO_DEBUG: '1' },
  *   logDir: logs.logDir,
  *   logBaseName: 'my-test',
  * });
@@ -89,13 +89,13 @@ export async function runForge(config: RunForgeConfig): Promise<RunForgeResult> 
     testEnv,
   } = config;
 
-  // Use dev mode by default (bin/forge-dev), or test environment if provided
-  const forgeBin = testEnv ? testEnv.forgeCmd : join(PROJECT_ROOT, 'bin/forge-dev');
+  // Use dev mode by default (bin/cmdo-dev), or test environment if provided
+  const commandoBin = testEnv ? testEnv.commandoCmd : join(PROJECT_ROOT, 'bin/cmdo-dev');
   const workingDir = cwd;
 
   // Build environment
   // Default to NO_COLOR=1 for consistent test output (unless explicitly overridden)
-  const forgeEnv = {
+  const commandoEnv = {
     ...process.env,
     NO_COLOR: '1', // Disable colors by default for testing
     ...env, // User env vars override (tests can re-enable colors if needed)
@@ -108,14 +108,14 @@ export async function runForge(config: RunForgeConfig): Promise<RunForgeResult> 
   }
 
   const envPrefix = envVars.length > 0 ? envVars.join(' ') + ' ' : '';
-  const shellCommand = `cd "${workingDir}" && ${envPrefix}${forgeBin} ${args.join(' ')}`;
+  const shellCommand = `cd "${workingDir}" && ${envPrefix}${commandoBin} ${args.join(' ')}`;
 
   log.debug({
     mode: testEnv ? 'test-env' : 'dev',
     cwd: workingDir,
-    forgeBin,
+    commandoBin,
     args,
-  }, 'Running forge command');
+  }, 'Running commando command');
 
   log.debug(`Shell command: ${shellCommand}`);
 
@@ -129,8 +129,8 @@ export async function runForge(config: RunForgeConfig): Promise<RunForgeResult> 
 
   // Run command with spawned process
   const exitCode = await new Promise<number>((resolve) => {
-    const proc = spawn(forgeBin, args, {
-      env: forgeEnv,
+    const proc = spawn(commandoBin, args, {
+      env: commandoEnv,
       cwd: workingDir,
     });
 

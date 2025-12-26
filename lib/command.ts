@@ -19,10 +19,10 @@
 // ============================================================================
 
 export type {
-  ForgeCommand,
-  ForgeConfig,
-  ForgeModuleMetadata,
-  ForgeContext
+  CommandoCommand,
+  CommandoConfig,
+  CommandoModuleMetadata,
+  CommandoContext
 } from './types';
 
 // ============================================================================
@@ -31,7 +31,7 @@ export type {
 
 export { createLogger } from './logging/logger';
 export { die, exit, error } from './helpers';
-export { getForgeHomePath } from './forge-home';
+export { getCommandoHomePath } from './commando-home';
 
 // ============================================================================
 // Runtime utilities

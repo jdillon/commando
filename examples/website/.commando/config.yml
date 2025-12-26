@@ -1,4 +1,4 @@
-# Forge v2 Configuration
+# Commando Configuration
 #
 # Declarative configuration - just list modules to load.
 # Framework auto-discovers commands from module exports.
@@ -14,5 +14,5 @@ modules:
 # Future: Could also load from npm/git
 # modules:
 #   - ./website
-#   - @forge/aws
-#   - github:mycompany/forge-terraform
+#   - @commando/aws
+#   - github:mycompany/commando-terraform

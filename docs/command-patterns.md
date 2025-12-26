@@ -6,7 +6,7 @@ The best way to learn: see working examples that are tested and stay current.
 
 ## Working Examples
 
-**[examples/website/.forge/](../examples/website/.forge/)** - Full working project
+**[examples/website/.commando/](../examples/website/.commando/)** - Full working project
 
 Files:
 - `website.ts` - Real commands with options, spinners, task lists
@@ -20,7 +20,7 @@ These are actual tested code that stays in sync with the implementation.
 ## Basic Structure
 
 ```typescript
-export const myCommand: ForgeCommand = {
+export const myCommand: CommandoCommand = {
   description: 'Command description',
 
   defineCommand: (cmd) => {
@@ -32,7 +32,7 @@ export const myCommand: ForgeCommand = {
   execute: async (options, args, context) => {
     // options.flag - parsed options
     // args[0] - positional arguments
-    // context.forge, context.config, context.state
+    // context.commando, context.config, context.state
   }
 };
 ```
@@ -51,7 +51,7 @@ export const version = {
 
 ### With Options
 ```typescript
-export const deploy: ForgeCommand = {
+export const deploy: CommandoCommand = {
   description: 'Deploy to environment',
 
   defineCommand: (cmd) => {
@@ -72,7 +72,7 @@ export const deploy: ForgeCommand = {
 ```typescript
 import ora from 'ora';
 
-export const build: ForgeCommand = {
+export const build: CommandoCommand = {
   description: 'Build project',
 
   execute: async () => {
@@ -88,14 +88,14 @@ export const build: ForgeCommand = {
 };
 ```
 
-See [examples/website/.forge/website.ts](../examples/website/.forge/website.ts) for complete real-world examples.
+See [examples/website/.commando/website.ts](../examples/website/.commando/website.ts) for complete real-world examples.
 
 ---
 
 ## Module Configuration
 
 ```yaml
-# .forge/config.yml
+# .commando/config.yml
 modules:
   - ./website
   - ./examples

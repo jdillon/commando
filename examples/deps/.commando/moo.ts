@@ -1,16 +1,16 @@
 /**
- * Moo Module - Demonstrates using dependencies from forge home
+ * Moo Module - Demonstrates using dependencies from commando home
  *
- * This module uses the 'cowsay' package installed to ~/.local/share/forge/node_modules/
+ * This module uses the 'cowsay' package installed to ~/.commando/node_modules/
  */
 
 import cowsay from 'cowsay';
-import type { ForgeCommand } from '@planet57/forge/types';
+import type { CommandoCommand } from '@planet57/commando/types';
 
 /**
  * Make a cow say something
  */
-export const say: ForgeCommand = {
+export const say: CommandoCommand = {
   description: 'Make a cow say something',
   usage: '<text...>',
 
@@ -19,7 +19,7 @@ export const say: ForgeCommand = {
 
     if (!text) {
       console.error('ERROR: Please provide text for the cow to say');
-      console.error('Usage: forge moo say <text...>');
+      console.error('Usage: cmdo moo say <text...>');
       process.exit(1);
     }
 
@@ -36,7 +36,7 @@ export const say: ForgeCommand = {
 /**
  * Make a cow think something
  */
-export const think: ForgeCommand = {
+export const think: CommandoCommand = {
   description: 'Make a cow think something',
   usage: '<text...>',
 
@@ -45,7 +45,7 @@ export const think: ForgeCommand = {
 
     if (!text) {
       console.error('ERROR: Please provide text for the cow to think');
-      console.error('Usage: forge moo think <text...>');
+      console.error('Usage: cmdo moo think <text...>');
       process.exit(1);
     }
 

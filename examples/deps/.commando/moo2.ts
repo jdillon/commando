@@ -1,7 +1,7 @@
 /**
- * Moo Module - Demonstrates using dependencies from forge home
+ * Moo Module - Demonstrates using dependencies from commando home
  *
- * This module uses the 'cowsay' package installed to ~/.local/share/forge/node_modules/
+ * This module uses the 'cowsay' package installed to ~/.commando/node_modules/
  */
 
 import cowsay from "cowsay";

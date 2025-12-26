@@ -7,12 +7,12 @@
  * - Module metadata to customize group name
  */
 
-import { createLogger, type ForgeCommand, type ForgeModuleMetadata, type ForgeContext } from '@forge/command';
+import { createLogger, type CommandoCommand, type CommandoModuleMetadata, type CommandoContext } from '@commando/command';
 
 const log = createLogger('simple');
 
 // Module metadata - rename group from "simple" to "basic"
-export const __module__: ForgeModuleMetadata = {
+export const __module__: CommandoModuleMetadata = {
   group: 'basic',
   description: 'Basic example commands'
 };
@@ -23,7 +23,7 @@ export const __module__: ForgeModuleMetadata = {
 
 export const ping = {
   description: 'Simple ping command',
-  execute: async (options: any, args: string[], context: ForgeContext) => {
+  execute: async (options: any, args: string[], context: CommandoContext) => {
     console.log('pong!');
     log.info('Pinged');
   }
@@ -33,7 +33,7 @@ export const ping = {
 // Command with customization
 // ============================================================================
 
-export const greet: ForgeCommand = {
+export const greet: CommandoCommand = {
   description: 'Greet someone',
 
   defineCommand: (cmd) =>

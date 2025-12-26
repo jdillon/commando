@@ -1,0 +1,14 @@
+# Example: Using commando-standard library
+#
+# This demonstrates loading modules from a package installed
+# to commando home (~/.commando/node_modules/)
+
+dependencies:
+  # For local development, use relative path for portability
+  # For production use: git+ssh://git@github.com/jdillon/commando-standard.git#release
+  - file:../../../commando-standard
+
+modules:
+  # Load the hello module from commando-standard
+  # Package name comes from commando-standard/package.json: "@planet57/commando-standard"
+  - "@planet57/commando-standard/hello"

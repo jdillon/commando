@@ -19,7 +19,7 @@ import { createLogger } from './logging';
 import { join } from 'path';
 import { readFileSync, existsSync } from 'fs';
 import { createHash } from 'crypto';
-import { getForgeHomePath } from './forge-home';
+import { getCommandoHomePath } from './commando-home';
 
 /**
  * Package Manager - handles dependency installation
@@ -30,7 +30,7 @@ export class PackageManager {
    * Get current package.json content hash for change detection
    */
   private getPackageHash(): string {
-    const pkgPath = join(getForgeHomePath(), 'package.json');
+    const pkgPath = join(getCommandoHomePath(), 'package.json');
     if (!existsSync(pkgPath)) return '';
 
     const content = readFileSync(pkgPath, 'utf8');
@@ -49,7 +49,7 @@ export class PackageManager {
   async installDependency(dep: string): Promise<boolean> {
     this.log.debug({ dep }, 'Installing dependency');
 
-    const forgeHome = getForgeHomePath();
+    const forgeHome = getCommandoHomePath();
     const beforeHash = this.getPackageHash();
 
     // Run bun add from forge home directory
@@ -113,7 +113,7 @@ export class PackageManager {
    * - Package names: lodash@1.0.0, @scope/pkg - checks if key exists
    */
   isInstalled(dep: string): boolean {
-    const pkgPath = join(getForgeHomePath(), 'package.json');
+    const pkgPath = join(getCommandoHomePath(), 'package.json');
     if (!existsSync(pkgPath)) return false;
 
     try {

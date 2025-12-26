@@ -15,7 +15,7 @@
 
 # Homebrew Bootstrap Script
 # Called automatically on first run when installed via Homebrew
-# Bootstraps ~/.forge from the package staged in Homebrew's libexec
+# Bootstraps ~/.commando from the commando package staged in Homebrew's libexec
 
 set -euo pipefail
 
@@ -32,21 +32,21 @@ if [[ ! -d "${LIBEXEC_PATH}" ]]; then
 fi
 
 # Determine installation location
-FORGE_HOME="${FORGE_HOME:-$HOME/.forge}"
+COMMANDO_HOME="${COMMANDO_HOME:-$HOME/.commando}"
 
-echo "Completing Forge installation to ${FORGE_HOME}..."
+echo "Completing Commando installation to ${COMMANDO_HOME}..."
 
 # Create directory structure
-mkdir -p "${FORGE_HOME}"/{config,state,cache,logs}
-cd "${FORGE_HOME}"
+mkdir -p "${COMMANDO_HOME}"/{config,state,cache,logs}
+cd "${COMMANDO_HOME}"
 
 # Create package.json for meta project
 cat > package.json << 'EOF'
 {
-  "name": "forge-meta",
+  "name": "commando-meta",
   "version": "1.0.0",
   "private": true,
-  "description": "Forge meta-project for shared dependencies"
+  "description": "Commando meta-project for shared dependencies"
 }
 EOF
 
@@ -66,44 +66,44 @@ cat > tsconfig.json << 'EOF'
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@forge/*": ["./node_modules/@planet57/forge/lib/*"]
+      "@commando/*": ["./node_modules/@planet57/commando/lib/*"]
     }
   }
 }
 EOF
 
-# Install forge from Homebrew's staged package
+# Install commando from Homebrew's staged package
 # Copy files directly instead of using bun add (which creates symlinks for file:// packages)
-echo "Installing @planet57/forge from Homebrew package..."
+echo "Installing @planet57/commando from Homebrew package..."
 
-FORGE_PKG_DIR="${FORGE_HOME}/node_modules/@planet57/forge"
-mkdir -p "${FORGE_PKG_DIR}"
+COMMANDO_PKG_DIR="${COMMANDO_HOME}/node_modules/@planet57/commando"
+mkdir -p "${COMMANDO_PKG_DIR}"
 
 # Copy package contents (not symlink - bun's file:// creates symlinks which break module resolution)
-cp -R "${LIBEXEC_PATH}/lib" "${FORGE_PKG_DIR}/"
-cp -R "${LIBEXEC_PATH}/bin" "${FORGE_PKG_DIR}/"
-cp "${LIBEXEC_PATH}/package.json" "${FORGE_PKG_DIR}/"
-cp "${LIBEXEC_PATH}/README.md" "${FORGE_PKG_DIR}/" 2>/dev/null || true
-cp "${LIBEXEC_PATH}/LICENSE" "${FORGE_PKG_DIR}/" 2>/dev/null || true
+cp -R "${LIBEXEC_PATH}/lib" "${COMMANDO_PKG_DIR}/"
+cp -R "${LIBEXEC_PATH}/bin" "${COMMANDO_PKG_DIR}/"
+cp "${LIBEXEC_PATH}/package.json" "${COMMANDO_PKG_DIR}/"
+cp "${LIBEXEC_PATH}/README.md" "${COMMANDO_PKG_DIR}/" 2>/dev/null || true
+cp "${LIBEXEC_PATH}/LICENSE" "${COMMANDO_PKG_DIR}/" 2>/dev/null || true
 
-# Install dependencies from the forge package
+# Install dependencies from the commando package
 echo "Installing dependencies..."
-cd "${FORGE_PKG_DIR}"
+cd "${COMMANDO_PKG_DIR}"
 if ! bun install --production; then
   echo "ERROR: Failed to install dependencies" >&2
   exit 1
 fi
-cd "${FORGE_HOME}"
+cd "${COMMANDO_HOME}"
 
 # Verify installation
-FORGE_PKG_DIR="${FORGE_HOME}/node_modules/@planet57/forge"
-if [[ ! -d "${FORGE_PKG_DIR}" ]]; then
-  echo "ERROR: Installation verification failed: package not found at ${FORGE_PKG_DIR}" >&2
+COMMANDO_PKG_DIR="${COMMANDO_HOME}/node_modules/@planet57/commando"
+if [[ ! -d "${COMMANDO_PKG_DIR}" ]]; then
+  echo "ERROR: Installation verification failed: package not found at ${COMMANDO_PKG_DIR}" >&2
   exit 1
 fi
 
 # Generate version.json
-VERSION=$(node -p "require('${FORGE_PKG_DIR}/package.json').version" 2>/dev/null || echo "unknown")
+VERSION=$(node -p "require('${COMMANDO_PKG_DIR}/package.json').version" 2>/dev/null || echo "unknown")
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 TIMESTAMP_UNIX=$(date +%s)
 DATE_PART=$(echo "$TIMESTAMP" | cut -d'T' -f1 | tr -d '-')
@@ -111,7 +111,7 @@ TIME_PART=$(echo "$TIMESTAMP" | cut -d'T' -f2 | cut -d':' -f1,2 | tr -d ':')
 DATE_TIME="${DATE_PART}.${TIME_PART}"
 SEMVER="${VERSION}+${DATE_TIME}.homebrew"
 
-cat > "${FORGE_HOME}/version.json" <<EOF
+cat > "${COMMANDO_HOME}/version.json" <<EOF
 {
   "version": "$VERSION",
   "hash": "homebrew",
@@ -124,4 +124,4 @@ cat > "${FORGE_HOME}/version.json" <<EOF
 }
 EOF
 
-echo "Forge ${VERSION} installed successfully"
+echo "Commando ${VERSION} installed successfully"

@@ -1,4 +1,4 @@
-# Forge - Yet another CLI Framework
+# Commando - Yet another CLI Framework
 
 **Philosophy**: _"Make it awesome, it's for me mostly, so I like awesome."_
 
@@ -10,7 +10,7 @@
 
 ```bash
 brew tap jdillon/planet57
-brew install jdillon/planet57/forge
+brew install jdillon/planet57/commando
 ```
 
 ### Script

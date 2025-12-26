@@ -22,48 +22,48 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { packageManager } from './package-manager';
 
 /**
- * Get forge home path
- * Default: ~/.forge
- * Override with FORGE_HOME environment variable
+ * Get commando home path
+ * Default: ~/.commando
+ * Override with COMMANDO_HOME environment variable
  */
-export function getForgeHomePath(): string {
-  return process.env.FORGE_HOME || join(homedir(), '.forge');
+export function getCommandoHomePath(): string {
+  return process.env.COMMANDO_HOME || join(homedir(), '.commando');
 }
 
 /**
  * Get the node_modules directory for Forge
  * This is where Forge looks for installed modules
  *
- * Derived from FORGE_HOME/node_modules
+ * Derived from COMMANDO_HOME/node_modules
  */
 export function getNodeModulesPath(): string {
-  return join(getForgeHomePath(), 'node_modules');
+  return join(getCommandoHomePath(), 'node_modules');
 }
 
 /**
- * Ensure forge home exists with package.json and bunfig.toml initialized
+ * Ensure commando home exists with package.json and bunfig.toml initialized
  */
-export async function ensureForgeHome(): Promise<void> {
-  const log = createLogger('forge-home');
-  const forgeHome = getForgeHomePath();
+export async function ensureCommandoHome(): Promise<void> {
+  const log = createLogger('commando-home');
+  const commandoHome = getCommandoHomePath();
 
-  log.debug({ forgeHome }, 'Ensuring forge home exists');
+  log.debug({ commandoHome }, 'Ensuring commando home exists');
 
-  if (!existsSync(forgeHome)) {
-    log.debug({ forgeHome }, 'Creating forge home directory');
-    mkdirSync(forgeHome, { recursive: true });
+  if (!existsSync(commandoHome)) {
+    log.debug({ commandoHome }, 'Creating commando home directory');
+    mkdirSync(commandoHome, { recursive: true });
   } else {
-    log.debug({ forgeHome }, 'Forge home already exists');
+    log.debug({ commandoHome }, 'Forge home already exists');
   }
 
-  const pkgPath = join(forgeHome, 'package.json');
+  const pkgPath = join(commandoHome, 'package.json');
   if (!existsSync(pkgPath)) {
     log.debug({ pkgPath }, 'Initializing package.json');
     // Initialize minimal package.json
     const initialPkg = {
-      name: 'forge-home',
+      name: 'commando-home',
       private: true,
-      description: 'Forge shared dependencies',
+      description: 'Commando shared dependencies',
       dependencies: {},
     };
     writeFileSync(pkgPath, JSON.stringify(initialPkg, null, 2) + '\n');
@@ -73,16 +73,16 @@ export async function ensureForgeHome(): Promise<void> {
   }
 
   // Ensure bunfig.toml exists for bun runtime config
-  ensureBunConfig();
+  ensureCommandoBunConfig();
 }
 
 /**
- * Ensure forge-home has bunfig.toml for bun runtime configuration
+ * Ensure commando-home has bunfig.toml for bun runtime configuration
  */
-export function ensureBunConfig(): void {
-  const log = createLogger('forge-home');
-  const forgeHome = getForgeHomePath();
-  const bunfigPath = join(forgeHome, 'bunfig.toml');
+export function ensureCommandoBunConfig(): void {
+  const log = createLogger('commando-home');
+  const commandoHome = getCommandoHomePath();
+  const bunfigPath = join(commandoHome, 'bunfig.toml');
 
   // Don't overwrite if exists (user may have customized)
   if (existsSync(bunfigPath)) {
@@ -116,7 +116,7 @@ export function parseDependencyName(dep: string): string {
 }
 
 /**
- * Check if a dependency is already installed in forge home
+ * Check if a dependency is already installed in commando home
  *
  * Handles different dependency types:
  * - Local paths: file:/path, /path, ../path - checks if value matches
@@ -132,7 +132,7 @@ export function isInstalled(dep: string): boolean {
  * Returns true if package.json changed (restart needed)
  */
 export async function installDependency(dep: string): Promise<boolean> {
-  await ensureForgeHome();
+  await ensureCommandoHome();
   return packageManager.installDependency(dep);
 }
 
@@ -150,17 +150,17 @@ export async function syncDependencies(
   dependencies: string[],
   mode: 'auto' | 'manual' | 'ask' = 'auto',
 ): Promise<boolean> {
-  const log = createLogger('forge-home');
-  const forgeHome = getForgeHomePath();
+  const log = createLogger('commando-home');
+  const commandoHome = getCommandoHomePath();
 
   log.debug({
-    forgeHome,
+    commandoHome,
     count: dependencies.length,
     mode
   }, 'Starting dependency sync');
   log.debug({ dependencies }, 'Declared dependencies');
 
-  await ensureForgeHome();
+  await ensureCommandoHome();
 
   // Find missing dependencies
   const checkStart = Date.now();

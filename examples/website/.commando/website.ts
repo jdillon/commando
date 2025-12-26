@@ -1,7 +1,7 @@
 /**
  * Website deployment commands
  *
- * Separate file for command implementations (like forge v1 pattern)
+ * Separate file for command implementations
  */
 
 import {
@@ -12,9 +12,9 @@ import {
   boxen,
   Listr,
   createLogger,
-  type ForgeCommand,
-  type ForgeContext
-} from '@forge/command';
+  type CommandoCommand,
+  type CommandoContext
+} from '@commando/command';
 
 // Configuration
 const CONFIG = {
@@ -30,7 +30,7 @@ const log = createLogger('website');
 // Build Command
 // ============================================================================
 
-export const build: ForgeCommand = {
+export const build: CommandoCommand = {
   description: 'Build website',
 
   defineCommand: (cmd) => {
@@ -59,7 +59,7 @@ export const build: ForgeCommand = {
       await Bun.sleep(500);
 
       // In real project: await $`npm run build`;
-      await $`echo "<h1>Hello from Forge</h1>" > ${CONFIG.buildDir}/index.html`;
+      await $`echo "<h1>Hello from Commando</h1>" > ${CONFIG.buildDir}/index.html`;
 
       if (options.optimize) {
         spinner.text = 'Optimizing...';
@@ -82,7 +82,7 @@ export const build: ForgeCommand = {
 // Sync Command
 // ============================================================================
 
-export const sync: ForgeCommand = {
+export const sync: CommandoCommand = {
   description: 'Sync website to S3',
 
   // Define Commander options
@@ -134,7 +134,7 @@ export const sync: ForgeCommand = {
 // Invalidate Command
 // ============================================================================
 
-export const invalidate: ForgeCommand = {
+export const invalidate: CommandoCommand = {
   description: 'Invalidate CloudFront cache',
 
   defineCommand: (cmd) => {
@@ -180,7 +180,7 @@ export const invalidate: ForgeCommand = {
 // Publish Command (orchestrates other commands)
 // ============================================================================
 
-export const publish: ForgeCommand = {
+export const publish: CommandoCommand = {
   description: 'Full publish (build + sync + invalidate)',
 
   defineCommand: (cmd) => {
@@ -203,7 +203,7 @@ export const publish: ForgeCommand = {
         skip: () => options.skipBuild && 'Build skipped',
         task: async (ctx, task) => {
           await $`mkdir -p ${CONFIG.buildDir}`;
-          await $`echo "<h1>Hello from Forge</h1>" > ${CONFIG.buildDir}/index.html`;
+          await $`echo "<h1>Hello from Commando</h1>" > ${CONFIG.buildDir}/index.html`;
           await Bun.sleep(800);
           ctx.buildTime = 850;
         }
@@ -285,7 +285,7 @@ export const publish: ForgeCommand = {
 // Info Command
 // ============================================================================
 
-export const info: ForgeCommand = {
+export const info: CommandoCommand = {
   description: 'Show configuration',
   execute: async () => {
     console.log(chalk.bold('\n📋 Configuration:\n'));

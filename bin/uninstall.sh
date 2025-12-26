@@ -14,8 +14,8 @@
 # limitations under the License.
 set -euo pipefail
 
-# Forge v2 Uninstallation Script
-# Removes forge installation from ~/.forge and ~/.local/bin/forge
+# Commando Uninstallation Script
+# Removes commando installation from ~/.commando and ~/.local/bin/cmdo
 
 # Color output (only if terminal supports it)
 if [[ -t 1 ]] && command -v tput &>/dev/null && tput colors &>/dev/null && [[ $(tput colors) -ge 8 ]]; then
@@ -66,7 +66,7 @@ while [[ $# -gt 0 ]]; do
     -h|--help)
       echo "Usage: $0 [-y|--yes] [--purge]"
       echo ""
-      echo "Uninstalls forge from your system."
+      echo "Uninstalls commando from your system."
       echo ""
       echo "Options:"
       echo "  -y, --yes    Skip confirmation prompts"
@@ -81,43 +81,43 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Determine installation locations
-FORGE_HOME="${FORGE_HOME:-$HOME/.forge}"
-FORGE_CONFIG="${FORGE_HOME}/config"
-FORGE_BIN="${HOME}/.local/bin"
-FORGE_CMD="${FORGE_BIN}/forge"
+COMMANDO_HOME="${COMMANDO_HOME:-$HOME/.commando}"
+COMMANDO_CONFIG="${COMMANDO_HOME}/config"
+COMMANDO_BIN="${HOME}/.local/bin"
+COMMANDO_CMD="${COMMANDO_BIN}/cmdo"
 
 # Check what exists
 ITEMS_TO_REMOVE=()
 CONFIG_EXISTS=false
 
-if [[ -d "${FORGE_HOME}" ]]; then
+if [[ -d "${COMMANDO_HOME}" ]]; then
   # Check if config subdirectory exists
-  if [[ -d "${FORGE_CONFIG}" ]]; then
+  if [[ -d "${COMMANDO_CONFIG}" ]]; then
     CONFIG_EXISTS=true
   fi
 
   if [[ "$PURGE_CONFIG" == "true" ]]; then
-    # Remove entire FORGE_HOME including config
-    ITEMS_TO_REMOVE+=("  - ${FORGE_HOME}")
+    # Remove entire COMMANDO_HOME including config
+    ITEMS_TO_REMOVE+=("  - ${COMMANDO_HOME}")
   else
     # Remove everything except config subdirectory
-    ITEMS_TO_REMOVE+=("  - ${FORGE_HOME} (preserving config/)")
+    ITEMS_TO_REMOVE+=("  - ${COMMANDO_HOME} (preserving config/)")
   fi
 fi
 
-if [[ -L "${FORGE_CMD}" ]] || [[ -f "${FORGE_CMD}" ]]; then
-  ITEMS_TO_REMOVE+=("  - ${FORGE_CMD}")
+if [[ -L "${COMMANDO_CMD}" ]] || [[ -f "${COMMANDO_CMD}" ]]; then
+  ITEMS_TO_REMOVE+=("  - ${COMMANDO_CMD}")
 fi
 
 # Nothing to uninstall
 if [[ ${#ITEMS_TO_REMOVE[@]} -eq 0 ]]; then
-  info "Forge is not installed (nothing to remove)"
+  info "Commando is not installed (nothing to remove)"
   exit 0
 fi
 
 # Show what will be removed
 echo
-echo "${BOLD}Forge Uninstallation${RESET}"
+echo "${BOLD}Commando Uninstallation${RESET}"
 echo
 echo "The following will be removed:"
 for item in "${ITEMS_TO_REMOVE[@]}"; do
@@ -127,11 +127,11 @@ echo
 
 # Show notes about what's preserved
 if [[ "$CONFIG_EXISTS" == "true" && "$PURGE_CONFIG" != "true" ]]; then
-  echo "${YELLOW}Note:${RESET} Configuration will be preserved in ${FORGE_CONFIG}"
+  echo "${YELLOW}Note:${RESET} Configuration will be preserved in ${COMMANDO_CONFIG}"
   echo "      Use --purge to also remove configuration"
   echo
 fi
-echo "${YELLOW}Note:${RESET} Project files (e.g., .forge/) will ${BOLD}NOT${RESET} be modified."
+echo "${YELLOW}Note:${RESET} Project files (e.g., .commando/) will ${BOLD}NOT${RESET} be modified."
 echo
 
 # Confirm unless -y was passed
@@ -145,31 +145,31 @@ if [[ "$AUTO_CONFIRM" != "true" ]]; then
 fi
 
 # Remove installation
-if [[ -d "${FORGE_HOME}" ]]; then
+if [[ -d "${COMMANDO_HOME}" ]]; then
   if [[ "$PURGE_CONFIG" == "true" ]]; then
     # Remove everything including config
-    info "Removing ${FORGE_HOME}..."
-    rm -rf "${FORGE_HOME}"
+    info "Removing ${COMMANDO_HOME}..."
+    rm -rf "${COMMANDO_HOME}"
   else
     # Remove everything except config subdirectory
-    info "Removing ${FORGE_HOME} (preserving config/)..."
+    info "Removing ${COMMANDO_HOME} (preserving config/)..."
 
     # Remove all files and directories except config/
-    find "${FORGE_HOME}" -mindepth 1 -maxdepth 1 ! -name 'config' -exec rm -rf {} +
+    find "${COMMANDO_HOME}" -mindepth 1 -maxdepth 1 ! -name 'config' -exec rm -rf {} +
 
-    # If FORGE_HOME is now empty except for config/, and config/ is empty, remove it all
-    if [[ ! -d "${FORGE_CONFIG}" ]] || [[ -z "$(ls -A "${FORGE_CONFIG}" 2>/dev/null)" ]]; then
-      if [[ $(find "${FORGE_HOME}" -mindepth 1 | wc -l) -eq 0 ]] || \
-         [[ $(find "${FORGE_HOME}" -mindepth 1 -maxdepth 1 | wc -l) -eq 1 && -d "${FORGE_CONFIG}" && -z "$(ls -A "${FORGE_CONFIG}")" ]]; then
-        rm -rf "${FORGE_HOME}"
+    # If COMMANDO_HOME is now empty except for config/, and config/ is empty, remove it all
+    if [[ ! -d "${COMMANDO_CONFIG}" ]] || [[ -z "$(ls -A "${COMMANDO_CONFIG}" 2>/dev/null)" ]]; then
+      if [[ $(find "${COMMANDO_HOME}" -mindepth 1 | wc -l) -eq 0 ]] || \
+         [[ $(find "${COMMANDO_HOME}" -mindepth 1 -maxdepth 1 | wc -l) -eq 1 && -d "${COMMANDO_CONFIG}" && -z "$(ls -A "${COMMANDO_CONFIG}")" ]]; then
+        rm -rf "${COMMANDO_HOME}"
       fi
     fi
   fi
 fi
 
-if [[ -L "${FORGE_CMD}" ]] || [[ -f "${FORGE_CMD}" ]]; then
-  info "Removing ${FORGE_CMD}..."
-  rm -f "${FORGE_CMD}"
+if [[ -L "${COMMANDO_CMD}" ]] || [[ -f "${COMMANDO_CMD}" ]]; then
+  info "Removing ${COMMANDO_CMD}..."
+  rm -f "${COMMANDO_CMD}"
 fi
 
-info "Forge has been uninstalled"
+info "Commando has been uninstalled"

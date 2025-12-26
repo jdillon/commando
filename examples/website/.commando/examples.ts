@@ -3,7 +3,7 @@
  *
  * Demonstrates:
  * 1. Simple inline object (no typing)
- * 2. Typed ForgeCommand export
+ * 2. Typed CommandoCommand export
  * 3. Inline with Commander options
  * 4. Minimal one-liner
  */
@@ -15,14 +15,14 @@ import {
   ora,
   createLogger,
   exit,
-  type ForgeCommand,
-  type ForgeContext
-} from '@forge/command';
+  type CommandoCommand,
+  type CommandoContext
+} from '@commando/command';
 
 const log = createLogger('examples');
 
 // ============================================================================
-// Style 1: Simple inline object (like forge v1)
+// Style 1: Simple inline object
 // No options - just uses positional args
 // ============================================================================
 
@@ -36,10 +36,10 @@ export const hello = {
 };
 
 // ============================================================================
-// Style 2: Typed ForgeCommand with options and arguments
+// Style 2: Typed CommandoCommand with options and arguments
 // ============================================================================
 
-export const deploy: ForgeCommand = {
+export const deploy: CommandoCommand = {
   description: 'Deploy to environment',
 
   defineCommand: (cmd) => {
@@ -100,7 +100,7 @@ export const version = {
 // Style 5: Command that calls shell tools
 // ============================================================================
 
-export const logs: ForgeCommand = {
+export const logs: CommandoCommand = {
   description: 'Show recent logs',
 
   defineCommand: (cmd) => {
@@ -115,11 +115,11 @@ export const logs: ForgeCommand = {
 
     // Example: tail logs
     if (options.follow) {
-      await $`tail -f -n ${options.lines} /tmp/forge.log`.catch(() => {
+      await $`tail -f -n ${options.lines} /tmp/commando.log`.catch(() => {
         console.log(chalk.yellow('No logs found'));
       });
     } else {
-      await $`tail -n ${options.lines} /tmp/forge.log`.catch(() => {
+      await $`tail -n ${options.lines} /tmp/commando.log`.catch(() => {
         console.log(chalk.yellow('No logs found'));
       });
     }
@@ -130,7 +130,7 @@ export const logs: ForgeCommand = {
 // Style 6: Command with validation
 // ============================================================================
 
-export const connect: ForgeCommand = {
+export const connect: CommandoCommand = {
   description: 'Connect to a service',
 
   defineCommand: (cmd) => {
@@ -163,7 +163,7 @@ export const connect: ForgeCommand = {
 // Style 7: Command that returns data (for composition)
 // ============================================================================
 
-export const getConfig: ForgeCommand = {
+export const getConfig: CommandoCommand = {
   description: 'Get configuration value',
 
   defineCommand: (cmd) => {
@@ -198,7 +198,7 @@ export const getConfig: ForgeCommand = {
 // Style 8: Dangerous command with confirmation
 // ============================================================================
 
-export const cleanup: ForgeCommand = {
+export const cleanup: CommandoCommand = {
   description: 'Clean up old files',
 
   defineCommand: (cmd) => {
@@ -270,7 +270,7 @@ export const cache = {
         const key = restArgs[0];
         const value = restArgs[1];
         if (!key || !value) {
-          console.error(chalk.red('Usage: forge cache set <key> <value>'));
+          console.error(chalk.red('Usage: cmdo cache set <key> <value>'));
           exit(1);
         }
         console.log(chalk.green(`Set ${key} = ${value}`));
@@ -281,7 +281,7 @@ export const cache = {
       case 'get': {
         const key = restArgs[0];
         if (!key) {
-          console.error(chalk.red('Usage: forge cache get <key>'));
+          console.error(chalk.red('Usage: cmdo cache get <key>'));
           exit(1);
         }
         console.log('value-for-' + key);

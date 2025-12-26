@@ -24,10 +24,10 @@ import { autoInstallDependencies, RESTART_EXIT_CODE } from './auto-install';
 import * as builtins from './builtins';
 import type { Logger } from './logging';
 import type {
-  ForgeCommand,
-  ForgeConfig,
-  ForgeModuleMetadata,
-  ForgeContext,
+  CommandoCommand,
+  CommandoConfig,
+  CommandoModuleMetadata,
+  CommandoContext,
 } from './types';
 
 const log = createLogger('core');
@@ -37,9 +37,9 @@ const log = createLogger('core');
 // ============================================================================
 
 /**
- * Check if an object looks like a ForgeCommand (duck typing)
+ * Check if an object looks like a CommandoCommand (duck typing)
  */
-function isForgeCommand(obj: any): obj is ForgeCommand {
+function isCommandoCommand(obj: any): obj is CommandoCommand {
   return obj
     && typeof obj === 'object'
     && typeof obj.description === 'string'
@@ -58,10 +58,10 @@ function deriveGroupName(modulePath: string): string {
 }
 
 /**
- * Discover ForgeCommands from a module's exports
+ * Discover CommandoCommands from a module's exports
  *
  * Extracts command definitions from:
- * - Named exports (e.g., export const myCmd: ForgeCommand)
+ * - Named exports (e.g., export const myCmd: CommandoCommand)
  * - Default export (if it's an object containing commands)
  * - __module__ metadata for group name and description
  *
@@ -72,8 +72,8 @@ function deriveGroupName(modulePath: string): string {
 export function discoverCommands(
   module: any,
   defaultGroupName?: string | false
-): { groupName: string | false; description?: string; commands: Record<string, ForgeCommand> } {
-  const commands: Record<string, ForgeCommand> = {};
+): { groupName: string | false; description?: string; commands: Record<string, CommandoCommand> } {
+  const commands: Record<string, CommandoCommand> = {};
   let groupName: string | false = defaultGroupName ?? false;
   let description: string | undefined;
 
@@ -81,7 +81,7 @@ export function discoverCommands(
 
   // Check for __module__ metadata export
   if (module.__module__) {
-    const metadata = module.__module__ as ForgeModuleMetadata;
+    const metadata = module.__module__ as CommandoModuleMetadata;
     log.debug({ metadata }, 'Found __module__ metadata');
 
     if (metadata.group !== undefined) {
@@ -97,8 +97,8 @@ export function discoverCommands(
     log.debug({ exportCount: defaultExportCount }, 'Scanning default export');
 
     for (const [name, value] of Object.entries(module.default)) {
-      if (isForgeCommand(value)) {
-        commands[name] = value as ForgeCommand;
+      if (isCommandoCommand(value)) {
+        commands[name] = value as CommandoCommand;
         log.debug({ name, source: 'default export' }, 'Command discovered');
       } else {
         log.debug({ name, type: typeof value }, 'Default export entry is not a command');
@@ -116,9 +116,9 @@ export function discoverCommands(
       continue;
     }
 
-    if (isForgeCommand(value)) {
+    if (isCommandoCommand(value)) {
       // Named export becomes command name
-      commands[name] = value as ForgeCommand;
+      commands[name] = value as CommandoCommand;
       log.debug({ name, source: 'named export' }, 'Command discovered');
     }
   }
@@ -136,25 +136,25 @@ export function discoverCommands(
  * Load a module from a path and discover its commands
  *
  * Handles:
- * - Module resolution (local .forge/ or npm package)
+ * - Module resolution (local .commando/ or npm package)
  * - Symlink rewriting for correct forge instance
  * - Command discovery via discoverCommands()
  *
  * @param modulePath - Module path (relative, absolute, or package name)
- * @param forgeDir - Forge directory for resolution
+ * @param commandoDir - Forge directory for resolution
  * @returns Object with groupName, description, and discovered commands
  */
 export async function loadModule(
   modulePath: string,
-  forgeDir: string
-): Promise<{ groupName: string | false; description?: string; commands: Record<string, ForgeCommand> }> {
+  commandoDir: string
+): Promise<{ groupName: string | false; description?: string; commands: Record<string, CommandoCommand> }> {
   const defaultGroupName = deriveGroupName(modulePath);
 
-  log.debug({ modulePath, defaultGroupName, forgeDir }, 'Starting module load');
+  log.debug({ modulePath, defaultGroupName, commandoDir }, 'Starting module load');
 
   // Resolve module path with priority: local → shared
   const resolveStart = Date.now();
-  const fullPath = await resolveModule(modulePath, forgeDir);
+  const fullPath = await resolveModule(modulePath, commandoDir);
   const resolveDuration = Date.now() - resolveStart;
 
   log.debug({ durationMs: resolveDuration, fullPath }, 'Module path resolved');
@@ -163,7 +163,7 @@ export async function loadModule(
   // This ensures user commands import forge from the correct instance
   // Requires bun --preserve-symlinks
   const symlinkStart = Date.now();
-  const symlinkPath = await rewriteModulePath(fullPath, forgeDir);
+  const symlinkPath = await rewriteModulePath(fullPath, commandoDir);
   const symlinkDuration = Date.now() - symlinkStart;
 
   log.debug({
@@ -193,22 +193,22 @@ export async function loadModule(
  * Main forge runner
  */
 export class Forge {
-  public config: ForgeConfig;  // Public so commands can access
+  public config: CommandoConfig;  // Public so commands can access
   private log: Logger;
 
   // Top-level commands (no group)
-  public topLevelCommands: Record<string, ForgeCommand> = {};
+  public topLevelCommands: Record<string, CommandoCommand> = {};
 
   // Command groups (subcommands)
   public commandGroups: Record<string, {
     description?: string;
-    commands: Record<string, ForgeCommand>;
+    commands: Record<string, CommandoCommand>;
   }> = {};
 
   public state: StateManager;
   public globalOptions: Record<string, any>;
 
-  constructor(config: ForgeConfig) {
+  constructor(config: CommandoConfig) {
     this.log = createLogger('forge');
     this.log.debug({ config });
 
@@ -242,7 +242,7 @@ export class Forge {
   private registerCommandGroup(
     groupName: string | false,
     description: string | undefined,
-    commands: Record<string, ForgeCommand>
+    commands: Record<string, CommandoCommand>
   ): void {
     if (groupName === false) {
       // Top-level commands
@@ -294,7 +294,7 @@ export class Forge {
     // Need per-command flag: { requiresProject: boolean }
 
     // 2. If no project, we're done
-    if (!this.config.projectPresent || !this.config.projectRoot || !this.config.forgeDir) {
+    if (!this.config.projectPresent || !this.config.projectRoot || !this.config.commandoDir) {
       log.debug({
         projectPresent: this.config.projectPresent,
         projectRoot: this.config.projectRoot
@@ -304,13 +304,13 @@ export class Forge {
 
     log.debug({
       projectRoot: this.config.projectRoot,
-      forgeDir: this.config.forgeDir
+      commandoDir: this.config.commandoDir
     }, 'Project context available');
 
-    // 3. Setup symlink for .forge directory
-    log.debug('Phase 2: Setting up .forge symlink');
+    // 3. Setup symlink for .commando directory
+    log.debug('Phase 2: Setting up .commando symlink');
     const symlinkStart = Date.now();
-    await symlinkForgeDir(this.config.forgeDir);
+    await symlinkForgeDir(this.config.commandoDir);
     const symlinkDuration = Date.now() - symlinkStart;
 
     log.debug({ durationMs: symlinkDuration }, 'Symlink setup complete');
@@ -322,7 +322,7 @@ export class Forge {
 
       const needsRestart = await autoInstallDependencies(
         this.config,
-        this.config.forgeDir,
+        this.config.commandoDir,
         this.config.isRestarted,
       );
 
@@ -347,7 +347,7 @@ export class Forge {
         const moduleStart = Date.now();
         const { groupName, description, commands } = await loadModule(
           modulePath,
-          this.config.forgeDir
+          this.config.commandoDir
         );
         const moduleDuration = Date.now() - moduleStart;
 
@@ -419,12 +419,12 @@ export class Forge {
   }
 
   /**
-   * Build a Commander Command from a ForgeCommand definition
+   * Build a Commander Command from a CommandoCommand definition
    * Internal method - bridges Forge commands to Commander
    */
   private buildCommanderCommand(
     name: string,
-    forgeCmd: ForgeCommand,
+    forgeCmd: CommandoCommand,
     groupName?: string
   ): Command {
     // 1. Create Commander Command
@@ -459,10 +459,10 @@ export class Forge {
         ? command.args
         : actionArgs.slice(0, -2) as string[];
 
-      // Build ForgeContext for command
+      // Build CommandoContext for command
       const loggerConfig = getLoggerConfig();
-      const context: ForgeContext = {
-        forge: this,
+      const context: CommandoContext = {
+        commando: this,
         config: this.config!,
         settings: (groupName && this.config?.settings)
           ? (this.config.settings[`${groupName}.${name}`] || {})

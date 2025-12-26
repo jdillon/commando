@@ -16,7 +16,7 @@
 /**
  * Shared test environment setup
  *
- * Installs forge package once for entire test suite to speed up tests.
+ * Installs commando package once for entire test suite to speed up tests.
  * Tests use an installed version (not dev mode) to match real usage.
  */
 
@@ -31,11 +31,11 @@ import { createLogger } from './logger';
 const log = createLogger('test-env');
 
 // Test installation paths
-const TEST_INSTALL_DIR = join(TEST_DIRS.build, 'test-forge-installation');
-const TEST_FORGE_HOME = join(TEST_INSTALL_DIR, '.local', 'share', 'forge');
-const TEST_FORGE_BIN = join(TEST_INSTALL_DIR, '.local', 'bin', 'forge');
+const TEST_INSTALL_DIR = join(TEST_DIRS.build, 'test-commando-installation');
+const TEST_COMMANDO_HOME = join(TEST_INSTALL_DIR, '.local', 'share', 'commando');
+const TEST_COMMANDO_BIN = join(TEST_INSTALL_DIR, '.local', 'bin', 'cmdo');
 const TEST_TARBALL_DIR = join(TEST_DIRS.build, 'test-tmp', 'env');
-const TEST_TARBALL_PATH = join(TEST_TARBALL_DIR, 'forge-test-env.tgz');
+const TEST_TARBALL_PATH = join(TEST_TARBALL_DIR, 'commando-test-env.tgz');
 
 // Use real user's Bun cache to speed up installs
 const realUserHome = homedir();
@@ -47,10 +47,10 @@ let isInstalled = false;
  * Test environment configuration
  */
 export interface TestEnvironment {
-  /** Path to test forge home */
-  forgeHome: string;
-  /** Path to installed forge command */
-  forgeCmd: string;
+  /** Path to test commando home */
+  commandoHome: string;
+  /** Path to installed commando command */
+  commandoCmd: string;
   /** Path to node_modules for module resolution */
   nodeModules: string;
   /** Base directory for installation */
@@ -60,12 +60,12 @@ export interface TestEnvironment {
 /**
  * Get or create shared test environment
  *
- * Installs forge once and reuses for all tests.
- * Call this at the start of each test file that needs forge.
+ * Installs commando once and reuses for all tests.
+ * Call this at the start of each test file that needs commando.
  */
 export async function setupTestEnvironment(force = false): Promise<TestEnvironment> {
   // Already set up and not forcing reinstall
-  if (isInstalled && !force && existsSync(TEST_FORGE_BIN)) {
+  if (isInstalled && !force && existsSync(TEST_COMMANDO_BIN)) {
     log.debug('Using existing test environment');
     return getTestEnvironment();
   }
@@ -83,8 +83,8 @@ export async function setupTestEnvironment(force = false): Promise<TestEnvironme
     await createTestTarball();
   }
 
-  // Install forge to test directory
-  await installForgeForTests();
+  // Install commando to test directory
+  await installCommandoForTests();
 
   isInstalled = true;
   return getTestEnvironment();
@@ -95,9 +95,9 @@ export async function setupTestEnvironment(force = false): Promise<TestEnvironme
  */
 export function getTestEnvironment(): TestEnvironment {
   return {
-    forgeHome: TEST_FORGE_HOME,
-    forgeCmd: TEST_FORGE_BIN,
-    nodeModules: join(TEST_FORGE_HOME, 'node_modules'),
+    commandoHome: TEST_COMMANDO_HOME,
+    commandoCmd: TEST_COMMANDO_BIN,
+    nodeModules: join(TEST_COMMANDO_HOME, 'node_modules'),
     installDir: TEST_INSTALL_DIR,
   };
 }
@@ -132,10 +132,10 @@ async function createTestTarball(): Promise<void> {
 }
 
 /**
- * Install forge package for testing
+ * Install commando package for testing
  */
-async function installForgeForTests(): Promise<void> {
-  log.info({ installDir: TEST_INSTALL_DIR }, 'Installing forge for tests');
+async function installCommandoForTests(): Promise<void> {
+  log.info({ installDir: TEST_INSTALL_DIR }, 'Installing commando for tests');
 
   const installScript = join(TEST_DIRS.root, 'bin', 'install.sh');
 
@@ -148,8 +148,8 @@ async function installForgeForTests(): Promise<void> {
     env: {
       ...process.env,
       HOME: TEST_INSTALL_DIR,
-      FORGE_REPO: `file://${TEST_TARBALL_PATH}`,
-      FORGE_BRANCH: '',
+      COMMANDO_REPO: `file://${TEST_TARBALL_PATH}`,
+      COMMANDO_BRANCH: '',
       BUN_INSTALL_CACHE_DIR: bunCacheDir,
     },
     stdout: 'pipe',
@@ -162,15 +162,15 @@ async function installForgeForTests(): Promise<void> {
       stdout: installResult.stdout.toString(),
       stderr: installResult.stderr.toString(),
     }, 'Install failed');
-    throw new Error('Failed to install forge for tests');
+    throw new Error('Failed to install commando for tests');
   }
 
   // Verify installation
-  if (!existsSync(TEST_FORGE_BIN)) {
-    throw new Error(`Forge not installed at ${TEST_FORGE_BIN}`);
+  if (!existsSync(TEST_COMMANDO_BIN)) {
+    throw new Error(`Commando not installed at ${TEST_COMMANDO_BIN}`);
   }
 
-  log.info('Forge installed successfully for tests');
+  log.info('Commando installed successfully for tests');
 }
 
 /**
