@@ -163,11 +163,11 @@ async function findProjectRoot(options: {
  * 1. Discover project root (.commando directory)
  * 2. Load .commando/config.yml if project exists
  * 3. DEFERRED: Merge with user config (~/.commando/config) and defaults
- * 4. DEFERRED: Apply ENV var overrides beyond existing FORGE_* vars
+ * 4. DEFERRED: Apply ENV var overrides beyond existing COMMANDO_* vars
  * 5. Return CommandoConfig
  *
  * @param bootstrapConfig - Bootstrap options from CLI args
- * @returns CommandoConfig with all data needed for Forge initialization
+ * @returns CommandoConfig with all data needed for Commando initialization
  * @throws Error on critical failures (e.g., YAML parse error)
  */
 export async function resolveConfig(
@@ -186,7 +186,7 @@ export async function resolveConfig(
   log.debug(`Project root: ${projectRoot || "(none)"}`);
 
   // 2. Load project config if present
-  let forgeConfig: Partial<CommandoConfig> = {};
+  let commandoConfig: Partial<CommandoConfig> = {};
 
   if (projectRoot) {
     try {
@@ -219,8 +219,8 @@ export async function resolveConfig(
       log.debug(`Config search completed in ${configLoadDuration}ms`);
 
       if (result?.config) {
-        forgeConfig = result.config;
-        const configKeys = Object.keys(forgeConfig);
+        commandoConfig = result.config;
+        const configKeys = Object.keys(commandoConfig);
         log.debug(`Loaded config from ${result.filepath} (${configKeys.length} keys: ${configKeys.join(', ')})`);
       } else {
         log.debug(`No config file found in ${commandoDir} (using defaults)`);
@@ -241,15 +241,15 @@ export async function resolveConfig(
   //   - User config (~/.commando/config)
   //   - Project config (.commando/config)
   //   - Local overrides (.commando/config.local)
-  //   - ENV vars (FORGE_*)
+  //   - ENV vars (COMMANDO_*)
   // For now: Just use .commando/config directly
 
   // 4. DEFERRED: Extended ENV var support
   // TODO: Support ENV var overrides for config values
-  //   - FORGE_INSTALL_MODE=manual
-  //   - FORGE_OFFLINE=true
+  //   - COMMANDO_INSTALL_MODE=manual
+  //   - COMMANDO_OFFLINE=true
   //   - etc.
-  // Current: Only COMMANDO_PROJECT, FORGE_HOME supported
+  // Current: Only COMMANDO_PROJECT, COMMANDO_HOME supported
 
   // 5. Build CommandoConfig
   const config: CommandoConfig = {
@@ -268,12 +268,12 @@ export async function resolveConfig(
     colorMode: bootstrapConfig.colorMode,
     isRestarted: bootstrapConfig.isRestarted,
 
-    // Forge config (from .commando/config.yml)
-    modules: forgeConfig.modules,
-    dependencies: forgeConfig.dependencies,
-    settings: forgeConfig.settings,
-    installMode: forgeConfig.installMode,
-    offline: forgeConfig.offline,
+    // Commando config (from .commando/config.yml)
+    modules: commandoConfig.modules,
+    dependencies: commandoConfig.dependencies,
+    settings: commandoConfig.settings,
+    installMode: commandoConfig.installMode,
+    offline: commandoConfig.offline,
   };
 
   log.debug(`Config resolved: ${JSON.stringify(config, null, 2)}`);

@@ -44,7 +44,7 @@ export async function main(): Promise<void> {
   if (cliArgs.includes('--version') || cliArgs.includes('-V')) {
     const { getVersionString } = await import('./version');
     const version = await getVersionString();
-    console.log(`commando version ${version}`);
+    console.log(`cmdo version ${version}`);
     process.exit(0);
   }
 
@@ -191,11 +191,11 @@ async function buildCLI(config: CommandoConfig): Promise<Command> {
     exit(1);
   });
 
-  // Initialize Forge and register commands
-  const { Forge } = await import("./core");
-  const forge = new Forge(config);
-  await forge.initialize(); // Throws ExitNotification if restart needed
-  await forge.registerCommands(program);
+  // Initialize Commando and register commands
+  const { Commando } = await import("./core");
+  const commando = new Commando(config);
+  await commando.initialize(); // Throws ExitNotification if restart needed
+  await commando.registerCommands(program);
 
   return program;
 }
@@ -239,7 +239,7 @@ function handleError(err: any): never {
     if (unknownCmd) {
       showCommanderError(`unknown command '${unknownCmd}'`);
     } else {
-      showCommanderError("unknown command. Run 'forge --help' to see available commands");
+      showCommanderError("unknown command. Run 'cmdo --help' to see available commands");
     }
   }
 
@@ -274,7 +274,7 @@ function handleError(err: any): never {
 function showCommanderError(message: string): never {
   const cleanMessage = message.replace(/^error:\s*/i, "");
   console.error(`ERROR: ${cleanMessage}`);
-  console.error(`Try 'forge --help' for more information.`);
+  console.error(`Try 'cmdo --help' for more information.`);
   runtimeExit(1);
 }
 

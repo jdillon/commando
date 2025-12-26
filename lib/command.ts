@@ -26,7 +26,7 @@ export type {
 } from './types';
 
 // ============================================================================
-// Core API - Forge utilities
+// Core API - Commando utilities
 // ============================================================================
 
 export { createLogger } from './logging/logger';

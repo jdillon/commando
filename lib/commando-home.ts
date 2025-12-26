@@ -31,8 +31,8 @@ export function getCommandoHomePath(): string {
 }
 
 /**
- * Get the node_modules directory for Forge
- * This is where Forge looks for installed modules
+ * Get the node_modules directory for Commando
+ * This is where Commando looks for installed modules
  *
  * Derived from COMMANDO_HOME/node_modules
  */
@@ -53,7 +53,7 @@ export async function ensureCommandoHome(): Promise<void> {
     log.debug({ commandoHome }, 'Creating commando home directory');
     mkdirSync(commandoHome, { recursive: true });
   } else {
-    log.debug({ commandoHome }, 'Forge home already exists');
+    log.debug({ commandoHome }, 'Commando home already exists');
   }
 
   const pkgPath = join(commandoHome, 'package.json');
@@ -187,7 +187,7 @@ export async function syncDependencies(
     log.debug({ mode, missing }, 'Manual mode, not auto-installing');
     throw new Error(
       `Missing dependencies: ${missing.join(', ')}\n` +
-        `Run: forge module install`,
+        `Run: cmdo module install`,
     );
   }
 

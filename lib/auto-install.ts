@@ -26,9 +26,9 @@ export const RESTART_EXIT_CODE = 42;
 /**
  * Sync dependencies and handle restart if needed
  *
- * @param config - Forge configuration
+ * @param config - Commando configuration
  * @param commandoDir - Project .commando/ directory path
- * @param isRestarted - True if this is a restarted process (from --forge-restarted flag)
+ * @param isRestarted - True if this is a restarted process (from --commando-restarted flag)
  * @returns True if process should exit for restart
  * @throws Error if dependencies missing on restarted process
  */
@@ -130,7 +130,7 @@ export async function autoInstallDependencies(
       log.debug({ originalMessage: err.message }, 'Wrapping auto-install error');
       throw new Error(
         `Failed to install dependencies: ${err.message}\n\n` +
-          `Try running: forge module install`,
+          `Try running: cmdo module install`,
       );
     }
 

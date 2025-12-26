@@ -35,7 +35,7 @@ export const version: CommandoCommand = {
   execute: async () => {
     const info = await getVersion();
 
-    console.log('Forge Version Information:');
+    console.log('Commando Version Information:');
     console.log();
     console.log(`  Version:    ${info.version}`);
     console.log(`  Full:       ${info.semver}`);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Logging API for Forge
+ * Logging API for Commando
  *
  * Public exports for the logging system
  */

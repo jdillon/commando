@@ -137,11 +137,11 @@ export function discoverCommands(
  *
  * Handles:
  * - Module resolution (local .commando/ or npm package)
- * - Symlink rewriting for correct forge instance
+ * - Symlink rewriting for correct commando instance
  * - Command discovery via discoverCommands()
  *
  * @param modulePath - Module path (relative, absolute, or package name)
- * @param commandoDir - Forge directory for resolution
+ * @param commandoDir - Commando directory for resolution
  * @returns Object with groupName, description, and discovered commands
  */
 export async function loadModule(
@@ -160,7 +160,7 @@ export async function loadModule(
   log.debug({ durationMs: resolveDuration, fullPath }, 'Module path resolved');
 
   // Rewrite path to go through symlink in node_modules
-  // This ensures user commands import forge from the correct instance
+  // This ensures user commands import commando from the correct instance
   // Requires bun --preserve-symlinks
   const symlinkStart = Date.now();
   const symlinkPath = await rewriteModulePath(fullPath, commandoDir);
@@ -190,9 +190,9 @@ export async function loadModule(
 // ============================================================================
 
 /**
- * Main forge runner
+ * Main commando runner
  */
-export class Forge {
+export class Commando {
   public config: CommandoConfig;  // Public so commands can access
   private log: Logger;
 
@@ -209,7 +209,7 @@ export class Forge {
   public globalOptions: Record<string, any>;
 
   constructor(config: CommandoConfig) {
-    this.log = createLogger('forge');
+    this.log = createLogger('commando');
     this.log.debug({ config });
 
     this.config = config;
@@ -264,7 +264,7 @@ export class Forge {
   }
 
   /**
-   * Initialize Forge instance
+   * Initialize Commando instance
    *
    * Handles:
    * - Loading builtin commands (always)
@@ -275,7 +275,7 @@ export class Forge {
    * @throws ExitNotification if restart needed after dependency installation
    */
   async initialize(): Promise<void> {
-    log.debug('Starting Forge initialization');
+    log.debug('Starting Commando initialization');
 
     // 1. Always load builtins (available everywhere)
     log.debug('Phase 1: Loading builtins');
@@ -372,12 +372,12 @@ export class Forge {
     const groupDetails = Object.fromEntries(
       Object.entries(this.commandGroups).map(([group, data]) => [group, Object.keys(data.commands)])
     );
-    log.debug({ topLevel, groups, groupDetails }, 'Forge initialization complete');
+    log.debug({ topLevel, groups, groupDetails }, 'Commando initialization complete');
   }
 
   /**
    * Register all discovered commands with Commander program
-   * This is the bridge between Forge and Commander
+   * This is the bridge between Commando and Commander
    */
   async registerCommands(program: Command): Promise<void> {
     log.debug(
@@ -386,8 +386,8 @@ export class Forge {
     );
 
     // Register top-level commands first
-    for (const [cmdName, forgeCmd] of Object.entries(this.topLevelCommands)) {
-      const cmd = this.buildCommanderCommand(cmdName, forgeCmd);
+    for (const [cmdName, commandoCmd] of Object.entries(this.topLevelCommands)) {
+      const cmd = this.buildCommanderCommand(cmdName, commandoCmd);
       cmd.copyInheritedSettings(program);  // Copy inherited settings from program
       program.addCommand(cmd);
       log.debug({ cmdName }, 'Registered top-level command');
@@ -405,8 +405,8 @@ export class Forge {
       }
 
       // Add each command to the group
-      for (const [cmdName, forgeCmd] of Object.entries(group.commands)) {
-        const cmd = this.buildCommanderCommand(cmdName, forgeCmd, groupName);
+      for (const [cmdName, commandoCmd] of Object.entries(group.commands)) {
+        const cmd = this.buildCommanderCommand(cmdName, commandoCmd, groupName);
         cmd.copyInheritedSettings(groupCmd);  // Copy from group command
         groupCmd.addCommand(cmd);
       }
@@ -420,25 +420,25 @@ export class Forge {
 
   /**
    * Build a Commander Command from a CommandoCommand definition
-   * Internal method - bridges Forge commands to Commander
+   * Internal method - bridges Commando commands to Commander
    */
   private buildCommanderCommand(
     name: string,
-    forgeCmd: CommandoCommand,
+    commandoCmd: CommandoCommand,
     groupName?: string
   ): Command {
     // 1. Create Commander Command
     const cmd = new Command(name);
-    cmd.description(forgeCmd.description);
+    cmd.description(commandoCmd.description);
 
     // 2. Let command customize Commander Command (if defined)
-    if (forgeCmd.defineCommand) {
-      forgeCmd.defineCommand(cmd);
+    if (commandoCmd.defineCommand) {
+      commandoCmd.defineCommand(cmd);
     } else {
       // No defineCommand - use simple model: usage string + allowUnknown
-      if (forgeCmd.usage) {
+      if (commandoCmd.usage) {
         // Add usage as argument definition (e.g., '<text...>' or '[options]')
-        cmd.argument(forgeCmd.usage, '');
+        cmd.argument(commandoCmd.usage, '');
       } else {
         // No usage specified - allow any arguments
         cmd.allowUnknownOption(true);
@@ -476,7 +476,7 @@ export class Forge {
       };
 
       try {
-        await forgeCmd.execute(options, positionalArgs, context);
+        await commandoCmd.execute(options, positionalArgs, context);
       } catch (err) {
         die(`Command failed: ${name}\n${err}`);
       }

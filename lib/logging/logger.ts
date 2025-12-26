@@ -142,7 +142,7 @@ export async function shutdownLogging(): Promise<void> {
 export function createLogger(name?: string): pino.Logger {
   ensureInitialized();
 
-  return rootLogger!.child({ name: name || 'forge' });
+  return rootLogger!.child({ name: name || 'commando' });
 }
 
 /**

@@ -62,11 +62,11 @@ export async function resolveModule(
   }
 
   // 2. Package modules (from node_modules)
-  // Examples: "@jdillon/forge-standard/hello", "cowsay"
+  // Examples: "@jdillon/commando-standard/hello", "cowsay"
   log.debug({ strategy: 'package', modulePath }, 'Using package module strategy');
   const nodeModules = getNodeModulesPath();
 
-  // For scoped packages with subpaths like "@jdillon/forge-standard/hello"
+  // For scoped packages with subpaths like "@jdillon/commando-standard/hello"
   // we need to resolve the full path including the submodule
   const packagePath = join(nodeModules, modulePath);
   const attemptedPaths: string[] = [];
@@ -99,6 +99,6 @@ export async function resolveModule(
       `Attempted paths:\n  ${attemptedPaths.join('\n  ')}\n\n` +
       `Suggestions:\n` +
       `  1. Add to config.yml dependencies section\n` +
-      `  2. Run: forge module install`,
+      `  2. Run: cmdo module install`,
   );
 }
