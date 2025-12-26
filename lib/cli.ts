@@ -175,7 +175,7 @@ async function buildCLI(config: CommandoConfig): Promise<Command> {
   const program = new Command();
 
   program
-    .name("forge")
+    .name("cmdo")
     .description("Modern CLI framework for deployments")
     .version(pkg.version);
 

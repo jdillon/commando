@@ -14,7 +14,7 @@ import {
   createLogger,
   type CommandoCommand,
   type CommandoContext
-} from '@commando/command';
+} from '@planet57/commando/command';
 
 // Configuration
 const CONFIG = {

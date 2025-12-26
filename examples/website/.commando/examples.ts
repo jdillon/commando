@@ -17,7 +17,7 @@ import {
   exit,
   type CommandoCommand,
   type CommandoContext
-} from '@commando/command';
+} from '@planet57/commando/command';
 
 const log = createLogger('examples');
 

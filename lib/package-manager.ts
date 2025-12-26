@@ -49,12 +49,12 @@ export class PackageManager {
   async installDependency(dep: string): Promise<boolean> {
     this.log.debug({ dep }, 'Installing dependency');
 
-    const forgeHome = getCommandoHomePath();
+    const commandoHome = getCommandoHomePath();
     const beforeHash = this.getPackageHash();
 
-    // Run bun add from forge home directory
+    // Run bun add from commando home directory
     const proc = spawn(['bun', 'add', dep], {
-      cwd: forgeHome,
+      cwd: commandoHome,
       stdout: 'pipe',
       stderr: 'pipe',
     });

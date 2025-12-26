@@ -102,8 +102,8 @@ export async function autoInstallDependencies(
           `Dependencies were installed but still missing after restart\n\n` +
             `This should not happen. Please report this as a bug.\n\n` +
             `Suggestions:\n` +
-            `  1. Check forge home: ~/.local/share/forge/\n` +
-            `  2. Try manual install: forge module install\n` +
+            `  1. Check commando home: ~/.commando/\n` +
+            `  2. Try manual install: cmdo module install\n` +
             `  3. Check for errors in bun installation`,
         );
       }

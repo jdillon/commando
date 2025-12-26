@@ -49,17 +49,17 @@ export const version: CommandoCommand = {
 };
 
 /**
- * Launch a shell in the forge home directory.
+ * Launch a shell in the commando home directory.
  */
 export const cd: CommandoCommand = {
-  description: 'Launch a shell in the forge home directory',
+  description: 'Launch a shell in the commando home directory',
   execute: async () => {
     const commandoHome = getCommandoHomePath();
 
     // Detect shell (use $SHELL env var, fallback to /bin/sh)
     const shell = process.env.SHELL || '/bin/sh';
 
-    // Spawn interactive shell in forge home
+    // Spawn interactive shell in commando home
     const proc = Bun.spawn([shell], {
       cwd: commandoHome,
       stdio: ['inherit', 'inherit', 'inherit'],

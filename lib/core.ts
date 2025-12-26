@@ -50,7 +50,7 @@ function isCommandoCommand(obj: any): obj is CommandoCommand {
  * Derive group name from module path
  * './website' → 'website'
  * './website.ts' → 'website'
- * '@forge/aws' → 'aws'
+ * '@commando/aws' → 'aws'
  */
 function deriveGroupName(modulePath: string): string {
   const basename = modulePath.split('/').pop() || '';

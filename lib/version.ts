@@ -35,10 +35,10 @@ export interface VersionInfo {
  * Reads from version.json generated at install time.
  */
 export async function getVersion(): Promise<VersionInfo> {
-  // Inline forge home path logic to avoid importing forge-home.ts
+  // Inline commando home path logic to avoid importing commando-home.ts
   // (which imports package-manager which requires logging to be initialized)
-  const forgeHome = process.env.COMMANDO_HOME || join(homedir(), '.commando');
-  const versionFile = join(forgeHome, 'version.json');
+  const commandoHome = process.env.COMMANDO_HOME || join(homedir(), '.commando');
+  const versionFile = join(commandoHome, 'version.json');
 
   try {
     const content = await readFile(versionFile, 'utf-8');

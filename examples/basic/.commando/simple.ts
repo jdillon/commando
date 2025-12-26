@@ -7,7 +7,7 @@
  * - Module metadata to customize group name
  */
 
-import { createLogger, type CommandoCommand, type CommandoModuleMetadata, type CommandoContext } from '@commando/command';
+import { createLogger, type CommandoCommand, type CommandoModuleMetadata, type CommandoContext } from '@planet57/commando/command';
 
 const log = createLogger('simple');
 
