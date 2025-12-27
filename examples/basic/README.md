@@ -1,6 +1,6 @@
 # Basic Example
 
-Minimal Forge module demonstrating simple command patterns.
+Minimal Commando module demonstrating simple command patterns.
 
 ## What This Demonstrates
 
@@ -13,8 +13,8 @@ Minimal Forge module demonstrating simple command patterns.
 
 ```
 basic/
-├── .forge/
-│   ├── config.yml      # Forge configuration
+├── .commando/
+│   ├── config.yml      # Commando configuration
 │   ├── simple.ts       # Command module
 │   └── .gitignore
 └── README.md
@@ -27,11 +27,11 @@ basic/
 cd examples/basic
 
 # Run commands
-forge basic ping
-forge basic greet
-forge basic greet Alice
-forge basic greet --loud
-forge basic greet Alice --loud
+cmdo basic ping
+cmdo basic greet
+cmdo basic greet Alice
+cmdo basic greet --loud
+cmdo basic greet Alice --loud
 ```
 
 ## Commands
@@ -54,19 +54,19 @@ Greet someone by name.
 
 **Examples**:
 ```bash
-forge basic greet                # Hello, Forge User!
-forge basic greet Alice          # Hello, Alice!
-forge basic greet --loud         # HELLO, FORGE USER!
-forge basic greet Bob --loud     # HELLO, BOB!
+cmdo basic greet                # Hello, Commando User!
+cmdo basic greet Alice          # Hello, Alice!
+cmdo basic greet --loud         # HELLO, COMMANDO USER!
+cmdo basic greet Bob --loud     # HELLO, BOB!
 ```
 
 ## Module Code
 
-See `.forge/simple.ts` for the implementation. Key features:
+See `.commando/simple.ts` for the implementation. Key features:
 
 1. **Module metadata** - Uses `__module__` export to customize group name:
    ```typescript
-   export const __module__: ForgeModuleMetadata = {
+   export const __module__: CommandoModuleMetadata = {
      group: 'basic',
      description: 'Basic example commands'
    };
@@ -84,7 +84,7 @@ See `.forge/simple.ts` for the implementation. Key features:
 
 3. **Command with options** - Use `defineCommand` to add arguments/flags:
    ```typescript
-   export const greet: ForgeCommand = {
+   export const greet: CommandoCommand = {
      description: 'Greet someone',
      defineCommand: (cmd) =>
        cmd.argument('[name]', '...').option('-l, --loud', '...'),
@@ -101,7 +101,7 @@ See `.forge/simple.ts` for the implementation. Key features:
 
 ## Config
 
-See `.forge/config.yml`:
+See `.commando/config.yml`:
 
 ```yaml
 modules:
@@ -109,7 +109,7 @@ modules:
 
 settings:
   basic.greet:
-    defaultName: Forge User
+    defaultName: Commando User
 ```
 
 ## Comparison with Website Example

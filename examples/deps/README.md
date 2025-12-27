@@ -1,11 +1,11 @@
 # Dependencies Example
 
-This example demonstrates Phase 2 dependency management - installing npm packages to forge home and importing them in modules.
+This example demonstrates Phase 2 dependency management - installing npm packages to commando home and importing them in modules.
 
 ## What This Does
 
 - Declares `cowsay` as a dependency in `config.yml`
-- Auto-installs to `~/.local/share/forge/node_modules/` on first run
+- Auto-installs to `~/.commando/node_modules/` on first run
 - Imports and uses `cowsay` in the `moo` module
 
 ## Usage
@@ -14,7 +14,7 @@ This example demonstrates Phase 2 dependency management - installing npm package
 
 ```bash
 cd examples/deps
-forge moo say hello
+cmdo moo say hello
 ```
 
 On first run, you'll see:
@@ -36,18 +36,18 @@ Restarting to pick up changes...
 ### Subsequent Runs (No Install)
 
 ```bash
-forge moo say "Phase 2 is working!"
-forge moo think "Dependencies are seamless..."
+cmdo moo say "Phase 2 is working!"
+cmdo moo think "Dependencies are seamless..."
 ```
 
 ## Commands
 
-- `forge moo say <text>` - Make a cow say something
-- `forge moo think <text>` - Make a cow think something (with thought bubbles)
+- `cmdo moo say <text>` - Make a cow say something
+- `cmdo moo think <text>` - Make a cow think something (with thought bubbles)
 
 ## How It Works
 
-1. **Config** (`.forge/config.yml`):
+1. **Config** (`.commando/config.yml`):
    ```yaml
    dependencies:
      - cowsay
@@ -56,11 +56,11 @@ forge moo think "Dependencies are seamless..."
      - ./moo
    ```
 
-2. **Module** (`.forge/moo.ts`):
+2. **Module** (`.commando/moo.ts`):
    ```typescript
    import cowsay from 'cowsay';
 
-   export const say: ForgeCommand = {
+   export const say: CommandoCommand = {
      description: 'Make a cow say something',
      execute: async (options, args, context) => {
        const text = args.join(' ');
@@ -70,18 +70,18 @@ forge moo think "Dependencies are seamless..."
    ```
 
 3. **Magic**:
-   - Forge detects missing dependency
-   - Runs `bun add cowsay` in `~/.local/share/forge/`
+   - Commando detects missing dependency
+   - Runs `bun add cowsay` in `~/.commando/`
    - Exits with code 42
-   - Wrapper restarts with `--forge-restarted` flag
+   - Wrapper restarts with `--commando-restarted` flag
    - Module imports work, command executes
 
 ## Verify Installation
 
 ```bash
-# Check what's installed in forge home
-ls ~/.local/share/forge/node_modules/
+# Check what's installed in commando home
+ls ~/.commando/node_modules/
 
 # Check package.json
-cat ~/.local/share/forge/package.json
+cat ~/.commando/package.json
 ```

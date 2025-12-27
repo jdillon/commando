@@ -30,7 +30,7 @@ set -euo pipefail
 #
 
 PROJECT_ROOT=""
-# COMMANDO_HOME set in setup_environment() to dev-home/forge
+# COMMANDO_HOME set in setup_environment() to dev-home/commando
 
 #
 # Path resolution
@@ -55,7 +55,7 @@ setup_environment() {
   export COMMANDO_HOME
   export NODE_PATH="${COMMANDO_HOME}/node_modules"
 
-  # Ensure dev-home forge structure exists
+  # Ensure dev-home commando structure exists
   mkdir -p "${COMMANDO_HOME}"
 }
 
@@ -192,7 +192,7 @@ generate_version_info() {
   # Build semver
   local semver="${version}+${date_time}.${hash}"
 
-  # Write version.json to forge home
+  # Write version.json to commando home
   cat > "${COMMANDO_HOME}/version.json" <<EOF
 {
   "version": "$version",
@@ -229,7 +229,7 @@ rebuild_and_install() {
 # Delegate to bin/cmdo
 #
 
-run_forge() {
+run_commando() {
   # Delegate to bin/cmdo script (installed mode bootstrap)
   # It will use our COMMANDO_HOME environment variable
   exec "${PROJECT_ROOT}/bin/cmdo" "$@"
@@ -251,7 +251,7 @@ main() {
 
   # Delegate to bin/cmdo (will exec, replacing this process)
   # bin/cmdo handles restart logic (exit code 42)
-  run_forge "$@"
+  run_commando "$@"
 }
 
 # Execute main with all arguments

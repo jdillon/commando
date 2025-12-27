@@ -38,7 +38,7 @@ resolve_paths() {
     [[ "${script_path}" != /* ]] && script_path="${script_dir}/${script_path}"
   done
 
-  # Installed mode only - forge-dev handles dev mode
+  # Installed mode only - cmdo-dev handles dev mode
   SCRIPT_DIR="$(cd "$(dirname "${script_path}")" && pwd)"
 }
 
@@ -48,9 +48,9 @@ resolve_paths() {
 
 detect_homebrew_install() {
   # Check if we're running from a Homebrew Cellar path
-  # Pattern: /opt/homebrew/Cellar/forge/<version>/libexec/bin
-  # or: /usr/local/Cellar/forge/<version>/libexec/bin (Intel Mac)
-  if [[ "${SCRIPT_DIR}" == */Cellar/forge/*/libexec/bin ]]; then
+  # Pattern: /opt/homebrew/Cellar/commando/<version>/libexec/bin
+  # or: /usr/local/Cellar/commando/<version>/libexec/bin (Intel Mac)
+  if [[ "${SCRIPT_DIR}" == */Cellar/commando/*/libexec/bin ]]; then
     # Return libexec path (parent of bin)
     echo "${SCRIPT_DIR%/bin}"
     return 0
@@ -93,11 +93,11 @@ validate_installation() {
       run_homebrew_bootstrap "${libexec}"
       # Verify bootstrap succeeded
       if [[ ! -f "${COMMANDO_CLI}" ]]; then
-        echo "ERROR: Homebrew bootstrap failed - forge CLI not found" >&2
+        echo "ERROR: Homebrew bootstrap failed - commando CLI not found" >&2
         exit 1
       fi
     else
-      echo "ERROR: Forge installation is corrupted" >&2
+      echo "ERROR: Commando installation is corrupted" >&2
       echo "Expected: ${COMMANDO_CLI}" >&2
       exit 1
     fi
@@ -105,10 +105,10 @@ validate_installation() {
 }
 
 #
-# Forge execution
+# Commando execution
 #
 
-run_forge() {
+run_commando() {
   local is_restarted="$1"
   shift
 
@@ -118,7 +118,7 @@ run_forge() {
   fi
 
   # Use --preserve-symlinks to prevent Bun from resolving through symlinks
-  # This allows user commands symlinked into node_modules to resolve forge correctly
+  # This allows user commands symlinked into node_modules to resolve commando correctly
   bun run --preserve-symlinks "${COMMANDO_CLI}" "$@"
 }
 
@@ -130,7 +130,7 @@ handle_restart() {
   # "I checked it very thoroughly, and that quite definitely is the answer."
   if [[ $exit_code -eq 42 ]]; then
     # Re-run with COMMANDO_RESTARTED=1 to prevent infinite loops
-    run_forge "true" "$@"
+    run_commando "true" "$@"
     return $?
   fi
 
@@ -147,9 +147,9 @@ main() {
   setup_environment
   validate_installation
 
-  # Run forge and handle restart if needed
+  # Run commando and handle restart if needed
   set +e  # Don't exit on non-zero
-  run_forge "false" "$@"
+  run_commando "false" "$@"
   local exit_code=$?
   set -e
 

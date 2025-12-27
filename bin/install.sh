@@ -14,8 +14,8 @@
 # limitations under the License.
 set -euo pipefail
 
-# Forge v2 Installation Script
-# Installs forge to ~/.commando and creates wrapper at ~/.local/bin/cmdo
+# Commando Installation Script
+# Installs commando to ~/.commando and creates wrapper at ~/.local/bin/cmdo
 
 # Color output (only if terminal supports it)
 if [[ -t 1 ]] && command -v tput &>/dev/null && tput colors &>/dev/null && [[ $(tput colors) -ge 8 ]]; then
@@ -79,7 +79,7 @@ while [[ $# -gt 0 ]]; do
       echo "  -h, --help   Show this help message"
       echo ""
       echo "Environment variables:"
-      echo "  COMMANDO_REPO    Repository URL (default: git+ssh://git@github.com/jdillon/forge)"
+      echo "  COMMANDO_REPO    Repository URL (default: git+ssh://git@github.com/jdillon/commando)"
       echo "  COMMANDO_BRANCH  Branch to install (default: module-system)"
       exit 0
       ;;
@@ -106,7 +106,7 @@ if [[ -z "${COMMANDO_REPO:-}" ]]; then
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-  # Check if we're in the forge git repo and have a local tarball
+  # Check if we're in the commando git repo and have a local tarball
   if [[ -d "${REPO_ROOT}/.git" ]]; then
     # Find any planet57-commando-*.tgz tarball
     TARBALL=$(ls -t "${REPO_ROOT}/build/planet57-commando-"*.tgz 2>/dev/null | head -n1)
@@ -117,7 +117,7 @@ if [[ -z "${COMMANDO_REPO:-}" ]]; then
       info "Detected local development mode - using tarball: $(basename "${TARBALL}")"
     else
       # Use GitHub for production installs
-      COMMANDO_REPO="git+ssh://git@github.com/jdillon/forge"
+      COMMANDO_REPO="git+ssh://git@github.com/jdillon/commando"
       # Determine branch (default to module-system for Phase 1, unless explicitly set to empty)
       if [[ -z "${COMMANDO_BRANCH+x}" ]]; then
         COMMANDO_BRANCH="module-system"
@@ -125,7 +125,7 @@ if [[ -z "${COMMANDO_REPO:-}" ]]; then
     fi
   else
     # Use GitHub for production installs
-    COMMANDO_REPO="git+ssh://git@github.com/jdillon/forge"
+    COMMANDO_REPO="git+ssh://git@github.com/jdillon/commando"
     # Determine branch (default to module-system for Phase 1, unless explicitly set to empty)
     if [[ -z "${COMMANDO_BRANCH+x}" ]]; then
       COMMANDO_BRANCH="module-system"
@@ -260,7 +260,7 @@ else
   SEMVER="${VERSION}+${DATE_TIME}"
 fi
 
-# Write version.json to forge home
+# Write version.json to commando home
 cat > "${COMMANDO_HOME}/version.json" <<EOF
 {
   "version": "$VERSION",
