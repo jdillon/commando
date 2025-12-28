@@ -176,7 +176,7 @@ async function buildCLI(config: CommandoConfig): Promise<Command> {
 
   program
     .name("cmdo")
-    .description("Modern CLI framework for deployments")
+    .description("CommanDO CLI Framework")
     .version(pkg.version);
 
   addTopLevelOptions(program);
