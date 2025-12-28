@@ -11,6 +11,9 @@ daemon.log
 daemon.pid
 bd.sock
 
+# Local version tracking (prevents upgrade notification spam after git ops)
+.local_version
+
 # Legacy database files
 db.sqlite
 bd.db
@@ -23,10 +26,13 @@ beads.left.meta.json
 beads.right.jsonl
 beads.right.meta.json
 
-# Keep JSONL exports and config (source of truth for git)
-!beads.jsonl
+# Protected branch mode: JSONL syncs to beads-metadata branch via worktree
+# Do NOT un-ignore these on main/feature branches
+issues.jsonl
+interactions.jsonl
+beads.jsonl
+deletions.jsonl
+
+# Keep config files on main
 !metadata.json
 !config.json
-
-# Version tracking (local only)
-.local_version
