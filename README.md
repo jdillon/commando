@@ -16,13 +16,13 @@ brew install jdillon/planet57/commando
 ### Script
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/jdillon/forge/main/bin/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jdillon/commando/main/bin/install.sh | bash
 ```
 
 Or with auto-confirm:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/jdillon/forge/main/bin/install.sh | bash -s -- -y
+curl -fsSL https://raw.githubusercontent.com/jdillon/commando/main/bin/install.sh | bash -s -- -y
 ```
 
 **Prerequisites**: [Bun](https://bun.sh) and Git

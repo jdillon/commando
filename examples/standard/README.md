@@ -1,24 +1,24 @@
 # Standard Library Example
 
-This example demonstrates using the `@jdillon/forge-standard` package to load reusable command modules.
+This example demonstrates using the `@planet57/commando-standard` package to load reusable command modules.
 
 ## What This Shows
 
 - Loading modules from packages installed to commando home
 - Using `file:` protocol for local development
-- Package submodule syntax: `@jdillon/forge-standard/hello`
+- Package submodule syntax: `@planet57/commando-standard/hello`
 - Group name derived from submodule: `hello`
 
 ## Setup
 
-### 1. Install forge-standard to commando home
+### 1. Install commando-standard to commando home
 
 ```bash
 cd ~/.commando
-bun add file:../../../forge-standard
+bun add file:../../../commando-standard
 ```
 
-This creates symlinks, so changes to forge-standard are immediately reflected.
+This creates symlinks, so changes to commando-standard are immediately reflected.
 
 ### 2. Run commands
 
@@ -28,7 +28,7 @@ cd examples/standard
 # Use local dev CLI (./cmdo symlink ensures correct version)
 ./cmdo --help
 
-# Use commands from forge-standard
+# Use commands from commando-standard
 ./cmdo hello greet World
 ./cmdo hello greet Jason
 ./cmdo hello info
@@ -41,19 +41,19 @@ cd examples/standard
 ```bash
 $ ./cmdo hello greet Jason
 Hello, Jason!
-Loaded from forge-standard package
+Loaded from commando-standard package
 
 $ ./cmdo hello info
-Module: @jdillon/forge-standard/hello
+Module: @planet57/commando-standard/hello
 Version: 0.1.0
 Commands: greet, info
 ```
 
 ## How It Works
 
-1. **Config declares dependency**: `file:../../../forge-standard` (relative path)
-2. **Auto-install**: Commando installs to `~/.commando/node_modules/@jdillon/forge-standard/`
-3. **Module loading**: `@jdillon/forge-standard/hello` resolves to `hello.ts`
+1. **Config declares dependency**: `file:../../../commando-standard` (relative path)
+2. **Auto-install**: Commando installs to `~/.commando/node_modules/@planet57/commando-standard/`
+3. **Module loading**: `@planet57/commando-standard/hello` resolves to `hello.ts`
 4. **Group name**: Last path segment `hello` becomes the command group
 5. **Commands registered**: `greet` and `info` commands under `hello` group
 
@@ -63,10 +63,10 @@ See `.commando/config.yml`:
 
 ```yaml
 dependencies:
-  - file:../../../forge-standard  # Relative path for portability
+  - file:../../../commando-standard  # Relative path for portability
 
 modules:
-  - "@jdillon/forge-standard/hello"
+  - "@planet57/commando-standard/hello"
 ```
 
 ## Production vs Development
@@ -74,18 +74,18 @@ modules:
 **Development** (current):
 ```yaml
 dependencies:
-  - file:~/ws/forge-standard  # Local symlink
+  - file:~/ws/commando-standard  # Local symlink
 ```
 
 **Production** (future):
 ```yaml
 dependencies:
-  - git+ssh://git@github.com/jdillon/forge-standard.git  # Git repo
+  - git+ssh://git@github.com/jdillon/commando-standard.git  # Git repo
 ```
 
 ## Related
 
-- **forge-standard source**: `~/ws/forge-standard/`
-- **Installed location**: `~/.commando/node_modules/@jdillon/forge-standard/`
+- **commando-standard source**: `~/ws/commando-standard/`
+- **Installed location**: `~/.commando/node_modules/@planet57/commando-standard/`
 - **Module resolver**: `lib/module-resolver.ts`
 - **Phase 3 docs**: `docs/wip/module-system/phase3-implementation-proposal.md`

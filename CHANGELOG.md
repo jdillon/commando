@@ -13,13 +13,13 @@ First public release. TypeScript/Bun rewrite of the original Bash-based Forge fr
 
 ### Features
 
-- **Module system** - Auto-discovery of commands from `.forge/` directory
-- **Command grouping** - Commands grouped by filename (e.g., `website-build.ts` → `forge website build`)
+- **Module system** - Auto-discovery of commands from `.commando/` directory
+- **Command grouping** - Commands grouped by filename (e.g., `website-build.ts` → `cmdo website build`)
 - **Layered configuration** - User, project, and local config via cosmiconfig (YAML, JSON, JS, TS)
 - **Structured logging** - Pino-based with pretty and JSON output formats
 - **Styled CLI** - Commander.js with colored help, smart option handling
 - **Output helpers** - Tables, spinners, progress bars, prompts, boxes
-- **Installation** - `install.sh` script, meta-project pattern at `~/.forge/`
+- **Installation** - `install.sh` script, meta-project pattern at `~/.commando/`
 
 ### Technical
 

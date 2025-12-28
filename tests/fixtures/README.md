@@ -6,15 +6,15 @@ This directory contains fixtures (test data and environments) used by the test s
 
 ```
 fixtures/
-  test-project/           # Minimal Forge project for testing
-    .forge/
+  test-project/           # Minimal Commando project for testing
+    .commando/
       config.yml          # Test project configuration
       test-commands.ts    # Commands designed for testing
 ```
 
 ## test-project
 
-A minimal Forge project configured specifically for testing. Unlike `examples/`, this fixture:
+A minimal Commando project configured specifically for testing. Unlike `examples/`, this fixture:
 
 - Has minimal configuration
 - Includes commands designed for test verification
@@ -29,7 +29,7 @@ import { join } from 'path';
 const fixtureRoot = join(process.cwd(), 'tests/fixtures/test-project');
 
 const result = spawnSync([
-  './bin/forge',
+  './bin/cmdo',
   '--root', fixtureRoot,
   'test', 'context'
 ]);

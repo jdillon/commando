@@ -45,7 +45,7 @@
         "prepend": " * "
       }
     },
-    "sh|^forge|^forge-dev": {
+    "sh|^cmdo|^cmdo-dev": {
       "eachLine": {
         "prepend": "# "
       },

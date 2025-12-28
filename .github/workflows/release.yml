@@ -41,7 +41,7 @@ jobs:
         id: checksum
         run: |
           VERSION="${{ steps.version.outputs.current }}"
-          TARBALL="build/planet57-forge-${VERSION}.tgz"
+          TARBALL="build/planet57-commando-${VERSION}.tgz"
           SHA256=$(shasum -a 256 "$TARBALL" | awk '{print $1}')
           echo "sha256=${SHA256}" >> $GITHUB_OUTPUT
           echo "tarball=${TARBALL}" >> $GITHUB_OUTPUT
@@ -62,9 +62,9 @@ jobs:
           mkdir -p tap/Formula
 
           # Copy template and replace placeholders
-          cp .github/formula-template.rb tap/Formula/forge.rb
-          sed -i "s/__VERSION__/${VERSION}/g" tap/Formula/forge.rb
-          sed -i "s/__SHA256__/${SHA256}/g" tap/Formula/forge.rb
+          cp .github/formula-template.rb tap/Formula/commando.rb
+          sed -i "s/__VERSION__/${VERSION}/g" tap/Formula/commando.rb
+          sed -i "s/__SHA256__/${SHA256}/g" tap/Formula/commando.rb
 
       # === All preparation done, now push everything ===
 
@@ -96,8 +96,8 @@ jobs:
           cd tap
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Formula/forge.rb
-          git commit -m "Update forge to ${VERSION}"
+          git add Formula/commando.rb
+          git commit -m "Update commando to ${VERSION}"
           git push
 
       - name: Bump version and push

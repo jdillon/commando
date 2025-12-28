@@ -1,6 +1,6 @@
-# Forge Tests
+# Commando Tests
 
-This directory contains Bun tests for the Forge CLI framework.
+This directory contains Bun tests for the Commando CLI framework.
 
 ## Running Tests
 
@@ -35,7 +35,7 @@ bun test --filter "logger"
 
 - **`cli-color.test.ts`** - Color detection integration (skipped - requires project setup)
 - **`cli-help.test.ts`** - Help output integration (skipped - requires project setup)
-- **`context.test.ts`** - ForgeContext validation (skipped - requires project setup)
+- **`context.test.ts`** - CommandoContext validation (skipped - requires project setup)
 
 ## Current Status
 
@@ -54,7 +54,7 @@ Core functionality is solid and well-tested! The 5 remaining failures are test i
 
 ### Remaining Test Issues (5 failures)
 - 1 test checking stdout/stderr for unknown options
-- 3 ForgeContext tests (creating temp test commands)
+- 3 CommandoContext tests (creating temp test commands)
 - 1 test expecting different exit behavior
 
 All actual CLI functionality works correctly - these are just test assertions that need adjustment.
@@ -91,7 +91,7 @@ describe('My Feature', () => {
 import { spawnSync } from 'bun';
 
 test('should show help', () => {
-  const result = spawnSync(['./bin/forge', '--help']);
+  const result = spawnSync(['./bin/cmdo', '--help']);
 
   // Debug output (visible on failure)
   console.log('Exit code:', result.exitCode);
@@ -112,7 +112,7 @@ import { join } from 'path';
 
 const fixtureRoot = join(process.cwd(), 'tests/fixtures/test-project');
 
-const result = spawnSync(['./bin/forge', '--root', fixtureRoot, 'test', 'context']);
+const result = spawnSync(['./bin/cmdo', '--root', fixtureRoot, 'test', 'context']);
 ```
 
 ## Running Tests

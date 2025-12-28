@@ -58,7 +58,7 @@ Use beads MCP tools for ALL issue tracking. Do NOT use TodoWrite or markdown TOD
 
 **Do NOT close issues prematurely.** Wait for explicit user verification that the work is complete before closing. Build succeeding is not enough - the user must confirm the feature works as expected.
 
-**Commit format**: Include `Resolves: forge-xxx` or `Related: forge-xxx` in commit messages.
+**Commit format**: Include `Resolves: commando-xxx` or `Related: commando-xxx` in commit messages.
 See `bd onboard` for more information.
 
 ## Code Conventions

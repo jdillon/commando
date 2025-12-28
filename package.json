@@ -14,7 +14,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jdillon/forge.git"
+    "url": "https://github.com/jdillon/commando.git"
   },
   "files": [
     "lib/**/*.ts",

@@ -322,8 +322,8 @@ cp -r ~/.commando/ /backup/data/
 ### Old Paths (v1 - Bash)
 
 ```bash
-~/.forge/                           # Would have been used
-project/.forge/                     # Project config
+~/.commando/                        # Was planned for v1
+project/.commando/                  # Project config
 ```
 
 ### New Paths (v2 - Bun)
