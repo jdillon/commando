@@ -20,7 +20,7 @@
 import { describe, test } from './lib/testx';
 import { expect } from 'bun:test';
 import { setupTestLogs, TEST_DIRS } from './lib/utils';
-import { runForge } from './lib/runner';
+import { runCommando } from './lib/runner';
 import { join } from 'path';
 
 describe('CLI --log-format Validation', () => {
@@ -29,7 +29,7 @@ describe('CLI --log-format Validation', () => {
   test('should accept "json" format', async (ctx) => {
     const logs = await setupTestLogs(ctx);
 
-    const result = await runForge({
+    const result = await runCommando({
       args: ['--root', projectRoot, '--log-format', 'json', 'test', 'greet'],
       logDir: logs.logDir,
       logBaseName: logs.logBaseName,
@@ -44,7 +44,7 @@ describe('CLI --log-format Validation', () => {
   test('should accept "pretty" format', async (ctx) => {
     const logs = await setupTestLogs(ctx);
 
-    const result = await runForge({
+    const result = await runCommando({
       args: ['--root', projectRoot, '--log-format', 'pretty', 'test', 'greet'],
       logDir: logs.logDir,
       logBaseName: logs.logBaseName,
@@ -57,7 +57,7 @@ describe('CLI --log-format Validation', () => {
   test('should reject invalid format "plain"', async (ctx) => {
     const logs = await setupTestLogs(ctx);
 
-    const result = await runForge({
+    const result = await runCommando({
       args: ['--root', projectRoot, '--log-format', 'plain', 'test', 'greet'],
       logDir: logs.logDir,
       logBaseName: logs.logBaseName,
@@ -73,7 +73,7 @@ describe('CLI --log-format Validation', () => {
   test('should reject invalid format "xyz"', async (ctx) => {
     const logs = await setupTestLogs(ctx);
 
-    const result = await runForge({
+    const result = await runCommando({
       args: ['--root', projectRoot, '--log-format', 'xyz', 'test', 'greet'],
       logDir: logs.logDir,
       logBaseName: logs.logBaseName,
@@ -89,7 +89,7 @@ describe('CLI --log-format Validation', () => {
   test('should reject numeric format "123"', async (ctx) => {
     const logs = await setupTestLogs(ctx);
 
-    const result = await runForge({
+    const result = await runCommando({
       args: ['--root', projectRoot, '--log-format', '123', 'test', 'greet'],
       logDir: logs.logDir,
       logBaseName: logs.logBaseName,
@@ -104,7 +104,7 @@ describe('CLI --log-format Validation', () => {
   test('should show valid formats in error message', async (ctx) => {
     const logs = await setupTestLogs(ctx);
 
-    const result = await runForge({
+    const result = await runCommando({
       args: ['--root', projectRoot, '--log-format', 'invalid', 'test', 'greet'],
       logDir: logs.logDir,
       logBaseName: logs.logBaseName,
@@ -119,7 +119,7 @@ describe('CLI --log-format Validation', () => {
   test('should use pretty format by default', async (ctx) => {
     const logs = await setupTestLogs(ctx);
 
-    const result = await runForge({
+    const result = await runCommando({
       args: ['--root', projectRoot, 'test', 'greet'],
       logDir: logs.logDir,
       logBaseName: logs.logBaseName,

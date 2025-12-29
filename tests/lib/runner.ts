@@ -33,7 +33,7 @@ const PROJECT_ROOT = resolve(import.meta.dir, '../..');
 /**
  * Configuration for running commando in tests
  */
-export interface RunForgeConfig {
+export interface RunCommandoConfig {
   /** CLI arguments to pass to commando */
   args: string[];
   /** Environment variables (merged with process.env) */
@@ -53,7 +53,7 @@ export interface RunForgeConfig {
 /**
  * Result from running commando
  */
-export interface RunForgeResult {
+export interface RunCommandoResult {
   /** Exit code from the command */
   exitCode: number;
   /** Path to stdout log file */
@@ -67,7 +67,7 @@ export interface RunForgeResult {
  *
  * @example
  * ```typescript
- * const result = await runForge({
+ * const result = await runCommando({
  *   args: ['--root', fixtureRoot, 'test', 'context', outputFile],
  *   env: { COMMANDO_DEBUG: '1' },
  *   logDir: logs.logDir,
@@ -78,7 +78,7 @@ export interface RunForgeResult {
  * const stdout = await Bun.file(result.stdoutLog).text();
  * ```
  */
-export async function runForge(config: RunForgeConfig): Promise<RunForgeResult> {
+export async function runCommando(config: RunCommandoConfig): Promise<RunCommandoResult> {
   const {
     args,
     env = {},
