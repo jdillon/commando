@@ -23,7 +23,7 @@
 import { describe, test } from './lib/testx';
 import { expect } from 'bun:test';
 import { setupTestLogs, TEST_DIRS } from './lib/utils';
-import { runForge } from './lib/runner';
+import { runCommando } from './lib/runner';
 import { join } from 'path';
 
 describe('Subcommand Options', () => {
@@ -32,7 +32,7 @@ describe('Subcommand Options', () => {
   test('should parse subcommand flags (--loud)', async (ctx) => {
     const logs = await setupTestLogs(ctx);
 
-    const result = await runForge({
+    const result = await runCommando({
       args: ['--root', projectRoot, 'test', 'greet', 'Alice', '--loud'],
       logDir: logs.logDir,
       logBaseName: logs.logBaseName,
@@ -46,7 +46,7 @@ describe('Subcommand Options', () => {
   test('should parse subcommand short flags (-l)', async (ctx) => {
     const logs = await setupTestLogs(ctx);
 
-    const result = await runForge({
+    const result = await runCommando({
       args: ['--root', projectRoot, 'test', 'greet', 'Bob', '-l'],
       logDir: logs.logDir,
       logBaseName: logs.logBaseName,
@@ -60,7 +60,7 @@ describe('Subcommand Options', () => {
   test('should work without flags', async (ctx) => {
     const logs = await setupTestLogs(ctx);
 
-    const result = await runForge({
+    const result = await runCommando({
       args: ['--root', projectRoot, 'test', 'greet', 'Charlie'],
       logDir: logs.logDir,
       logBaseName: logs.logBaseName,
@@ -74,7 +74,7 @@ describe('Subcommand Options', () => {
   test('should work with no arguments', async (ctx) => {
     const logs = await setupTestLogs(ctx);
 
-    const result = await runForge({
+    const result = await runCommando({
       args: ['--root', projectRoot, 'test', 'greet'],
       logDir: logs.logDir,
       logBaseName: logs.logBaseName,

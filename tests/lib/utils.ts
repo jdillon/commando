@@ -192,7 +192,7 @@ export interface RunCommandResult {
  * const result = await runCommandWithLogs({
  *   command: "bash",
  *   args: ["install.sh"],
- *   env: { HOME: testHome, FORGE_REPO: "..." },
+ *   env: { HOME: testHome, COMMANDO_HOME: "..." },
  *   logDir: testHome,
  *   logBaseName: "install",
  * });

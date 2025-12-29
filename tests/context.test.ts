@@ -20,7 +20,7 @@
 import { describe, test } from './lib/testx';
 import { expect } from 'bun:test';
 import { setupTestLogs, TEST_DIRS } from './lib/utils';
-import { runForge } from './lib/runner';
+import { runCommando } from './lib/runner';
 import { join } from 'path';
 
 describe('CommandoContext', () => {
@@ -30,7 +30,7 @@ describe('CommandoContext', () => {
     const logs = await setupTestLogs(ctx);
     const outputFile = join(logs.logDir, 'context-output.json');
 
-    const result = await runForge({
+    const result = await runCommando({
       args: ['--root', fixtureRoot, '--log-level', 'debug', '--log-format', 'json', '--color', 'never', 'test', 'context', outputFile],
       logDir: logs.logDir,
       logBaseName: logs.logBaseName,
@@ -57,7 +57,7 @@ describe('CommandoContext', () => {
     const logs = await setupTestLogs(ctx);
     const outputFile = join(logs.logDir, 'context-output.json');
 
-    const result = await runForge({
+    const result = await runCommando({
       args: ['--root', fixtureRoot, '--log-format', 'json', 'test', 'context', outputFile],
       env: { NO_COLOR: '' }, // Unset NO_COLOR to test actual auto-detection
       logDir: logs.logDir,
@@ -75,7 +75,7 @@ describe('CommandoContext', () => {
     const logs = await setupTestLogs(ctx);
     const outputFile = join(logs.logDir, 'context-output.json');
 
-    const result = await runForge({
+    const result = await runCommando({
       args: ['--root', fixtureRoot, '--log-format', 'json', 'test', 'context', outputFile],
       env: { NO_COLOR: '1' },
       logDir: logs.logDir,

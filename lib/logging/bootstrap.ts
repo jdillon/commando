@@ -42,7 +42,7 @@ function parseLogLevel(): string {
   }
 
   // Fallback to environment variable
-  if (process.env.FORGE_DEBUG) {
+  if (process.env.COMMANDO_DEBUG) {
     return 'debug';
   }
 
