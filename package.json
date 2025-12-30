@@ -1,6 +1,6 @@
 {
   "name": "@planet57/commando",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Modern CLI framework for deployments - TypeScript/Bun implementation",
   "author": "Jason Dillon",
   "license": "Apache-2.0",
