@@ -69,4 +69,4 @@ Only after version confirmed AND changelog complete:
    git push origin vX.Y.Z
    ```
 
-7. Report success: "Release tagged. Run the Release workflow manually at https://github.com/jdillon/commando/actions/workflows/release.yml"
+7. Report success: "Release tagged. Workflow will run automatically: https://github.com/jdillon/commando/actions"
