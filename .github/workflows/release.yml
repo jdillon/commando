@@ -4,7 +4,6 @@ on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,16 +14,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get version from package.json
+      - name: Extract version from tag
         id: version
         run: |
-          VERSION=$(jq -r .version package.json)
-          echo "current=${VERSION}" >> $GITHUB_OUTPUT
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG#v}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
-          # Calculate next patch version
-          IFS='.' read -r major minor patch <<< "$VERSION"
-          NEXT="${major}.${minor}.$((patch + 1))"
-          echo "next=${NEXT}" >> $GITHUB_OUTPUT
+      - name: Validate version matches package.json
+        run: |
+          PKG_VERSION=$(jq -r .version package.json)
+          if [ "$PKG_VERSION" != "${{ steps.version.outputs.version }}" ]; then
+            echo "::error::Tag version (${{ steps.version.outputs.version }}) does not match package.json version ($PKG_VERSION)"
+            exit 1
+          fi
+
+      - name: Validate changelog has release entry
+        run: |
+          if ! grep -q "## \[${{ steps.version.outputs.version }}\]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md missing entry for version ${{ steps.version.outputs.version }}"
+            exit 1
+          fi
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -43,70 +54,44 @@ jobs:
       - name: Compute SHA256
         id: checksum
         run: |
-          VERSION="${{ steps.version.outputs.current }}"
+          VERSION="${{ steps.version.outputs.version }}"
           TARBALL="build/planet57-commando-${VERSION}.tgz"
           SHA256=$(shasum -a 256 "$TARBALL" | awk '{print $1}')
           echo "sha256=${SHA256}" >> $GITHUB_OUTPUT
           echo "tarball=${TARBALL}" >> $GITHUB_OUTPUT
 
-      - name: Prepare Homebrew formula
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          files: ${{ steps.checksum.outputs.tarball }}
+          generate_release_notes: false
+          body: |
+            See [CHANGELOG.md](https://github.com/jdillon/commando/blob/main/CHANGELOG.md) for release notes.
+          draft: false
+
+      - name: Update Homebrew formula
         env:
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
         run: |
           if [ -z "$HOMEBREW_TAP_TOKEN" ]; then
-            echo "::warning::HOMEBREW_TAP_TOKEN not set - will skip Homebrew update"
+            echo "::warning::HOMEBREW_TAP_TOKEN not set - skipping Homebrew update"
             exit 0
           fi
 
-          VERSION="${{ steps.version.outputs.current }}"
+          VERSION="${{ steps.version.outputs.version }}"
           SHA256="${{ steps.checksum.outputs.sha256 }}"
 
           git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/jdillon/homebrew-planet57.git" tap
-          mkdir -p tap/Formula
 
           # Copy template and replace placeholders
           cp .github/formula-template.rb tap/Formula/commando.rb
           sed -i "s/__VERSION__/${VERSION}/g" tap/Formula/commando.rb
           sed -i "s/__SHA256__/${SHA256}/g" tap/Formula/commando.rb
 
-      # === All preparation done, now push everything ===
-
-      - name: Create and push tag
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag "v${{ steps.version.outputs.current }}"
-          git push origin "v${{ steps.version.outputs.current }}"
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.version.outputs.current }}
-          files: ${{ steps.checksum.outputs.tarball }}
-          generate_release_notes: true
-          draft: false
-
-      - name: Push Homebrew formula
-        env:
-          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-        run: |
-          if [ -z "$HOMEBREW_TAP_TOKEN" ] || [ ! -d "tap" ]; then
-            echo "Skipping Homebrew update"
-            exit 0
-          fi
-
-          VERSION="${{ steps.version.outputs.current }}"
           cd tap
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add Formula/commando.rb
           git commit -m "Update commando to ${VERSION}"
-          git push
-
-      - name: Bump version and push
-        run: |
-          jq '.version = "${{ steps.version.outputs.next }}"' package.json > package.json.tmp
-          mv package.json.tmp package.json
-          git add package.json
-          git commit -m "chore: bump version to ${{ steps.version.outputs.next }}"
           git push
