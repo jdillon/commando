@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Features
+
+- Rename project from forge to commando with CLI command `cmdo` (`commando-aaj`)
+- Add Homebrew self-bootstrap on first run
+
+### Fixed
+
+- Suppress ExitNotification stack trace on unknown command (`commando-mvj`)
+
 ## [0.1.0] - 2025-11-26
 
 First public release. TypeScript/Bun rewrite of the original Bash-based Forge framework.
